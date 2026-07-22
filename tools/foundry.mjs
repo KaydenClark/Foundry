@@ -376,6 +376,8 @@ export async function adoptFoundry({
     throw new Error(`harness root does not exist: ${harnessRoot}`);
   }
   mkdirSync(instanceRoot, { recursive: true });
+  harnessRoot = realpathSync(harnessRoot);
+  instanceRoot = realpathSync(instanceRoot);
   const harnessRelative = assertHarnessInsideInstance(harnessRoot, instanceRoot);
   const errors = validateManifest(manifest);
   if (errors.length) throw new Error(`invalid Foundry manifest:\n- ${errors.join("\n- ")}`);
@@ -588,8 +590,8 @@ export async function doctorFoundry({
   instanceRoot,
   manifest = loadManifest(join(harnessRoot, "manifest", "foundry.json")),
 } = {}) {
-  harnessRoot = resolve(harnessRoot);
-  instanceRoot = instanceRoot ? resolve(instanceRoot) : detectInstanceRoot(harnessRoot);
+  harnessRoot = realpathSync(resolve(harnessRoot));
+  instanceRoot = instanceRoot ? realpathSync(resolve(instanceRoot)) : detectInstanceRoot(harnessRoot);
   const errors = [];
   const warnings = [];
   let contractValidation = "not run (harness-only doctor)";

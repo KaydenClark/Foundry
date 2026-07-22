@@ -142,6 +142,8 @@ async function main() {
     mkdirSync(sourcesRoot, { recursive: true });
     copyHarnessFixture(harnessRoot);
 
+    const instanceAlias = join(scratch, "instance-alias");
+    symlinkSync(instanceRoot, instanceAlias, "dir");
     const harnessAlias = join(scratch, "harness-alias");
     symlinkSync(harnessRoot, harnessAlias, "dir");
     const aliasedCli = run("node", [join(harnessAlias, "tools", "foundry.mjs"), "validate-manifest"]);
@@ -156,7 +158,7 @@ async function main() {
 
     const receipt = await adoptFoundry({
       harnessRoot,
-      instanceRoot,
+      instanceRoot: instanceAlias,
       instanceName: "Cold Fixture",
       manifest,
       sourceOverrides,
