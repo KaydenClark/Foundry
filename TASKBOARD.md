@@ -11,7 +11,7 @@ live in stable specs.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-001](specs/S-001-portable-foundry-harness/SPEC.md) | TK-003: Cut an existing deployment such as GPT_OS over to this harness. (blocked) | codex | TK-002, owner approval | Fixed-SHA review finding was repaired and cold proof reconfirmed at pushed commit `05aba7c21099ce77d787c60cc3ae9197411150e6`. | Present the proven harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover. |
+| [S-001](specs/S-001-portable-foundry-harness/SPEC.md) | TK-003: Cut an existing deployment such as GPT_OS over to this harness. (blocked) | codex | TK-002, owner approval | Reviewed commit `20a63341018d681771ad3088dd3c6a2c5a81b92a` landed on `integration` and passed a fresh from-zero integration adoption/audit. | Present the proven harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions
