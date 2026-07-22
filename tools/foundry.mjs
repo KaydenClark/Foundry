@@ -309,26 +309,17 @@ function harnessGitProvenance(harnessRoot) {
   };
 }
 
-function installComponent({ component, harnessRoot, source }) {
+function inspectComponentDestination({ component, harnessRoot, source }) {
   const destination = join(harnessRoot, component.destination);
-  if (!existsSync(destination)) {
-    mkdirSync(dirname(destination), { recursive: true });
-    git(harnessRoot, [
-      "clone",
-      "--branch",
-      component.ref,
-      "--single-branch",
-      "--no-tags",
-      "--",
-      source,
-      destination,
-    ]);
-    return { action: "cloned", destination };
+  if (!existsSync(destination)) return { action: "clone", destination };
+  if (!statSync(destination).isDirectory()) {
+    throw new Error(`${component.id} destination exists but is not a directory: ${component.destination}`);
   }
-
   const gitMarker = join(destination, ".git");
-  if (!existsSync(gitMarker)) {
-    throw new Error(`${component.id} destination exists but is not a Git repository: ${component.destination}`);
+  if (!existsSync(gitMarker) || !lstatSync(gitMarker).isDirectory()) {
+    throw new Error(
+      `${component.id} destination exists but is not an independent Git repository: ${component.destination}`,
+    );
   }
   const actualRemote = git(destination, ["remote", "get-url", "origin"]).stdout.trim();
   if (normalizeRemoteIdentity(actualRemote) !== normalizeRemoteIdentity(source)) {
@@ -342,7 +333,27 @@ function installComponent({ component, harnessRoot, source }) {
   }
   const dirty = git(destination, ["status", "--porcelain", "--untracked-files=all"]).stdout.trim();
   if (dirty) throw new Error(`${component.id} destination is dirty; adoption will not overwrite it`);
-  return { action: "reused", destination };
+  return { action: "reuse", destination };
+}
+
+function installComponent({ component, harnessRoot, source }) {
+  const inspection = inspectComponentDestination({ component, harnessRoot, source });
+  if (inspection.action === "clone") {
+    const destination = inspection.destination;
+    mkdirSync(dirname(destination), { recursive: true });
+    git(harnessRoot, [
+      "clone",
+      "--branch",
+      component.ref,
+      "--single-branch",
+      "--no-tags",
+      "--",
+      source,
+      destination,
+    ]);
+    return { action: "cloned", destination };
+  }
+  return { action: "reused", destination: inspection.destination };
 }
 
 function copyTemplateFile({ template, destination, replacements }) {
@@ -391,25 +402,49 @@ export async function adoptFoundry({
     }
   }
 
+  const foundryState = join(instanceRoot, ".foundry");
+  const markerFile = join(foundryState, "instance.json");
+  const bindingFile = join(foundryState, "bindings.json");
+  const workflowFile = join(foundryState, "workflows.json");
+  if (existsSync(markerFile)) {
+    const existingMarker = readJson(markerFile);
+    if (existingMarker.harnessRoot !== harnessRelative) {
+      throw new Error(
+        `instance marker points at ${existingMarker.harnessRoot}; refusing to replace it with ${harnessRelative}`,
+      );
+    }
+  }
+  if (existsSync(bindingFile)) parseBindings(bindingFile);
+  if (existsSync(workflowFile)) {
+    const workflowErrors = validateWorkflowConfig(readJson(workflowFile));
+    if (workflowErrors.length) {
+      throw new Error(`invalid instance workflows ${workflowFile}:\n- ${workflowErrors.join("\n- ")}`);
+    }
+  }
+
   const manifestPath = join(harnessRoot, "manifest", "foundry.json");
   const manifestDigest = existsSync(manifestPath)
     ? sha256File(manifestPath)
     : sha256(`${JSON.stringify(manifest)}\n`);
-  const plan = manifest.components.map((component) => ({
+  const inspectedComponents = manifest.components.map((component) => {
+    const source = sourceOverrides[component.id] ?? component.remote;
+    const inspection = inspectComponentDestination({ component, harnessRoot, source });
+    return { component, source, inspection };
+  });
+  const plan = inspectedComponents.map(({ component, inspection }) => ({
     id: component.id,
     name: component.name,
     destination: component.destination,
     remote: component.remote,
     ref: component.ref,
-    action: existsSync(join(harnessRoot, component.destination)) ? "validate-existing" : "clone",
+    action: inspection.action,
   }));
   if (dryRun) {
     return { schemaVersion: "1.0", dryRun: true, harnessRoot: harnessRelative, plan };
   }
 
   const componentResults = [];
-  for (const component of manifest.components) {
-    const source = sourceOverrides[component.id] ?? component.remote;
+  for (const { component, source } of inspectedComponents) {
     const installed = installComponent({ component, harnessRoot, source });
     const commit = git(installed.destination, ["rev-parse", "HEAD"]).stdout.trim();
     componentResults.push({
@@ -447,9 +482,7 @@ export async function adoptFoundry({
     }),
   }));
 
-  const foundryState = join(instanceRoot, ".foundry");
   mkdirSync(foundryState, { recursive: true });
-  const bindingFile = join(foundryState, "bindings.json");
   const bindingAction = copyTemplateFile({
     template: join(harnessRoot, "templates", "instance", "bindings.json"),
     destination: bindingFile,
@@ -457,7 +490,6 @@ export async function adoptFoundry({
   });
   parseBindings(bindingFile);
 
-  const workflowFile = join(foundryState, "workflows.json");
   const workflowAction = copyTemplateFile({
     template: join(harnessRoot, "templates", "instance", "workflows.json"),
     destination: workflowFile,
@@ -468,22 +500,12 @@ export async function adoptFoundry({
     throw new Error(`invalid instance workflows ${workflowFile}:\n- ${workflowErrors.join("\n- ")}`);
   }
 
-  const markerFile = join(foundryState, "instance.json");
-  if (existsSync(markerFile)) {
-    const existingMarker = readJson(markerFile);
-    if (existingMarker.harnessRoot !== harnessRelative) {
-      throw new Error(
-        `instance marker points at ${existingMarker.harnessRoot}; refusing to replace it with ${harnessRelative}`,
-      );
-    }
-  } else {
-    writeJsonAtomic(markerFile, {
-      schemaVersion: "1.0",
-      instanceName: resolvedName,
-      harnessRoot: harnessRelative,
-      manifestDigest,
-    });
-  }
+  writeJsonAtomic(markerFile, {
+    schemaVersion: "1.0",
+    instanceName: resolvedName,
+    harnessRoot: harnessRelative,
+    manifestDigest,
+  });
 
   const receipt = {
     schemaVersion: "1.0",
@@ -592,6 +614,10 @@ export async function doctorFoundry({
 } = {}) {
   harnessRoot = realpathSync(resolve(harnessRoot));
   instanceRoot = instanceRoot ? realpathSync(resolve(instanceRoot)) : detectInstanceRoot(harnessRoot);
+  const manifestFile = join(harnessRoot, "manifest", "foundry.json");
+  const manifestDigest = existsSync(manifestFile)
+    ? sha256File(manifestFile)
+    : sha256(`${JSON.stringify(manifest)}\n`);
   const errors = [];
   const warnings = [];
   let contractValidation = "not run (harness-only doctor)";
@@ -636,6 +662,9 @@ export async function doctorFoundry({
         if (marker.harnessRoot !== harnessRelative) {
           errors.push(`instance marker harnessRoot is ${marker.harnessRoot}, expected ${harnessRelative}`);
         }
+        if (marker.manifestDigest !== manifestDigest) {
+          errors.push("instance marker manifestDigest does not match the current install manifest");
+        }
       } catch (error) {
         errors.push(error.message);
       }
@@ -670,6 +699,17 @@ export async function doctorFoundry({
         allowFailure: true,
       });
       if (dirty.status !== 0 || dirty.stdout.trim()) errors.push(`${component.id}: installed clone is dirty`);
+      if (receipt) {
+        const receiptComponent = receipt.components?.find((entry) => entry.id === component.id);
+        if (!receiptComponent) {
+          errors.push(`${component.id}: missing from adoption receipt`);
+        } else {
+          const actualCommit = git(destination, ["rev-parse", "HEAD"], { allowFailure: true });
+          if (actualCommit.status !== 0 || actualCommit.stdout.trim() !== receiptComponent.commit) {
+            errors.push(`${component.id}: installed commit does not match adoption receipt`);
+          }
+        }
+      }
     }
 
     if (existsSync(bindingFile)) {

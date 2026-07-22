@@ -156,6 +156,52 @@ async function main() {
       ]),
     );
 
+    const markerFile = join(instanceRoot, ".foundry", "instance.json");
+    mkdirSync(dirname(markerFile), { recursive: true });
+    writeFileSync(
+      markerFile,
+      `${JSON.stringify({ schemaVersion: "1.0", harnessRoot: "Other Foundry" })}\n`,
+      "utf8",
+    );
+    await assert.rejects(
+      () =>
+        adoptFoundry({
+          harnessRoot,
+          instanceRoot: instanceAlias,
+          instanceName: "Cold Fixture",
+          manifest,
+          sourceOverrides,
+        }),
+      /instance marker points at/,
+    );
+    assert.equal(
+      existsSync(join(harnessRoot, manifest.components[0].destination)),
+      false,
+      "instance-state failures are detected before the first component clone",
+    );
+    rmSync(markerFile);
+
+    const badDestination = join(harnessRoot, manifest.components.at(-1).destination);
+    mkdirSync(badDestination, { recursive: true });
+    writeFileSync(join(badDestination, ".git"), "gitdir: missing\n", "utf8");
+    await assert.rejects(
+      () =>
+        adoptFoundry({
+          harnessRoot,
+          instanceRoot: instanceAlias,
+          instanceName: "Cold Fixture",
+          manifest,
+          sourceOverrides,
+        }),
+      /independent Git repository/,
+    );
+    assert.equal(
+      existsSync(join(harnessRoot, manifest.components[0].destination)),
+      false,
+      "component mismatches are detected before the first component clone",
+    );
+    rmSync(join(harnessRoot, "Modules"), { recursive: true, force: true });
+
     const receipt = await adoptFoundry({
       harnessRoot,
       instanceRoot: instanceAlias,
@@ -194,7 +240,7 @@ async function main() {
 
     for (const component of manifest.components) {
       const destination = join(harnessRoot, component.destination);
-      assert.ok(existsSync(join(destination, ".git")), `${component.id} is an independent clone`);
+      assert.ok(statSync(join(destination, ".git")).isDirectory(), `${component.id} is an independent clone`);
       assert.equal(git(destination, ["branch", "--show-current"]).stdout.trim(), component.ref);
       assert.equal(git(destination, ["remote", "get-url", "origin"]).stdout.trim(), sourceOverrides[component.id]);
     }
@@ -216,6 +262,12 @@ async function main() {
     assert.equal(diagnosis.ok, true, diagnosis.errors.join("\n"));
     assert.match(diagnosis.contractValidation, /fixture socket registry/);
 
+    const healthyMarker = JSON.parse(readFileSync(markerFile, "utf8"));
+    writeFileSync(markerFile, `${JSON.stringify({ ...healthyMarker, manifestDigest: "0".repeat(64) })}\n`);
+    const staleMarkerDiagnosis = await doctorFoundry({ harnessRoot, instanceRoot, manifest });
+    assert.match(staleMarkerDiagnosis.errors.join("\n"), /manifestDigest does not match/);
+    writeFileSync(markerFile, `${JSON.stringify(healthyMarker, null, 2)}\n`);
+
     const secondReceipt = await adoptFoundry({
       harnessRoot,
       instanceRoot,
@@ -224,6 +276,20 @@ async function main() {
       sourceOverrides,
     });
     assert.ok(secondReceipt.components.every((component) => component.action === "reused"));
+
+    const forge = manifest.components.find((component) => component.id === "F-001");
+    git(join(harnessRoot, forge.destination), [
+      "-c",
+      "user.name=Foundry Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "--allow-empty",
+      "-m",
+      "unreceipted drift",
+    ]);
+    const driftDiagnosis = await doctorFoundry({ harnessRoot, instanceRoot, manifest });
+    assert.match(driftDiagnosis.errors.join("\n"), /F-001: installed commit does not match adoption receipt/);
 
     const slack = manifest.components.find((component) => component.id === "M-002");
     git(join(harnessRoot, slack.destination), ["remote", "set-url", "origin", sourceOverrides["M-001"]]);
