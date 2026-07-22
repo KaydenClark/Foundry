@@ -11,7 +11,7 @@ live in stable specs.
 <!-- hot-specs:start -->
 | Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
 |---|---|---|---|---|---|
-| [S-001](specs/S-001-portable-foundry-harness/SPEC.md) | TK-002: Implement the control surface, manifest, roles-as-skills, Wiki/adoption templates, setup/doctor tools, and prove a cold scratch adoption plus Audit Engine. (in-progress) | codex | TK-001 | TK-001 recorded the verified ownership split and adoption design; no GPT_OS source moved or changed. | Drive TK-002 red/green and prove a cold scratch adoption, boundary gate, portability gate, doctor, and Audit Engine report. |
+| [S-001](specs/S-001-portable-foundry-harness/SPEC.md) | TK-003: Cut an existing deployment such as GPT_OS over to this harness. (blocked) | codex | TK-002, owner approval | TK-002 closed with proof. | Present the proven harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover. |
 <!-- hot-specs:end -->
 
 ## Owner Decisions

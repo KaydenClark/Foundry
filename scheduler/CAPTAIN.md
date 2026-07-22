@@ -25,6 +25,10 @@ providers fill higher levels.
   canonical task store.
 - Audit failures route a separate repair task; Audit Engine never repairs its
   target.
+- Before an audit, Captain performs the authenticated fetch and passes exactly
+  the remote name/URL, tracked ref, fetched SHA, and canonical fetch time. Audit
+  Engine remains network-free and rejects missing, stale, or mismatched
+  provenance.
 
 ## Runtime Boundary
 

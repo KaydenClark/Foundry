@@ -7,8 +7,8 @@
 **Updated:** 2026-07-21
 **Catalog description:** Design, build, and prove the first portable install-by-manifest Foundry harness without moving a live instance.
 **Blockers:** none
-**Latest event:** TK-001 recorded the verified ownership split and adoption design; no GPT_OS source moved or changed.
-**Next gate:** Drive TK-002 red/green and prove a cold scratch adoption, boundary gate, portability gate, doctor, and Audit Engine report.
+**Latest event:** TK-002 closed with proof.
+**Next gate:** Present the proven harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover.
 
 ## Outcome
 
@@ -51,25 +51,25 @@ makes GPT_OS one deployment instead of the product's only home.
 | Ticket | Slice | Status | Blockers | Proof |
 |---|---|---|---|---|
 | TK-001 | Inventory and classify the harness, installed components, instance data, archives, and GPT_OS root scraps; define the control surface and setup/audit flow. | done | none | `BLUEPRINT.md` contains the verified component table, exact scrap dispositions/entanglements, socket ownership boundary, and ten-step adoption flow; no GPT_OS file changed. |
-| TK-002 | Implement the control surface, manifest, roles-as-skills, Wiki/adoption templates, setup/doctor tools, and prove a cold scratch adoption plus Audit Engine. | in-progress | TK-001 | pending |
+| TK-002 | Implement the control surface, manifest, roles-as-skills, Wiki/adoption templates, setup/doctor tools, and prove a cold scratch adoption plus Audit Engine. | done | TK-001 | Remote cold clone at 96c0df0ec5bf02911e49e920bfc42960670696d5 installed all seven manifest repositories at recorded refs/SHAs; focused tests and spec doctor passed; Foundry doctor passed with truthful K-002/K-003 pending and K-004 unbound; Audit Engine reported healthy 7/7 with trusted fetch provenance; harness Git remained clean with no gitlinks. |
 | TK-003 | Cut an existing deployment such as GPT_OS over to this harness. | blocked | TK-002, owner approval | out of scope in this repository run |
 
 ## Acceptance Criteria
 
 - [x] Ownership and root-scrap split maps record every requested item and its
       entanglements without moving the live source.
-- [ ] All required control files, manifest, templates, skills, scheduler policy,
+- [x] All required control files, manifest, templates, skills, scheduler policy,
       reference, tools, and tests are tracked in the Foundry repository.
-- [ ] The manifest validator rejects unsafe paths, duplicate identities,
+- [x] The manifest validator rejects unsafe paths, duplicate identities,
       credential-bearing remotes, and instance binding data.
-- [ ] A cold scratch instance clones every component at its declared ref, seeds
+- [x] A cold scratch instance clones every component at its declared ref, seeds
       instance-owned Wiki/bindings/receipt data, and leaves the harness Git tree
       clean with installed repositories ignored.
-- [ ] Portability and boundary gates find no host-specific path, secret,
+- [x] Portability and boundary gates find no host-specific path, secret,
       stageable nested repo, gitlink, or registered worktree.
-- [ ] Foundry doctor passes and the installed Audit Engine produces a read-only
+- [x] Foundry doctor passes and the installed Audit Engine produces a read-only
       report against the cold harness checkout.
-- [ ] Work stops before GPT_OS live cutover and before `integration` to `main`.
+- [x] Work stops before GPT_OS live cutover and before `integration` to `main`.
 
 ## Testing Seams
 
@@ -92,10 +92,14 @@ makes GPT_OS one deployment instead of the product's only home.
 | Date | Ticket | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-07-21 | TK-001 | Verified the S-018 target, S-007/S-014 lineage, Forge control/adoption pattern, S-016 role target, seven component remotes/refs, eleven registered worktrees, empty CIC leftover, root scraps, and public empty Foundry remote; recorded the build map. | GPT_OS root was clean on `codex/s018-portable-foundry-harness`; component checkouts were clean; remote `integration`/`Integration` refs resolved; no source moved. Root doctor remains blocked by unrelated stale S-013 and `next` routes there, so the user-assigned S-018 lane is executed only in this separate repository. | Authored this spec and `BLUEPRINT.md` in `KaydenClark/Foundry`. | Implement and prove TK-002, then stop for owner approval of GPT_OS S-018/TK-003. |
+| 2026-07-21 | TK-002 | Ticket closed | Remote cold clone at 96c0df0ec5bf02911e49e920bfc42960670696d5 installed all seven manifest repositories at recorded refs/SHAs; focused tests and spec doctor passed; Foundry doctor passed with truthful K-002/K-003 pending and K-004 unbound; Audit Engine reported healthy 7/7 with trusted fetch provenance; harness Git remained clean with no gitlinks. | Updated the complete Foundry control surface, Blueprint split map, Runbook, README, ADOPTION/GENESIS, template Wiki, role skills, scheduler/Captain policy, and this stable spec. | GPT_OS live cutover S-018/TK-003 remains owner-gated; Forge-owned K-002/K-003 contract records and K-004 binding remain follow-up. |
 
 ## Completion Result
 
-Pending TK-002.
+TK-001/TK-002 are complete: the portable harness was designed, built, cold
+installed, diagnosed, and audited. TK-003 is intentionally blocked on owner
+approval; no GPT_OS source, worktree, runtime binding, or tracked boundary was
+moved or changed.
 
 ## Remaining Limitations Or Follow-Up Specs
 

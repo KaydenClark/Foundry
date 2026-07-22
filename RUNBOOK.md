@@ -50,16 +50,36 @@ origin/ref/clean state plus the active K-001 binding. K-002 and K-003 report
 
 ## Audit An Adopted Foundry
 
+Audit Engine performs no fetch or authentication. From the Foundry checkout,
+the trusted caller fetches the configured upstream and constructs the strict
+six-field provenance object from that fresh local tracking ref:
+
 ```bash
-INSTANCE_ROOT="/absolute/instance/root"
-node "$INSTANCE_ROOT/Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" \
-  --project "$INSTANCE_ROOT/Foundry" --json
+git fetch origin "$(git branch --show-current)"
+FETCH_PROVENANCE_JSON="$(node --input-type=module -e '
+  import { execFileSync } from "node:child_process";
+  const git = (...args) => execFileSync("git", args, { encoding: "utf8" }).trim();
+  console.log(JSON.stringify({
+    schemaVersion: "1.0",
+    remoteName: "origin",
+    remoteUrl: git("remote", "get-url", "origin"),
+    trackedRef: git("rev-parse", "--symbolic-full-name", "@{upstream}"),
+    sha: git("rev-parse", "@{upstream}"),
+    fetchedAt: new Date().toISOString()
+  }));
+')"
+node "Sockets/Audit Engine/bin/audit-engine.mjs" \
+  --project "$PWD" --fetch-provenance-json "$FETCH_PROVENANCE_JSON" --json
 ```
 
 Exit `0` means every required generic and project-owned check passed. Exit `1`
 means the Foundry identity is verified but attention remains. Exit `2` means the
 target identity or invocation could not be verified. Read the JSON; do not
 translate an attention result into health.
+
+The caller may use its existing non-interactive Git authentication, but the
+provenance contains no credential. A call without fresh matching provenance is
+expected to return `attention` and skip project validation.
 
 ## Test And Build
 

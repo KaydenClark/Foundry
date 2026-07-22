@@ -127,9 +127,11 @@ node "<instance-root>/Foundry/tools/test-foundry.mjs"
 node "<instance-root>/Foundry/tools/test-captain.mjs"
 node "<instance-root>/Foundry/tools/foundry.mjs" doctor \
   --instance-root "<instance-root>"
-node "<instance-root>/Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" \
-  --project "<instance-root>/Foundry" --json
 ```
+
+Then use the trusted-fetch provenance procedure in the Foundry `RUNBOOK.md` ->
+Audit An Adopted Foundry. Audit Engine intentionally returns `attention` and
+skips project validation when the caller omits that provenance.
 
 Confirm the Foundry checkout is clean, no nested repository or gitlink is
 stageable, contract validation is truthful, and pending socket contracts remain

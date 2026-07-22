@@ -31,16 +31,21 @@ The first run writes a sanitized receipt to
 
 ## Audit The Adoption
 
-Audit Engine is installed by the manifest. Run it against the Foundry checkout:
+Audit Engine is installed by the manifest. It stays network-free, so Captain or
+another trusted caller fetches the Foundry upstream first and passes the exact
+fetch provenance with the audit request. Follow `RUNBOOK.md` -> Audit An
+Adopted Foundry for the reproducible command.
+
+A direct diagnostic without provenance is still read-only, but deliberately
+returns `attention` instead of claiming upstream health:
 
 ```bash
-node "Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" \
-  --project "$PWD/Foundry" --json
+node "Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" --project "$PWD/Foundry" --json
 ```
 
-Audit Engine checks repository identity, controls, Git state, worktree safety,
-and the explicit `audit-engine.json` validations. It is read-only toward the
-Foundry checkout.
+With trusted provenance, Audit Engine checks repository identity, controls, Git
+state, upstream synchronization, worktree safety, and the explicit
+`audit-engine.json` validations. It is read-only toward the Foundry checkout.
 
 ## What Is Tracked
 

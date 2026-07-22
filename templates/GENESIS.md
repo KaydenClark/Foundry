@@ -80,9 +80,11 @@ node "$INSTANCE_ROOT/Foundry/tools/test-foundry.mjs"
 node "$INSTANCE_ROOT/Foundry/tools/test-captain.mjs"
 node "$INSTANCE_ROOT/Foundry/tools/foundry.mjs" doctor \
   --instance-root "$INSTANCE_ROOT"
-node "$INSTANCE_ROOT/Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" \
-  --project "$INSTANCE_ROOT/Foundry" --json
 ```
+
+From the Foundry checkout, follow `RUNBOOK.md` -> Audit An Adopted Foundry so
+the trusted caller fetches first and supplies strict provenance. A direct audit
+without it truthfully returns `attention` rather than upstream health.
 
 Inspect the JSON result. A private-upstream limitation or pending contract is
 attention, not success. Capture a <1-minute demo: the adoption receipt plus a
