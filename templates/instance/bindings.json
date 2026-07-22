@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0",
+  "instanceRoot": ".",
+  "harnessRoot": "{{HARNESS_ROOT}}",
+  "socketRegistry": {
+    "componentId": "F-001",
+    "path": "{{HARNESS_ROOT}}/Sockets/Forge/tools/socket-registry/registry.json"
+  },
+  "bindings": [
+    {
+      "socketId": "K-001",
+      "socket": "recall",
+      "componentId": "P-010",
+      "path": "{{HARNESS_ROOT}}/Modules/OpenBrain",
+      "access": "contract",
+      "entrypoint": "recall.query",
+      "status": "active"
+    },
+    {
+      "socketId": "K-002",
+      "socket": "messaging",
+      "componentId": "M-002",
+      "path": "{{HARNESS_ROOT}}/Modules/Slack",
+      "access": "contract",
+      "entrypoint": null,
+      "status": "pending-contract"
+    },
+    {
+      "socketId": "K-003",
+      "socket": "interface",
+      "componentId": "P-005",
+      "path": "{{HARNESS_ROOT}}/Modules/Command Information Center",
+      "access": "contract",
+      "entrypoint": null,
+      "status": "pending-contract"
+    },
+    {
+      "socketId": "K-004",
+      "socket": "finance",
+      "componentId": null,
+      "path": null,
+      "access": "contract",
+      "entrypoint": null,
+      "status": "unbound"
+    }
+  ]
+}

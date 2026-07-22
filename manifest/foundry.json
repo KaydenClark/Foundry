@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "servitor-foundry-install-manifest",
+  "socketRegistry": {
+    "componentId": "F-001",
+    "relativePath": "tools/socket-registry/registry.json",
+    "validator": ["node", "tools/socket-contract.mjs", "validate"]
+  },
+  "components": [
+    {
+      "id": "F-001",
+      "name": "Forge",
+      "family": "Sockets",
+      "remote": "https://github.com/KaydenClark/LLM_Workbench.git",
+      "ref": "integration",
+      "destination": "Sockets/Forge",
+      "status": "active",
+      "provides": ["workbench", "socket-contract-registry"]
+    },
+    {
+      "id": "F-002",
+      "name": "Audit Engine",
+      "family": "Sockets",
+      "remote": "https://github.com/KaydenClark/Audit-Engine.git",
+      "ref": "integration",
+      "destination": "Sockets/Audit Engine",
+      "status": "active",
+      "provides": ["read-only-audit"]
+    },
+    {
+      "id": "P-012",
+      "name": "Personal Intelligence Platform",
+      "family": "Sockets",
+      "remote": "https://github.com/KaydenClark/personal-intelligence-platform.git",
+      "ref": "integration",
+      "destination": "Sockets/Personal Intelligence Platform",
+      "status": "active",
+      "provides": ["module-integration-health"]
+    },
+    {
+      "id": "P-010",
+      "name": "OpenBrain",
+      "family": "Modules",
+      "remote": "https://github.com/KaydenClark/OpenBrain.git",
+      "ref": "integration",
+      "destination": "Modules/OpenBrain",
+      "status": "active",
+      "implements": ["K-001"]
+    },
+    {
+      "id": "P-005",
+      "name": "Command Information Center",
+      "family": "Modules",
+      "remote": "https://github.com/KaydenClark/command-information-center.git",
+      "ref": "Integration",
+      "destination": "Modules/Command Information Center",
+      "status": "active",
+      "implements": ["K-003"]
+    },
+    {
+      "id": "M-002",
+      "name": "Servitor Slack",
+      "family": "Modules",
+      "remote": "https://github.com/KaydenClark/Slack.git",
+      "ref": "integration",
+      "destination": "Modules/Slack",
+      "status": "active",
+      "implements": ["K-002"]
+    },
+    {
+      "id": "M-001",
+      "name": "Servitor Discord",
+      "family": "Modules",
+      "remote": "https://github.com/KaydenClark/Discord.git",
+      "ref": "integration",
+      "destination": "Modules/Discord",
+      "status": "paused",
+      "implements": ["K-002"]
+    }
+  ]
+}

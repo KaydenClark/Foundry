@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FND-01 — Portable Servitor Foundry</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #0b1020; color: #e8edf7; }
+    body { margin: 0 auto; max-width: 1100px; padding: 2rem; }
+    h1 { margin-bottom: .25rem; }
+    .note { color: #aab6ca; margin-bottom: 2rem; }
+    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+    .card { border: 1px solid #34415b; border-radius: .75rem; padding: 1rem; background: #121a2d; }
+    .harness { border-color: #5ad1a8; }
+    .installed { border-color: #7da7ff; }
+    .instance { border-color: #e2b45d; }
+    ul { padding-left: 1.2rem; }
+    code { color: #b9d4ff; }
+    .flow { text-align: center; margin: 1.5rem 0; color: #8da0be; }
+  </style>
+</head>
+<body>
+  <h1>Portable Servitor Foundry</h1>
+  <p class="note">FND-01 · conceptual ownership map · not a live deployment report</p>
+  <main class="grid">
+    <section class="card harness">
+      <h2>Foundry harness</h2>
+      <ul>
+        <li>control surface and stable specs</li>
+        <li>install manifest and adoption tools</li>
+        <li>Captain policy and role skills</li>
+        <li>instance and Wiki templates</li>
+      </ul>
+    </section>
+    <section class="card installed">
+      <h2>Installed by manifest</h2>
+      <ul>
+        <li><code>Sockets/Forge</code></li>
+        <li>Audit Engine and PIP</li>
+        <li>OpenBrain and CIC</li>
+        <li>Slack and Discord</li>
+      </ul>
+      <p>Every item is an ignored, independent Git clone.</p>
+    </section>
+    <section class="card instance">
+      <h2>Instance data</h2>
+      <ul>
+        <li>live Wiki and project rooms</li>
+        <li>bindings and workflow enrollment</li>
+        <li>secrets, runtime state, host services</li>
+      </ul>
+      <p>Lives beside the harness, never inside its Git history.</p>
+    </section>
+  </main>
+  <p class="flow">clone harness → validate manifest → install repositories → seed instance data → validate sockets → audit</p>
+</body>
+</html>

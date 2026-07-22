@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "statePath": ".local/foundry/captain-state.json",
+  "workflows": [
+    {
+      "id": "captain-daily",
+      "enabled": false,
+      "activation": "event-driven",
+      "roleSkill": "role-captain",
+      "policy": "{{HARNESS_ROOT}}/scheduler/AFK_POLICY.md"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Installed Sockets and Modules keep their own Git histories.
+/Sockets/
+/Modules/
+
+# Registered component worktrees and all deployment-local state are untracked.
+/.worktrees/
+/.local/
+/.foundry/
+
+# Secrets, runtime output, and editor/OS noise never belong in the harness.
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+node_modules/
+coverage/
+dist/

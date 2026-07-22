@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "validation": [
+    {
+      "id": "foundry-tests",
+      "argv": ["node", "tools/test-foundry.mjs"],
+      "timeoutMs": 120000
+    },
+    {
+      "id": "foundry-doctor",
+      "argv": ["node", "tools/foundry.mjs", "doctor"],
+      "timeoutMs": 120000
+    }
+  ]
+}
