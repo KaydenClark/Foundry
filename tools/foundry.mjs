@@ -298,6 +298,24 @@ function assertHarnessInsideInstance(harnessRoot, instanceRoot) {
   return rel.split(sep).join("/");
 }
 
+function assertNoSymbolicLinkSegments(root, relativePath, label = relativePath) {
+  if (!isSafeRelativePath(relativePath)) throw new Error(`${label} is not a safe relative path`);
+  let current = root;
+  for (const segment of relativePath.split("/")) {
+    current = join(current, segment);
+    let metadata;
+    try {
+      metadata = lstatSync(current);
+    } catch (error) {
+      if (error.code === "ENOENT") return;
+      throw error;
+    }
+    if (metadata.isSymbolicLink()) {
+      throw new Error(`${label} crosses a symbolic link at ${relative(root, current).split(sep).join("/")}`);
+    }
+  }
+}
+
 function harnessGitProvenance(harnessRoot) {
   const remote = git(harnessRoot, ["remote", "get-url", "origin"], { allowFailure: true });
   const ref = git(harnessRoot, ["branch", "--show-current"], { allowFailure: true });
@@ -310,6 +328,7 @@ function harnessGitProvenance(harnessRoot) {
 }
 
 function inspectComponentDestination({ component, harnessRoot, source }) {
+  assertNoSymbolicLinkSegments(harnessRoot, component.destination, `${component.id} destination`);
   const destination = join(harnessRoot, component.destination);
   if (!existsSync(destination)) return { action: "clone", destination };
   if (!statSync(destination).isDirectory()) {
@@ -406,6 +425,21 @@ export async function adoptFoundry({
   const markerFile = join(foundryState, "instance.json");
   const bindingFile = join(foundryState, "bindings.json");
   const workflowFile = join(foundryState, "workflows.json");
+  const instanceMaterializationPaths = [
+    ".foundry/instance.json",
+    ".foundry/bindings.json",
+    ".foundry/workflows.json",
+    ".local/foundry/adoption-receipt.json",
+    "Wiki/MEMORY.md",
+    "Wiki/SCHEMA.md",
+    "Wiki/Machine/Foundry Instance.md",
+  ];
+  const assertInstanceMaterializationPaths = () => {
+    for (const relativePath of instanceMaterializationPaths) {
+      assertNoSymbolicLinkSegments(instanceRoot, relativePath, `instance path ${relativePath}`);
+    }
+  };
+  assertInstanceMaterializationPaths();
   if (existsSync(markerFile)) {
     const existingMarker = readJson(markerFile);
     if (existingMarker.harnessRoot !== harnessRelative) {
@@ -460,6 +494,7 @@ export async function adoptFoundry({
       action: installed.action,
     });
   }
+  assertInstanceMaterializationPaths();
 
   const resolvedName = instanceName?.trim() || basename(instanceRoot);
   const replacements = {
@@ -638,6 +673,27 @@ export async function doctorFoundry({
     } catch (error) {
       errors.push(error.message);
     }
+    const instanceMaterializationPaths = [
+      ".foundry/instance.json",
+      ".foundry/bindings.json",
+      ".foundry/workflows.json",
+      ".local/foundry/adoption-receipt.json",
+      "Wiki/MEMORY.md",
+      "Wiki/SCHEMA.md",
+      "Wiki/Machine/Foundry Instance.md",
+    ];
+    const instancePathErrors = [];
+    for (const relativePath of instanceMaterializationPaths) {
+      try {
+        assertNoSymbolicLinkSegments(instanceRoot, relativePath, `instance path ${relativePath}`);
+      } catch (error) {
+        instancePathErrors.push(error.message);
+      }
+    }
+    if (instancePathErrors.length) {
+      errors.push(...instancePathErrors);
+      return { ok: false, errors, warnings, contractValidation };
+    }
     const markerFile = join(instanceRoot, ".foundry", "instance.json");
     const bindingFile = join(instanceRoot, ".foundry", "bindings.json");
     const workflowFile = join(instanceRoot, ".foundry", "workflows.json");
@@ -678,6 +734,12 @@ export async function doctorFoundry({
     }
 
     for (const component of manifest.components) {
+      try {
+        assertNoSymbolicLinkSegments(harnessRoot, component.destination, `${component.id} destination`);
+      } catch (error) {
+        errors.push(error.message);
+        continue;
+      }
       const destination = join(harnessRoot, component.destination);
       if (!existsSync(join(destination, ".git"))) {
         errors.push(`${component.id}: missing independent Git clone at ${component.destination}`);

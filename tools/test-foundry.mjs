@@ -180,6 +180,45 @@ async function main() {
       "instance-state failures are detected before the first component clone",
     );
     rmSync(markerFile);
+    rmSync(join(instanceRoot, ".foundry"), { recursive: true, force: true });
+
+    const escapedState = join(scratch, "escaped-state");
+    mkdirSync(escapedState);
+    symlinkSync(escapedState, join(instanceRoot, ".foundry"), "dir");
+    await assert.rejects(
+      () =>
+        adoptFoundry({
+          harnessRoot,
+          instanceRoot: instanceAlias,
+          instanceName: "Cold Fixture",
+          manifest,
+          sourceOverrides,
+        }),
+      /symbolic link/,
+    );
+    assert.equal(readdirSync(escapedState).length, 0, "instance state cannot escape through a symlink");
+    assert.equal(existsSync(join(harnessRoot, manifest.components[0].destination)), false);
+    rmSync(join(instanceRoot, ".foundry"));
+    rmSync(escapedState, { recursive: true });
+
+    const escapedComponents = join(scratch, "escaped-components");
+    mkdirSync(escapedComponents);
+    symlinkSync(escapedComponents, join(harnessRoot, "Modules"), "dir");
+    await assert.rejects(
+      () =>
+        adoptFoundry({
+          harnessRoot,
+          instanceRoot: instanceAlias,
+          instanceName: "Cold Fixture",
+          manifest,
+          sourceOverrides,
+        }),
+      /symbolic link/,
+    );
+    assert.equal(readdirSync(escapedComponents).length, 0, "components cannot escape through a symlink");
+    assert.equal(existsSync(join(harnessRoot, manifest.components[0].destination)), false);
+    rmSync(join(harnessRoot, "Modules"));
+    rmSync(escapedComponents, { recursive: true });
 
     const badDestination = join(harnessRoot, manifest.components.at(-1).destination);
     mkdirSync(badDestination, { recursive: true });
