@@ -9,6 +9,7 @@ import {
   readdirSync,
   rmSync,
   statSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -140,6 +141,11 @@ async function main() {
     mkdirSync(instanceRoot, { recursive: true });
     mkdirSync(sourcesRoot, { recursive: true });
     copyHarnessFixture(harnessRoot);
+
+    const harnessAlias = join(scratch, "harness-alias");
+    symlinkSync(harnessRoot, harnessAlias, "dir");
+    const aliasedCli = run("node", [join(harnessAlias, "tools", "foundry.mjs"), "validate-manifest"]);
+    assert.match(aliasedCli.stdout, /Foundry manifest valid/, "CLI runs through a symlinked parent path");
 
     const sourceOverrides = Object.fromEntries(
       manifest.components.map((component) => [

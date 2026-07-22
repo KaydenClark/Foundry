@@ -7,6 +7,7 @@ import {
   lstatSync,
   mkdirSync,
   readFileSync,
+  realpathSync,
   readdirSync,
   renameSync,
   statSync,
@@ -789,7 +790,7 @@ async function cli() {
   throw new Error(`unknown command: ${command}`);
 }
 
-if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+if (process.argv[1] && pathToFileURL(realpathSync(process.argv[1])).href === import.meta.url) {
   cli().catch((error) => {
     console.error(`error - ${error.message}`);
     process.exitCode = 1;
