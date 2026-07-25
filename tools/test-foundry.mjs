@@ -350,7 +350,7 @@ async function main() {
   const forbiddenPath = `${sep}Users${sep}${"kay" + "den"}`;
   const secretPattern = new RegExp(
     `(?:${["g", "h", "p", "_"].join("")}|${["github", "pat", "_"].join("_")}|` +
-      `${["s", "k", "-"].join("")}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
+      `\\b${["s", "k", "-"].join("")}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of walkFiles(repositoryRoot)) {
     const content = readFileSync(file, "utf8");

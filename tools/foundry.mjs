@@ -595,7 +595,7 @@ function portabilityErrors(harnessRoot) {
   const githubTokenPrefix = ["github", "pat", "_"].join("_");
   const apiKeyPrefix = ["s", "k", "-"].join("");
   const secretPattern = new RegExp(
-    `(?:${credentialPrefix}|${githubTokenPrefix}|${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
+    `(?:${credentialPrefix}|${githubTokenPrefix}|\\b${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of listRepositoryFiles(harnessRoot)) {
     let content;
