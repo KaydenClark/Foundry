@@ -4,7 +4,7 @@
 
 **Last reviewed:** 2026-07-15
 **Status:** active
-**Source root:** `/Users/kayden/GPT_OS/Audit Engine`
+**Source root:** `$INSTANCE_ROOT/Audit Engine`
 
 ## Product Map
 

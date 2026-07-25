@@ -80,7 +80,7 @@ then independently merge or deny its PR into `integration`.
 node tools/test-feedback-automation.mjs
 node tools/test-eval-runner.mjs
 python3 evals/tasks/task_b_path_safety/test_grade.py
-node tools/feedback-automation.mjs discover --projects-root /Users/kayden/GPT_OS/Projects
+node tools/feedback-automation.mjs discover --projects-root $INSTANCE_ROOT/Projects
 ```
 
 Then run the full suite from `RUNBOOK.md` and view both automation definitions.

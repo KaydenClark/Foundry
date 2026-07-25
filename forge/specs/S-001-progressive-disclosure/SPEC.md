@@ -24,7 +24,7 @@ history, and copied live Git state already drifted after PR #18 merged.
 
 ## Current Verified State
 
-- Local root and branch: `/Users/kayden/GPT_OS/workbench templates` on
+- Local root and branch: `$INSTANCE_ROOT/workbench templates` on
   `codex/guardrail-benchmark`, with the existing v2.2 guardrail work preserved.
 - Published `main` and `integration` are v2.1; local uncommitted docs say v2.2.
 - Pre-change guardrail audit: 70/100; outcome evidence remains 0/30.

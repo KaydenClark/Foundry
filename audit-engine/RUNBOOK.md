@@ -19,7 +19,7 @@ background processes are required for the first capability.
 Canonical source:
 
 ```text
-/Users/kayden/GPT_OS/Audit Engine
+$INSTANCE_ROOT/Audit Engine
 ```
 
 ## Install
@@ -155,7 +155,7 @@ work there; only Kayden authorizes `integration` to `main`.
 
 The control documents are stamped with their Workbench version. To upgrade:
 
-1. Compare the canonical `/Users/kayden/GPT_OS/Workbench Factory` templates
+1. Compare the canonical `$INSTANCE_ROOT/Workbench Factory` templates
    against this project's filled controls.
 2. Port changed rules without overwriting project-specific scope or evidence.
 3. Update version stamps.

@@ -1,6 +1,6 @@
 # LLM Workbench Harness Review, Mac Side - 2026-07-08
 
-**Scope reviewed:** All harness-touched repos in `/Users/kayden/GPT_OS/Projects` on this Mac: LLM_Workbench, Little_Local_World (+2 worktrees), Dungeon_Friends_Game (+1 worktree, +1 full backup copy), AI_Agents_Presentation, DnDWebApp, OpenBrain, eredent, Command Information Center. Companion to the PC review of the same date; finding IDs here (M1-M8) map to the PC review's F1-F7 where they confirm or extend it.
+**Scope reviewed:** All harness-touched repos in `$INSTANCE_ROOT/Projects` on this Mac: LLM_Workbench, Little_Local_World (+2 worktrees), Dungeon_Friends_Game (+1 worktree, +1 full backup copy), AI_Agents_Presentation, DnDWebApp, OpenBrain, eredent, Command Information Center. Companion to the PC review of the same date; finding IDs here (M1-M8) map to the PC review's F1-F7 where they confirm or extend it.
 
 **Assumptions and constraints stated up front:**
 - All reads were done through the sandbox mount. The sandbox cannot perform git writes in these mounts (`index.lock` / `maintenance.lock` unlink is blocked), which is itself finding M2. Nothing was modified.

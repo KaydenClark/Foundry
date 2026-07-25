@@ -14,7 +14,7 @@
 
 ## Outcome
 
-Captain and the Team resolve Audit Engine at `/Users/kayden/GPT_OS/Audit Engine`
+Captain and the Team resolve Audit Engine at `$INSTANCE_ROOT/Audit Engine`
 as a read-only GPT_OS system function backed by a private GitHub recovery remote.
 
 ## Why It Matters
@@ -26,7 +26,7 @@ point.
 ## Current Verified State
 
 - The original checkout is clean at
-  `/Users/kayden/GPT_OS/Projects/Audit Engine`.
+  `$INSTANCE_ROOT/Projects/Audit Engine`.
 - `KaydenClark/Audit-Engine` exists and is private.
 - `main`, `integration`, and the S-001 feature branch are published.
 - PR 1 merged the verified S-001 implementation into `integration`; `main`
@@ -107,7 +107,7 @@ git diff --check
 
 ## Completion Result
 
-Audit Engine is canonical at `/Users/kayden/GPT_OS/Audit Engine`, backed by the
+Audit Engine is canonical at `$INSTANCE_ROOT/Audit Engine`, backed by the
 private `KaydenClark/Audit-Engine` repository. Verified work is assembled on
 `integration`; `main` remains unchanged behind Kayden's owner gate. Root and
 Wiki routing point to the top-level checkout, and the obsolete duplicate was

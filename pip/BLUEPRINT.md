@@ -4,7 +4,7 @@
 
 **Last reviewed:** 2026-07-19
 **Status:** active  
-**Source root:** `/Users/kayden/GPT_OS/Foundry/Sockets/Personal Intelligence Platform`
+**Source root:** `$INSTANCE_ROOT/Foundry/Sockets/Personal Intelligence Platform`
 
 ## Spec Catalog
 
