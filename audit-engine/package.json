@@ -1,0 +1,16 @@
+{
+  "name": "audit-engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Read-only project audits for GPT_OS chat agents.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "audit": "node bin/audit-engine.mjs",
+    "check": "node --check src/index.mjs && node --check bin/audit-engine.mjs",
+    "test": "node --test",
+    "test:audit": "node --test test/audit-project.test.mjs"
+  }
+}

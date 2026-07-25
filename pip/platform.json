@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "repositories": {
+    "openbrain": {
+      "path": "../../Modules/OpenBrain",
+      "pathEnv": "OPENBRAIN_REPO_PATH",
+      "remote": "https://github.com/KaydenClark/OpenBrain.git",
+      "releaseBranch": "main",
+      "stagingBranch": "integration",
+      "controlFiles": ["AGENTS.md", "BLUEPRINT.md", "CLAUDE.md", "README.md", "RUNBOOK.md", "TASKBOARD.md"],
+      "contract": "contracts/query-wiki.openapi.json"
+    },
+    "cic": {
+      "path": "../../Modules/Command Information Center",
+      "pathEnv": "CIC_REPO_PATH",
+      "remote": "https://github.com/KaydenClark/command-information-center.git",
+      "releaseBranch": "main",
+      "stagingBranch": "Integration",
+      "controlFiles": ["AGENTS.md", "BLUEPRINT.md", "CLAUDE.md", "README.md", "RUNBOOK.md", "TASKBOARD.md"]
+    }
+  },
+  "health": {
+    "report": ".local/platform-health.json",
+    "maxAgeMinutes": 90
+  }
+}

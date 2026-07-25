@@ -1,0 +1,13 @@
+{
+  "name": "personal-intelligence-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "doctor": "node scripts/doctor.mjs",
+    "test": "node --test test/*.test.mjs",
+    "health": "node scripts/health.mjs",
+    "health:live": "node scripts/health.mjs --live"
+  }
+}
