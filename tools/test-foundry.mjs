@@ -71,7 +71,7 @@ function copyHarnessFixture(destination) {
       const rel = relative(repositoryRoot, source);
       if (!rel) return true;
       const first = rel.split(sep)[0];
-      return !["Modules", ".worktrees"].includes(first);
+      return ![".git", "Modules", ".worktrees"].includes(first);
     },
   });
   git(destination, ["init", "--initial-branch", "codex/test"]);
