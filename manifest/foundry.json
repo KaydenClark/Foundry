@@ -10,36 +10,46 @@
     {
       "id": "F-001",
       "name": "Forge",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/LLM_Workbench.git",
-      "ref": "integration",
-      "destination": "Sockets/Forge",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "forge",
       "status": "active",
-      "provides": ["workbench", "socket-contract-registry"]
+      "provides": ["workbench", "socket-contract-registry"],
+      "foldedFrom": "https://github.com/KaydenClark/LLM_Workbench.git"
     },
     {
       "id": "F-002",
-      "name": "Audit Engine",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/Audit-Engine.git",
-      "ref": "integration",
-      "destination": "Sockets/Audit Engine",
+      "name": "Assay",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "audit-engine",
       "status": "active",
-      "provides": ["read-only-audit"]
+      "provides": ["read-only-audit"],
+      "foldedFrom": "https://github.com/KaydenClark/Audit-Engine.git"
     },
     {
       "id": "P-012",
-      "name": "Personal Intelligence Platform",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/personal-intelligence-platform.git",
-      "ref": "integration",
-      "destination": "Sockets/Personal Intelligence Platform",
+      "name": "Ward",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "pip",
       "status": "active",
-      "provides": ["module-integration-health"]
+      "provides": ["module-integration-health"],
+      "foldedFrom": "https://github.com/KaydenClark/personal-intelligence-platform.git"
+    },
+    {
+      "id": "G-001",
+      "name": "Gatehouse",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "gatehouse",
+      "status": "planned",
+      "provides": ["containment-boundary", "job-order-assignment"]
     },
     {
       "id": "P-010",
       "name": "OpenBrain",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/OpenBrain.git",
       "ref": "integration",
@@ -50,6 +60,7 @@
     {
       "id": "P-005",
       "name": "Command Information Center",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/command-information-center.git",
       "ref": "Integration",
@@ -60,6 +71,7 @@
     {
       "id": "M-002",
       "name": "Servitor Slack",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/Slack.git",
       "ref": "integration",
@@ -70,6 +82,7 @@
     {
       "id": "M-001",
       "name": "Servitor Discord",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/Discord.git",
       "ref": "integration",
