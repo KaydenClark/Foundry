@@ -170,7 +170,26 @@ export function doctor(rootDir, options = {}) {
   }
   checkRender(root, 'BLUEPRINT.md', CATALOG_START, CATALOG_END, renderCatalog(specs), issues);
   checkRender(root, 'TASKBOARD.md', HOT_START, HOT_END, renderHotBoard(specs), issues);
+  checkRoomBrainReachable(root, issues);
   return issues;
+}
+
+// A room brain (`MEMORY.md`) that no control doc routes to is invisible to the
+// agents meant to use it. This happened twice: GPT_OS S-008/TK-003 added
+// MEMORY.md to OpenBrain and CIC without updating either room's own AGENTS.md
+// Documentation Ownership table or README.md control surface, and it went
+// unnoticed for weeks because every gate here validated spec lifecycle and
+// render drift while nothing checked reachability. Only assert when MEMORY.md
+// exists — rooms without a brain are not in violation.
+function checkRoomBrainReachable(root, issues) {
+  if (!fs.existsSync(path.join(root, 'MEMORY.md'))) return;
+  for (const control of ['AGENTS.md', 'README.md']) {
+    const controlPath = path.join(root, control);
+    if (!fs.existsSync(controlPath)) continue;
+    if (!fs.readFileSync(controlPath, 'utf8').includes('MEMORY.md')) {
+      issues.push(issue('orphaned-room-brain', `MEMORY.md exists but ${control} never references it`));
+    }
+  }
 }
 
 function loadSpecs(rootDir, options = {}) {

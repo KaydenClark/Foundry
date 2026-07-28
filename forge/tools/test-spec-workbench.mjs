@@ -152,6 +152,41 @@ try {
 
   fs.appendFileSync(path.join(root, 'specs/S-001-fixture/SPEC.md'), '\n[missing](../../missing.md)\n');
   assert.ok(doctor(root).some((issue) => issue.code === 'broken-link'));
+
+  // Orphaned room brain. A MEMORY.md added to a room by an outside pass (GPT_OS
+  // S-008/TK-003) sat unreferenced from that room's own AGENTS.md and README.md
+  // for weeks in both OpenBrain and CIC, because no gate checked it: doctor
+  // validated spec lifecycle and render drift but never that the room brain was
+  // reachable from the room's own docs. Every automated check stayed green.
+  // A room brain nothing routes to is invisible to the agents meant to use it.
+  assert.ok(
+    !doctor(root).some((issue) => issue.code === 'orphaned-room-brain'),
+    'no MEMORY.md yet, so the room-brain check must stay silent'
+  );
+
+  write('MEMORY.md', '# Fixture Memory\n\nRoom brain.\n');
+  write('AGENTS.md', '# Fixture Agents\n\n| Change type | Documentation to check |\n|---|---|\n| Agent rules | `AGENTS.md` |\n');
+  write('README.md', '# Fixture Readme\n\n- [`AGENTS.md`](AGENTS.md) - agent rules.\n');
+  assert.ok(
+    doctor(root).some((issue) => issue.code === 'orphaned-room-brain' && /AGENTS\.md/.test(issue.message)),
+    'MEMORY.md unreferenced from AGENTS.md must be reported'
+  );
+  assert.ok(
+    doctor(root).some((issue) => issue.code === 'orphaned-room-brain' && /README\.md/.test(issue.message)),
+    'MEMORY.md unreferenced from README.md must be reported'
+  );
+
+  write('AGENTS.md', '# Fixture Agents\n\n| Change type | Documentation to check |\n|---|---|\n| Durable room memory | `MEMORY.md` room brain |\n');
+  assert.ok(
+    doctor(root).some((issue) => issue.code === 'orphaned-room-brain' && /README\.md/.test(issue.message)),
+    'fixing only AGENTS.md must still report README.md'
+  );
+
+  write('README.md', '# Fixture Readme\n\n- [`MEMORY.md`](MEMORY.md) - the room brain.\n');
+  assert.ok(
+    !doctor(root).some((issue) => issue.code === 'orphaned-room-brain'),
+    'a MEMORY.md referenced from both docs must clear the check'
+  );
 } finally {
   fs.rmSync(root, { recursive: true, force: true });
 }
