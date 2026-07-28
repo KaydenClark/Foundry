@@ -286,6 +286,7 @@ contract. K-004 finance remains planned and unbound.
 | Spec | Description | Status |
 |---|---|---|
 | [S-001 - Portable Foundry Harness](specs/S-001-portable-foundry-harness/SPEC.md) | Design, build, and prove the first portable Foundry harness without moving a live instance. Its original all-install-by-manifest contract is superseded in part by the native-Hall model (2026-07-28 addendum below); evidence below is unmodified. | active |
+| [S-002 - Native-Hall / Installed-Module Composition Model](specs/S-002-native-hall-installed-module-model/SPEC.md) | Record the native-Hall / installed-Module composition model as a durable capability of this repository — what each tier means, why the fold happened, the manifest schema shape that already implements it, and acceptance criteria for landing the pending branch and for the Gatehouse's first real slice. | active |
 <!-- spec-catalog:end -->
 
 ## Design Decisions
