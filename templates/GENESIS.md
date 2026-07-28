@@ -56,7 +56,9 @@ instance-owned bindings/workflows, and writes a sanitized receipt. If a private
 clone fails, stop with the named component; do not switch to a token-bearing URL
 or add a secret file to the harness.
 
-Output: independent Sockets/Modules plus instance data outside Foundry Git.
+Output: independent installed Modules plus instance data outside Foundry Git.
+The Forge, the Assay, and the Ward arrived already, as native tracked source
+inside the Foundry clone itself.
 
 ## Phase 3 - Verify The Brain And Bindings
 
