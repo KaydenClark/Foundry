@@ -5,10 +5,10 @@
 **Priority:** 1
 **Owner:** codex
 **Updated:** 2026-07-21
-**Catalog description:** Design, build, and prove the first portable install-by-manifest Foundry harness without moving a live instance.
+**Catalog description:** Design, build, and prove the first portable Foundry harness without moving a live instance. Its original all-install-by-manifest contract is superseded in part by the native-Hall model (2026-07-28 addendum below); evidence below is unmodified.
 **Blockers:** none
-**Latest event:** Reviewed commit `20a63341018d681771ad3088dd3c6a2c5a81b92a` landed on `integration` and passed a fresh from-zero integration adoption/audit.
-**Next gate:** Present the proven harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover.
+**Latest event:** Superseded in part 2026-07-28: GPT_OS S-024 folded the Forge, the Assay, and the Ward into this repository as native Halls, and this repository scaffolded a fourth (the Gatehouse). This spec's original all-components-installed contract now governs Module-only adoption (OpenBrain, CIC, Slack, Discord); see Supersession. Prior event: reviewed commit `20a63341018d681771ad3088dd3c6a2c5a81b92a` landed on `integration` and passed a fresh from-zero integration adoption/audit under the pre-fold contract.
+**Next gate:** Present the proven Module-only harness for owner approval; do not begin the GPT_OS S-018/TK-003 cutover. Separately, decide whether the native-Hall fold needs its own superseding spec in this repository (see `WORKBENCH_FEEDBACK.md`).
 
 ## Outcome
 
@@ -116,4 +116,16 @@ moved or changed.
 
 - Refines GPT_OS S-007 and S-014.
 - Implements the build portion of GPT_OS S-018.
-- Superseded by: none.
+- **Superseded in part (2026-07-28):** its "every component — Forge, Audit
+  Engine, PIP, OpenBrain, CIC, Slack, Discord — is cloned by the install
+  manifest, none vendored" contract, for the three fundamental components
+  only (the Forge, the Assay, the Ward). GPT_OS S-024 decided they fold into
+  `KaydenClark/Foundry` as native tracked source instead. This spec's design
+  work, cold-adoption proof, and evidence log stand as performed for the
+  seven-component shape that existed at the time and are not rewritten; the
+  manifest and tooling described above have since been changed by the
+  native-Hall/installed-Module schema (root `BLUEPRINT.md` -> Native Halls
+  versus installed Modules). Module-only adoption (OpenBrain, CIC, Slack,
+  Discord) is unaffected and still governed by this spec's contract. No
+  formal superseding spec has been opened in this repository yet; see root
+  `WORKBENCH_FEEDBACK.md` for that open item.

@@ -5,5 +5,7 @@ Foundry. It describes ownership and installation boundaries, not a live
 deployment inventory or health report.
 
 The diagram deliberately uses relative locations and generic instance data.
-Installed Sockets and Modules remain independent Git repositories and are never
-vendored into the Foundry harness.
+The Forge, the Assay, and the Ward are the Foundry's native Halls — tracked
+source inside this repository, not installed. Modules (OpenBrain, CIC, Slack,
+Discord) remain independent Git repositories, installed by the manifest, and
+are never vendored into the Foundry harness.

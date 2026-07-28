@@ -177,6 +177,19 @@ function findInstanceOnlyKeys(value, location = "manifest") {
   return errors;
 }
 
+const VALID_TIERS = new Set(["native-hall", "installed-module"]);
+const TIER_FAMILY = { "native-hall": "Halls", "installed-module": "Modules" };
+
+// A native Hall (the Forge, the Assay, the Ward, the Gatehouse) is tracked
+// source inside this very repository: it arrives with `git clone` of the
+// Foundry itself and carries no remote, ref, or install destination. An
+// installed Module (OpenBrain, CIC, Slack, Discord) is optional and remains a
+// separately owned repository the adoption manifest clones on request. See
+// S-024 and root LEXICON.md "Hall" / "Foundry Module".
+export function componentLocation(component) {
+  return component?.tier === "native-hall" ? component?.path : component?.destination;
+}
+
 export function validateManifest(manifest) {
   const errors = [];
   if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
@@ -190,15 +203,15 @@ export function validateManifest(manifest) {
     errors.push("components must be a non-empty array");
   } else {
     const ids = new Set();
-    const destinations = new Set();
+    const locations = new Set();
     for (const [index, component] of manifest.components.entries()) {
       const prefix = `components[${index}]`;
       if (!component || typeof component !== "object" || Array.isArray(component)) {
         errors.push(`${prefix}: component must be an object`);
         continue;
       }
-      if (!/^(?:F|P|M)-\d{3}$/.test(component.id ?? "")) {
-        errors.push(`${prefix}.id must match F-###, P-###, or M-###`);
+      if (!/^(?:F|P|M|G)-\d{3}$/.test(component.id ?? "")) {
+        errors.push(`${prefix}.id must match F-###, P-###, M-###, or G-###`);
       } else if (ids.has(component.id)) {
         errors.push(`${prefix}: duplicate component id '${component.id}'`);
       } else {
@@ -207,34 +220,67 @@ export function validateManifest(manifest) {
       if (typeof component.name !== "string" || !component.name.trim()) {
         errors.push(`${prefix}.name must be a non-empty string`);
       }
-      if (!["Sockets", "Modules"].includes(component.family)) {
-        errors.push(`${prefix}.family must be Sockets or Modules`);
+      if (!["active", "paused", "planned"].includes(component.status)) {
+        errors.push(`${prefix}.status must be active, paused, or planned`);
       }
-      for (const remoteError of remoteErrors(component.remote)) {
-        errors.push(`${prefix}.remote ${remoteError}`);
+
+      if (!VALID_TIERS.has(component.tier)) {
+        errors.push(`${prefix}.tier must be native-hall or installed-module`);
+        continue;
       }
-      if (
-        typeof component.ref !== "string" ||
-        !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(component.ref) ||
-        component.ref.includes("..") ||
-        component.ref.endsWith("/")
-      ) {
-        errors.push(`${prefix}.ref must be a safe explicit Git branch name`);
+      const expectedFamily = TIER_FAMILY[component.tier];
+      if (component.family !== expectedFamily) {
+        errors.push(`${prefix}.family must be '${expectedFamily}' for tier '${component.tier}'`);
       }
-      if (!isSafeRelativePath(component.destination)) {
-        errors.push(`${prefix}.destination must be a safe relative path`);
-      } else {
-        if (component.family && !component.destination.startsWith(`${component.family}/`)) {
-          errors.push(`${prefix}.destination must live under ${component.family}/`);
+
+      if (component.tier === "native-hall") {
+        if ("remote" in component) errors.push(`${prefix}: native Hall components must not declare a remote`);
+        if ("ref" in component) errors.push(`${prefix}: native Hall components must not declare a ref`);
+        if ("destination" in component) {
+          errors.push(`${prefix}: native Hall components must not declare a destination`);
         }
-        if (destinations.has(component.destination)) {
-          errors.push(`${prefix}: duplicate destination '${component.destination}'`);
+        if (!isSafeRelativePath(component.path)) {
+          errors.push(`${prefix}.path must be a safe relative path`);
+        } else if (component.path.startsWith("Modules/")) {
+          errors.push(`${prefix}.path must not live under Modules/`);
+        } else if (locations.has(component.path)) {
+          errors.push(`${prefix}: duplicate location '${component.path}'`);
         } else {
-          destinations.add(component.destination);
+          locations.add(component.path);
         }
-      }
-      if (!["active", "paused"].includes(component.status)) {
-        errors.push(`${prefix}.status must be active or paused`);
+        if ("foldedFrom" in component) {
+          for (const foldedFromError of remoteErrors(component.foldedFrom)) {
+            errors.push(`${prefix}.foldedFrom ${foldedFromError}`);
+          }
+        }
+      } else {
+        if ("path" in component) errors.push(`${prefix}: installed Module components must not declare a path`);
+        if ("foldedFrom" in component) {
+          errors.push(`${prefix}: installed Module components must not declare foldedFrom`);
+        }
+        for (const remoteError of remoteErrors(component.remote)) {
+          errors.push(`${prefix}.remote ${remoteError}`);
+        }
+        if (
+          typeof component.ref !== "string" ||
+          !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(component.ref) ||
+          component.ref.includes("..") ||
+          component.ref.endsWith("/")
+        ) {
+          errors.push(`${prefix}.ref must be a safe explicit Git branch name`);
+        }
+        if (!isSafeRelativePath(component.destination)) {
+          errors.push(`${prefix}.destination must be a safe relative path`);
+        } else {
+          if (!component.destination.startsWith(`${expectedFamily}/`)) {
+            errors.push(`${prefix}.destination must live under ${expectedFamily}/`);
+          }
+          if (locations.has(component.destination)) {
+            errors.push(`${prefix}: duplicate location '${component.destination}'`);
+          } else {
+            locations.add(component.destination);
+          }
+        }
       }
     }
   }
@@ -355,6 +401,49 @@ function inspectComponentDestination({ component, harnessRoot, source }) {
   return { action: "reuse", destination };
 }
 
+// The common baseline every native Hall in this repo actually carries today.
+// LEXICON.md is deliberately excluded: `pip/` (the Ward) predates this check
+// and has no LEXICON.md of its own (WORKBENCH_FEEDBACK.md records the gap).
+// New Halls should still ship one — see `gatehouse/LEXICON.md` — but the
+// doctor gate only enforces what every existing Hall actually has, so it
+// never fails on a pre-existing, honestly-recorded gap it did not create.
+const NATIVE_HALL_CONTROL_DOCS = [
+  "AGENTS.md",
+  "BLUEPRINT.md",
+  "RUNBOOK.md",
+  "TASKBOARD.md",
+  "CLAUDE.md",
+  "README.md",
+];
+
+function inspectNativeHall({ component, harnessRoot }) {
+  assertNoSymbolicLinkSegments(harnessRoot, component.path, `${component.id} path`);
+  const location = join(harnessRoot, component.path);
+  if (!existsSync(location) || !statSync(location).isDirectory()) {
+    throw new Error(`${component.id} native Hall is missing at ${component.path}`);
+  }
+  const missing = NATIVE_HALL_CONTROL_DOCS.filter((doc) => !existsSync(join(location, doc)));
+  if (missing.length) {
+    throw new Error(
+      `${component.id} native Hall at ${component.path} is missing control docs: ${missing.join(", ")}`,
+    );
+  }
+  return { action: "native", destination: location };
+}
+
+function nativeHallErrors(harnessRoot, manifest) {
+  const errors = [];
+  for (const component of manifest.components) {
+    if (component.tier !== "native-hall") continue;
+    try {
+      inspectNativeHall({ component, harnessRoot });
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  return errors;
+}
+
 function installComponent({ component, harnessRoot, source }) {
   const inspection = inspectComponentDestination({ component, harnessRoot, source });
   if (inspection.action === "clone") {
@@ -461,6 +550,9 @@ export async function adoptFoundry({
     ? sha256File(manifestPath)
     : sha256(`${JSON.stringify(manifest)}\n`);
   const inspectedComponents = manifest.components.map((component) => {
+    if (component.tier === "native-hall") {
+      return { component, source: null, inspection: inspectNativeHall({ component, harnessRoot }) };
+    }
     const source = sourceOverrides[component.id] ?? component.remote;
     const inspection = inspectComponentDestination({ component, harnessRoot, source });
     return { component, source, inspection };
@@ -468,9 +560,10 @@ export async function adoptFoundry({
   const plan = inspectedComponents.map(({ component, inspection }) => ({
     id: component.id,
     name: component.name,
-    destination: component.destination,
-    remote: component.remote,
-    ref: component.ref,
+    tier: component.tier,
+    location: componentLocation(component),
+    remote: component.remote ?? null,
+    ref: component.ref ?? null,
     action: inspection.action,
   }));
   if (dryRun) {
@@ -478,13 +571,25 @@ export async function adoptFoundry({
   }
 
   const componentResults = [];
-  for (const { component, source } of inspectedComponents) {
+  for (const { component, source, inspection } of inspectedComponents) {
+    if (component.tier === "native-hall") {
+      componentResults.push({
+        id: component.id,
+        name: component.name,
+        family: component.family,
+        tier: component.tier,
+        path: component.path,
+        action: inspection.action,
+      });
+      continue;
+    }
     const installed = installComponent({ component, harnessRoot, source });
     const commit = git(installed.destination, ["rev-parse", "HEAD"]).stdout.trim();
     componentResults.push({
       id: component.id,
       name: component.name,
       family: component.family,
+      tier: component.tier,
       destination: component.destination,
       remote: component.remote,
       source,
@@ -595,7 +700,7 @@ function portabilityErrors(harnessRoot) {
   const githubTokenPrefix = ["github", "pat", "_"].join("_");
   const apiKeyPrefix = ["s", "k", "-"].join("");
   const secretPattern = new RegExp(
-    `(?:${credentialPrefix}|${githubTokenPrefix}|${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
+    `(?:${credentialPrefix}|${githubTokenPrefix}|\\b${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of listRepositoryFiles(harnessRoot)) {
     let content;
@@ -614,17 +719,20 @@ function portabilityErrors(harnessRoot) {
 function boundaryErrors(harnessRoot, manifest) {
   const errors = [];
   const ignore = readFileSync(join(harnessRoot, ".gitignore"), "utf8");
-  for (const required of ["/Sockets/", "/Modules/", "/.worktrees/", "/.local/", "/.foundry/"]) {
+  for (const required of ["/Modules/", "/.worktrees/", "/.local/", "/.foundry/"]) {
     if (!ignore.split(/\r?\n/).includes(required)) errors.push(`.gitignore missing ${required}`);
   }
 
+  const installedDestinations = manifest.components
+    .filter((component) => component.tier === "installed-module")
+    .map((component) => component.destination);
   const staged = git(harnessRoot, ["ls-files", "--stage"], { allowFailure: true });
   if (staged.status === 0) {
     for (const line of staged.stdout.split(/\r?\n/).filter(Boolean)) {
       const [metadata, trackedPath = ""] = line.split("\t", 2);
       const mode = metadata.split(" ")[0];
       if (mode === "160000") errors.push(`${trackedPath}: gitlink is forbidden`);
-      if (manifest.components.some((component) => trackedPath.startsWith(`${component.destination}/`))) {
+      if (installedDestinations.some((destination) => trackedPath.startsWith(`${destination}/`))) {
         errors.push(`${trackedPath}: installed component content is tracked`);
       }
       if (trackedPath.startsWith(".worktrees/")) errors.push(`${trackedPath}: worktree content is tracked`);
@@ -665,6 +773,11 @@ export async function doctorFoundry({
     errors.push(...boundaryErrors(harnessRoot, manifest));
   }
   errors.push(...portabilityErrors(harnessRoot));
+  // Native Halls arrive with the harness clone itself, so their completeness
+  // (present, real directory, all seven control docs) is a harness-only check:
+  // a cold clone of the Foundry alone must yield a working Forge, Assay, Ward,
+  // and Gatehouse with zero additional clones (S-024 acceptance criterion).
+  errors.push(...nativeHallErrors(harnessRoot, manifest));
 
   if (instanceRoot) {
     let harnessRelative;
@@ -734,6 +847,7 @@ export async function doctorFoundry({
     }
 
     for (const component of manifest.components) {
+      if (component.tier === "native-hall") continue; // verified harness-only, above.
       try {
         assertNoSymbolicLinkSegments(harnessRoot, component.destination, `${component.id} destination`);
       } catch (error) {
@@ -786,7 +900,7 @@ export async function doctorFoundry({
         const registryOwner = manifest.components.find(
           (component) => component.id === manifest.socketRegistry.componentId,
         );
-        const registryRoot = registryOwner ? join(harnessRoot, registryOwner.destination) : null;
+        const registryRoot = registryOwner ? join(harnessRoot, componentLocation(registryOwner)) : null;
         if (registryRoot && existsSync(registryRoot)) {
           const [command, ...args] = manifest.socketRegistry.validator;
           const validation = run(command, args, { cwd: registryRoot, allowFailure: true });

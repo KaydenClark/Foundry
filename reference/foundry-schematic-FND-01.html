@@ -31,16 +31,22 @@
         <li>Captain policy and role skills</li>
         <li>instance and Wiki templates</li>
       </ul>
+      <p>Native Halls — tracked source, arrive with the clone:</p>
+      <ul>
+        <li><code>forge/</code> (the Forge)</li>
+        <li><code>audit-engine/</code> (the Assay)</li>
+        <li><code>pip/</code> (the Ward)</li>
+        <li><code>gatehouse/</code> (the Gatehouse, scaffold)</li>
+      </ul>
     </section>
     <section class="card installed">
       <h2>Installed by manifest</h2>
       <ul>
-        <li><code>Sockets/Forge</code></li>
-        <li>Audit Engine and PIP</li>
         <li>OpenBrain and CIC</li>
         <li>Slack and Discord</li>
       </ul>
-      <p>Every item is an ignored, independent Git clone.</p>
+      <p>Every Module is an ignored, independent Git clone. Only Modules are
+      installed this way; the four Halls above are not.</p>
     </section>
     <section class="card instance">
       <h2>Instance data</h2>
@@ -52,6 +58,6 @@
       <p>Lives beside the harness, never inside its Git history.</p>
     </section>
   </main>
-  <p class="flow">clone harness → validate manifest → install repositories → seed instance data → validate sockets → audit</p>
+  <p class="flow">clone harness (Halls included) → validate manifest → install Modules → seed instance data → validate sockets → audit</p>
 </body>
 </html>

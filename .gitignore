@@ -1,5 +1,6 @@
-# Installed Sockets and Modules keep their own Git histories.
-/Sockets/
+# Installed Modules keep their own Git histories. The four native Halls
+# (forge/, audit-engine/, pip/, gatehouse/) are ordinary tracked source and
+# are deliberately not listed here.
 /Modules/
 
 # Registered component worktrees and all deployment-local state are untracked.

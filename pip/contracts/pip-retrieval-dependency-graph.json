@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-07-21",
+  "description": "Dependency graph for PIP S-001 (this spec) and the OpenBrain/PIP tickets it depends on or unblocks. Statuses are a snapshot recorded from each owning spec at the time TK-001 closed; each node's owning SPEC.md remains authoritative if they later disagree.",
+  "nodes": [
+    { "id": "pip:S-001:TK-001", "repo": "personal-intelligence-platform", "title": "Define the PIP-to-OpenBrain transport, auth, provenance/freshness propagation, client identity, and disable/recovery contract.", "status": "done" },
+    { "id": "pip:S-001:TK-002", "repo": "personal-intelligence-platform", "title": "Implement one authenticated, read-only adapter round trip against a fake OpenBrain provider.", "status": "blocked" },
+    { "id": "pip:S-001:TK-003", "repo": "personal-intelligence-platform", "title": "Prove two approved client fixtures plus disable/recovery behavior.", "status": "blocked" },
+    { "id": "openbrain:S-002", "repo": "OpenBrain", "title": "Provenance-safe multi-source ingestion (source taxonomy).", "status": "active" },
+    { "id": "openbrain:S-004", "repo": "OpenBrain", "title": "Source freshness and operational readiness (freshness payload).", "status": "active" },
+    { "id": "openbrain:S-003:TK-003", "repo": "OpenBrain", "title": "Add source filters plus provenance/freshness response fields to implementation and OpenAPI contract.", "status": "blocked" },
+    { "id": "openbrain:S-003:TK-004", "repo": "OpenBrain", "title": "Re-probe the deployed contract for unauthorized, invalid, empty, and successful requests.", "status": "blocked" },
+    { "id": "openbrain:S-005:TK-001", "repo": "OpenBrain", "title": "Record the owner-approved adapter repository, transport, auth, and disable boundary.", "status": "done" },
+    { "id": "openbrain:S-005:TK-002", "repo": "OpenBrain", "title": "Implement one read-only retrieval round trip through the chosen adapter.", "status": "blocked" },
+    { "id": "openbrain:S-005:TK-003", "repo": "OpenBrain", "title": "Prove two approved clients and operational disable/recovery behavior.", "status": "blocked" }
+  ],
+  "edges": [
+    { "from": "pip:S-001:TK-002", "to": "pip:S-001:TK-001", "type": "depends-on" },
+    { "from": "pip:S-001:TK-002", "to": "openbrain:S-003:TK-003", "type": "depends-on" },
+    { "from": "pip:S-001:TK-003", "to": "pip:S-001:TK-002", "type": "depends-on" },
+    { "from": "openbrain:S-003:TK-003", "to": "openbrain:S-002", "type": "depends-on" },
+    { "from": "openbrain:S-003:TK-003", "to": "openbrain:S-004", "type": "depends-on" },
+    { "from": "openbrain:S-003:TK-004", "to": "openbrain:S-003:TK-003", "type": "depends-on" },
+    { "from": "openbrain:S-005:TK-002", "to": "pip:S-001:TK-001", "type": "depends-on" },
+    { "from": "openbrain:S-005:TK-002", "to": "openbrain:S-003:TK-003", "type": "depends-on" },
+    { "from": "openbrain:S-005:TK-003", "to": "openbrain:S-005:TK-002", "type": "depends-on" }
+  ]
+}

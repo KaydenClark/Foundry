@@ -43,24 +43,14 @@ function git(cwd, args, options = {}) {
   return run("git", args, { ...options, cwd });
 }
 
+// Only installed Modules are cloned by the manifest, so only they need a
+// fixture source repository. Native Halls (F-001/F-002/P-012/G-001) travel
+// with the harness fixture copy itself — see copyHarnessFixture.
 function createSourceRepository(root, component) {
   const source = join(root, component.id.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-"));
   mkdirSync(source, { recursive: true });
   git(source, ["init", "--initial-branch", component.ref]);
   writeFileSync(join(source, "COMPONENT.txt"), `${component.id}\n`, "utf8");
-  if (component.id === "F-001") {
-    mkdirSync(join(source, "tools", "socket-registry"), { recursive: true });
-    writeFileSync(
-      join(source, "tools", "socket-contract.mjs"),
-      "if (!['validate', 'check-binding'].includes(process.argv[2])) process.exit(2); console.log('ok - fixture socket registry');\n",
-      "utf8",
-    );
-    writeFileSync(
-      join(source, "tools", "socket-registry", "registry.json"),
-      JSON.stringify({ schemaVersion: "1.0", sockets: { "K-001": { socket: "recall" } } }, null, 2) + "\n",
-      "utf8",
-    );
-  }
   git(source, ["add", "."]);
   git(source, [
     "-c",
@@ -81,7 +71,7 @@ function copyHarnessFixture(destination) {
       const rel = relative(repositoryRoot, source);
       if (!rel) return true;
       const first = rel.split(sep)[0];
-      return ![".git", "Sockets", "Modules", ".worktrees"].includes(first);
+      return ![".git", "Modules", ".worktrees"].includes(first);
     },
   });
   git(destination, ["init", "--initial-branch", "codex/test"]);
@@ -97,7 +87,7 @@ function copyHarnessFixture(destination) {
   ]);
 }
 
-function walkFiles(root, ignored = new Set([".git", "Sockets", "Modules", ".worktrees"])) {
+function walkFiles(root, ignored = new Set([".git", "Modules", ".worktrees"])) {
   const files = [];
   for (const name of readdirSync(root)) {
     if (ignored.has(name)) continue;
@@ -108,25 +98,72 @@ function walkFiles(root, ignored = new Set([".git", "Sockets", "Modules", ".work
   return files;
 }
 
+function installedComponent(manifest, id) {
+  const component = manifest.components.find((entry) => entry.id === id);
+  assert.ok(component, `fixture expects installed-module component ${id}`);
+  return component;
+}
+
 async function main() {
   const manifest = loadManifest(join(repositoryRoot, "manifest", "foundry.json"));
   assert.deepEqual(validateManifest(manifest), [], "production manifest is valid");
-  assert.equal(manifest.components.length, 7, "all seven component repositories are declared");
+  assert.equal(manifest.components.length, 8, "four native Halls plus four installed Modules are declared");
+
+  const nativeComponents = manifest.components.filter((component) => component.tier === "native-hall");
+  const installedComponents = manifest.components.filter((component) => component.tier === "installed-module");
+  assert.equal(nativeComponents.length, 4, "the Forge, the Assay, the Ward, and the Gatehouse are native Halls");
+  assert.equal(installedComponents.length, 4, "OpenBrain, CIC, Slack, and Discord remain installed Modules");
+
+  // TK-003 red/green: a native Hall validates with no remote; an installed
+  // Module fails without one. Both directions, per S-024 Testing Seams.
+  assert.ok(
+    nativeComponents.every((component) => !("remote" in component)),
+    "native Halls in the production manifest carry no remote",
+  );
+  const missingModuleRemote = structuredClone(manifest);
+  delete installedComponent(missingModuleRemote, "P-010").remote;
+  assert.match(
+    validateManifest(missingModuleRemote).join("\n"),
+    /remote must be a non-empty string/,
+    "an installed Module missing remote fails validation",
+  );
+  const nativeWithRemote = structuredClone(manifest);
+  nativeWithRemote.components.find((component) => component.id === "F-001").remote =
+    "https://github.com/example/example.git";
+  assert.match(
+    validateManifest(nativeWithRemote).join("\n"),
+    /native Hall components must not declare a remote/,
+    "a native Hall declaring a remote fails validation",
+  );
+  const installedWithPath = structuredClone(manifest);
+  installedComponent(installedWithPath, "P-010").path = "somewhere";
+  assert.match(
+    validateManifest(installedWithPath).join("\n"),
+    /installed Module components must not declare a path/,
+    "an installed Module declaring a native-Hall path fails validation",
+  );
+  const nativeMissingPath = structuredClone(manifest);
+  delete nativeMissingPath.components.find((component) => component.id === "G-001").path;
+  assert.match(
+    validateManifest(nativeMissingPath).join("\n"),
+    /path must be a safe relative path/,
+    "a native Hall missing path fails validation",
+  );
 
   const duplicate = structuredClone(manifest);
   duplicate.components[1].id = duplicate.components[0].id;
   assert.match(validateManifest(duplicate).join("\n"), /duplicate component id/);
 
   const traversal = structuredClone(manifest);
-  traversal.components[0].destination = "../outside";
+  installedComponent(traversal, "P-010").destination = "../outside";
   assert.match(validateManifest(traversal).join("\n"), /safe relative path/);
 
   const absolute = structuredClone(manifest);
-  absolute.components[0].destination = resolve(tmpdir(), "outside");
+  installedComponent(absolute, "P-010").destination = resolve(tmpdir(), "outside");
   assert.match(validateManifest(absolute).join("\n"), /safe relative path/);
 
   const credentialRemote = structuredClone(manifest);
-  credentialRemote.components[0].remote = "https://user:token@example.invalid/repository.git";
+  installedComponent(credentialRemote, "P-010").remote = "https://user:token@example.invalid/repository.git";
   assert.match(validateManifest(credentialRemote).join("\n"), /must not contain credentials/);
 
   const leakedBinding = structuredClone(manifest);
@@ -150,11 +187,11 @@ async function main() {
     assert.match(aliasedCli.stdout, /Foundry manifest valid/, "CLI runs through a symlinked parent path");
 
     const sourceOverrides = Object.fromEntries(
-      manifest.components.map((component) => [
-        component.id,
-        createSourceRepository(sourcesRoot, component),
-      ]),
+      installedComponents.map((component) => [component.id, createSourceRepository(sourcesRoot, component)]),
     );
+
+    const firstInstalled = installedComponents[0];
+    const lastInstalled = installedComponents.at(-1);
 
     const markerFile = join(instanceRoot, ".foundry", "instance.json");
     mkdirSync(dirname(markerFile), { recursive: true });
@@ -175,9 +212,9 @@ async function main() {
       /instance marker points at/,
     );
     assert.equal(
-      existsSync(join(harnessRoot, manifest.components[0].destination)),
+      existsSync(join(harnessRoot, firstInstalled.destination)),
       false,
-      "instance-state failures are detected before the first component clone",
+      "instance-state failures are detected before the first Module clone",
     );
     rmSync(markerFile);
     rmSync(join(instanceRoot, ".foundry"), { recursive: true, force: true });
@@ -197,7 +234,7 @@ async function main() {
       /symbolic link/,
     );
     assert.equal(readdirSync(escapedState).length, 0, "instance state cannot escape through a symlink");
-    assert.equal(existsSync(join(harnessRoot, manifest.components[0].destination)), false);
+    assert.equal(existsSync(join(harnessRoot, firstInstalled.destination)), false);
     rmSync(join(instanceRoot, ".foundry"));
     rmSync(escapedState, { recursive: true });
 
@@ -216,11 +253,11 @@ async function main() {
       /symbolic link/,
     );
     assert.equal(readdirSync(escapedComponents).length, 0, "components cannot escape through a symlink");
-    assert.equal(existsSync(join(harnessRoot, manifest.components[0].destination)), false);
+    assert.equal(existsSync(join(harnessRoot, firstInstalled.destination)), false);
     rmSync(join(harnessRoot, "Modules"));
     rmSync(escapedComponents, { recursive: true });
 
-    const badDestination = join(harnessRoot, manifest.components.at(-1).destination);
+    const badDestination = join(harnessRoot, lastInstalled.destination);
     mkdirSync(badDestination, { recursive: true });
     writeFileSync(join(badDestination, ".git"), "gitdir: missing\n", "utf8");
     await assert.rejects(
@@ -235,9 +272,9 @@ async function main() {
       /independent Git repository/,
     );
     assert.equal(
-      existsSync(join(harnessRoot, manifest.components[0].destination)),
+      existsSync(join(harnessRoot, firstInstalled.destination)),
       false,
-      "component mismatches are detected before the first component clone",
+      "component mismatches are detected before the first Module clone",
     );
     rmSync(join(harnessRoot, "Modules"), { recursive: true, force: true });
 
@@ -249,8 +286,13 @@ async function main() {
       sourceOverrides,
     });
 
-    assert.equal(receipt.components.length, 7);
-    assert.ok(receipt.components.every((component) => /^[0-9a-f]{40}$/.test(component.commit)));
+    assert.equal(receipt.components.length, 8, "receipt records all four native Halls and four installed Modules");
+    const receiptNative = receipt.components.filter((component) => component.tier === "native-hall");
+    const receiptInstalled = receipt.components.filter((component) => component.tier === "installed-module");
+    assert.equal(receiptNative.length, 4);
+    assert.ok(receiptNative.every((component) => component.action === "native" && component.path));
+    assert.equal(receiptInstalled.length, 4);
+    assert.ok(receiptInstalled.every((component) => /^[0-9a-f]{40}$/.test(component.commit)));
     assert.equal(receipt.manifest.schemaVersion, "1.0");
     assert.ok(existsSync(join(instanceRoot, "Wiki", "MEMORY.md")));
     assert.ok(existsSync(join(instanceRoot, ".foundry", "bindings.json")));
@@ -277,19 +319,34 @@ async function main() {
     assert.equal(workflows.workflows[0].enabled, false);
     assert.equal(workflows.workflows[0].policy, "Foundry/scheduler/AFK_POLICY.md");
 
-    for (const component of manifest.components) {
+    for (const component of installedComponents) {
       const destination = join(harnessRoot, component.destination);
       assert.ok(statSync(join(destination, ".git")).isDirectory(), `${component.id} is an independent clone`);
       assert.equal(git(destination, ["branch", "--show-current"]).stdout.trim(), component.ref);
       assert.equal(git(destination, ["remote", "get-url", "origin"]).stdout.trim(), sourceOverrides[component.id]);
     }
+    for (const component of nativeComponents) {
+      const location = join(harnessRoot, component.path);
+      assert.ok(statSync(location).isDirectory(), `${component.id} native Hall is a tracked directory`);
+      assert.equal(
+        existsSync(join(location, ".git")),
+        false,
+        `${component.id} is not an independent clone; it is part of the harness Git root`,
+      );
+    }
 
     assert.equal(git(harnessRoot, ["status", "--porcelain", "--untracked-files=all"]).stdout, "");
     assert.equal(git(harnessRoot, ["ls-files", "--stage"]).stdout.includes("160000"), false);
     assert.equal(
-      git(harnessRoot, ["check-ignore", "-q", "Sockets/Forge/.git/HEAD"], { allowFailure: true }).status,
+      git(harnessRoot, ["check-ignore", "-q", `${firstInstalled.destination}/.git/HEAD`], { allowFailure: true })
+        .status,
       0,
-      "installed Socket repositories are ignored",
+      "installed Module repositories are ignored",
+    );
+    assert.equal(
+      git(harnessRoot, ["check-ignore", "-q", "forge/AGENTS.md"], { allowFailure: true }).status,
+      1,
+      "native Hall content is tracked, not ignored",
     );
     assert.equal(
       git(harnessRoot, ["check-ignore", "-q", ".worktrees/example/.git"], { allowFailure: true }).status,
@@ -299,7 +356,7 @@ async function main() {
 
     const diagnosis = await doctorFoundry({ harnessRoot, instanceRoot, manifest });
     assert.equal(diagnosis.ok, true, diagnosis.errors.join("\n"));
-    assert.match(diagnosis.contractValidation, /fixture socket registry/);
+    assert.match(diagnosis.contractValidation, /socket contract registry/);
 
     const healthyMarker = JSON.parse(readFileSync(markerFile, "utf8"));
     writeFileSync(markerFile, `${JSON.stringify({ ...healthyMarker, manifestDigest: "0".repeat(64) })}\n`);
@@ -314,10 +371,21 @@ async function main() {
       manifest,
       sourceOverrides,
     });
-    assert.ok(secondReceipt.components.every((component) => component.action === "reused"));
+    assert.ok(
+      secondReceipt.components
+        .filter((component) => component.tier === "installed-module")
+        .every((component) => component.action === "reused"),
+      "a second adopt reuses every installed Module clone",
+    );
+    assert.ok(
+      secondReceipt.components
+        .filter((component) => component.tier === "native-hall")
+        .every((component) => component.action === "native"),
+      "native Halls are always reported native, never cloned or reused",
+    );
 
-    const forge = manifest.components.find((component) => component.id === "F-001");
-    git(join(harnessRoot, forge.destination), [
+    const openBrain = installedComponent(manifest, "P-010");
+    git(join(harnessRoot, openBrain.destination), [
       "-c",
       "user.name=Foundry Fixture",
       "-c",
@@ -328,9 +396,9 @@ async function main() {
       "unreceipted drift",
     ]);
     const driftDiagnosis = await doctorFoundry({ harnessRoot, instanceRoot, manifest });
-    assert.match(driftDiagnosis.errors.join("\n"), /F-001: installed commit does not match adoption receipt/);
+    assert.match(driftDiagnosis.errors.join("\n"), /P-010: installed commit does not match adoption receipt/);
 
-    const slack = manifest.components.find((component) => component.id === "M-002");
+    const slack = installedComponent(manifest, "M-002");
     git(join(harnessRoot, slack.destination), ["remote", "set-url", "origin", sourceOverrides["M-001"]]);
     await assert.rejects(
       () =>
@@ -347,10 +415,28 @@ async function main() {
     rmSync(scratch, { recursive: true, force: true });
   }
 
+  // A native Hall missing its required control docs fails the harness-only
+  // doctor gate — proven in an isolated fixture with no instance root, so
+  // detectInstanceRoot cannot mask the check by finding an unrelated instance.
+  const isolatedScratch = mkdtempSync(join(tmpdir(), "foundry-native-hall-test-"));
+  try {
+    const isolatedHarness = join(isolatedScratch, "Foundry");
+    copyHarnessFixture(isolatedHarness);
+    rmSync(join(isolatedHarness, "audit-engine", "CLAUDE.md"));
+    const incompleteDiagnosis = await doctorFoundry({ harnessRoot: isolatedHarness, manifest });
+    assert.equal(incompleteDiagnosis.ok, false);
+    assert.match(
+      incompleteDiagnosis.errors.join("\n"),
+      /F-002 native Hall at audit-engine is missing control docs: CLAUDE\.md/,
+    );
+  } finally {
+    rmSync(isolatedScratch, { recursive: true, force: true });
+  }
+
   const forbiddenPath = `${sep}Users${sep}${"kay" + "den"}`;
   const secretPattern = new RegExp(
     `(?:${["g", "h", "p", "_"].join("")}|${["github", "pat", "_"].join("_")}|` +
-      `${["s", "k", "-"].join("")}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
+      `\\b${["s", "k", "-"].join("")}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of walkFiles(repositoryRoot)) {
     const content = readFileSync(file, "utf8");

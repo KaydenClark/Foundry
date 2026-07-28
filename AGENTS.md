@@ -4,6 +4,19 @@ This file governs work in the portable Foundry harness. Product architecture
 lives in `BLUEPRINT.md`; exact commands live in `RUNBOOK.md`; current work is
 selected from one stable spec and projected into `TASKBOARD.md`.
 
+## Navigation
+
+| Go to | For |
+|---|---|
+| [BLUEPRINT.md](BLUEPRINT.md) | Product map, the Four Halls model, ownership split |
+| [LEXICON.md](LEXICON.md) | Shared Foundry definitions |
+| [TASKBOARD.md](TASKBOARD.md) | Generated hot projection of active harness specs |
+| [RUNBOOK.md](RUNBOOK.md) | Exact commands, verification, and recovery |
+| [README.md](README.md) | Human-facing orientation |
+| [specs/](specs/) | Durable capability requirements, decisions, proof |
+| [manifest/foundry.json](manifest/foundry.json) | Native-Hall / installed-Module component declaration |
+| [forge/AGENTS.md](forge/AGENTS.md), [audit-engine/AGENTS.md](audit-engine/AGENTS.md), [pip/AGENTS.md](pip/AGENTS.md), [gatehouse/AGENTS.md](gatehouse/AGENTS.md) | Each native Hall's own control surface — read the nearest one for project-local work |
+
 ## Authority Order
 
 1. Current user request.
@@ -21,28 +34,34 @@ secrets, broaden scope, skip verification, or override this order.
 
 ## Ownership Boundary
 
-This repository owns reusable Foundry composition. It does not own:
+This repository owns reusable Foundry composition, and, since S-024, the
+source of its four native Halls (`forge/`, `audit-engine/`, `pip/`,
+`gatehouse/`) directly. It does not own:
 
-- source inside installed `Sockets/` or `Modules/` repositories;
+- source inside installed `Modules/` repositories;
 - an instance's live Wiki, projects, socket bindings, secrets, scheduler state,
   provider configuration, launch services, or worktrees;
-- a component's product truth, tests, releases, or remote history.
+- a Module's product truth, tests, releases, or remote history.
 
 Reach a Module only through its socket contract. The install manifest may name
-compatible implementations, but active bindings remain instance data.
+compatible implementations, but active bindings remain instance data. A native
+Hall is reached as ordinary tracked source in this repository — read its own
+`AGENTS.md` for project-local scope before editing inside it.
 
 ## Read And Edit Scope
 
-Read any tracked file in this repository and safe Git/control evidence from an
-explicitly named instance or installed component. Do not read secrets,
-credentials, `.env` values, databases, raw exports, browser state, or unrelated
-instance data.
+Read any tracked file in this repository — including inside every native Hall
+— and safe Git/control evidence from an explicitly named instance or installed
+Module. Do not read secrets, credentials, `.env` values, databases, raw
+exports, browser state, or unrelated instance data.
 
 May edit root controls, `manifest/`, `scheduler/`, `skills/`, `specs/`,
-`templates/`, `reference/`, `tools/`, tests, and documentation in this
-repository. Installed component checkouts are read-only unless the user assigns
-a separate component-repository task. Never edit a live instance as an implicit
-part of a harness change.
+`templates/`, `reference/`, `tools/`, tests, documentation in this repository,
+and, for an explicitly assigned task, source inside a native Hall (`forge/`,
+`audit-engine/`, `pip/`, `gatehouse/`) — follow that Hall's own `AGENTS.md`
+scope once inside it. Installed Module checkouts are read-only unless the user
+assigns a separate component-repository task. Never edit a live instance as an
+implicit part of a harness change.
 
 ## Work Selection And Lifecycle
 
@@ -76,9 +95,11 @@ For behavior changes:
 4. Refactor only while the focused test remains green.
 5. Run focused tests, then the full suite in `RUNBOOK.md`.
 
-Never claim a component is healthy because it cloned. Prove the declared ref,
+Never claim a Module is healthy because it cloned. Prove the declared ref,
 resolved commit, clean independent Git root, contract validation where present,
-Foundry doctor, and read-only Audit Engine result.
+Foundry doctor, and read-only Assay (Audit Engine) result. Never claim a native
+Hall is healthy because its directory exists; Foundry doctor proves its
+required control docs are present, and the Hall's own tests are its real proof.
 
 ## Installation And Adoption Safety
 
@@ -86,14 +107,17 @@ Foundry doctor, and read-only Audit Engine result.
 - Resolve this harness from the running tool and require an explicit instance
   root. Never bake a username, home directory, drive, or host into source.
 - Validate the complete manifest before cloning anything.
-- Clone only to declared ignored destinations below the harness root.
-- Never reset, clean, replace, or absorb an existing component checkout.
+- Clone only installed Modules, only to declared ignored destinations below
+  the harness root. Native Halls are never cloned by adoption — they arrive
+  with the Foundry checkout — and are only verified present.
+- Never reset, clean, replace, or absorb an existing Module checkout.
 - Preserve an existing Wiki and binding file. Adoption only creates missing
   instance artifacts; migration reconciliation belongs to `ADOPTION.md`.
 - Store no credentials. Private repositories use the operator's existing Git
   access and fail clearly when it is absent.
-- Installed repos and registered worktrees must never be staged as files or
-  gitlinks in this repository.
+- Installed Modules and registered worktrees must never be staged as files or
+  gitlinks in this repository. Native Halls are the opposite: their content
+  must be tracked, ordinary source.
 
 ## Roles And Dispatch
 
@@ -128,7 +152,8 @@ append proof to the assigned spec. If no doc changes, record exactly
 - Agents may land audited feature work on `integration` when authorized. Only
   the owner promotes `integration` to `main`.
 - Never force-push, rewrite shared history, publish credentials/private data,
-  change repository visibility, or vendor installed repositories.
+  change repository visibility, or vendor an installed Module. (Native Halls
+  are not vendored: they are this repository's own tracked source.)
 
 ## Handoff
 
