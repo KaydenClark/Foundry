@@ -64,16 +64,20 @@ function createSourceRepository(root, component) {
   return source;
 }
 
-function copyHarnessFixture(destination) {
+function copyHarnessTree(destination) {
   cpSync(repositoryRoot, destination, {
     recursive: true,
     filter(source) {
       const rel = relative(repositoryRoot, source);
       if (!rel) return true;
       const first = rel.split(sep)[0];
-      return ![".git", "Modules", ".worktrees"].includes(first);
+      return ![".git", "Skills", "Modules", ".worktrees"].includes(first);
     },
   });
+}
+
+function copyHarnessFixture(destination) {
+  copyHarnessTree(destination);
   git(destination, ["init", "--initial-branch", "codex/test"]);
   git(destination, ["add", "."]);
   git(destination, [
@@ -87,7 +91,7 @@ function copyHarnessFixture(destination) {
   ]);
 }
 
-function walkFiles(root, ignored = new Set([".git", "Modules", ".worktrees"])) {
+function walkFiles(root, ignored = new Set([".git", "Modules", "Skills", ".worktrees"])) {
   const files = [];
   for (const name of readdirSync(root)) {
     if (ignored.has(name)) continue;
@@ -105,8 +109,47 @@ function installedComponent(manifest, id) {
 }
 
 async function main() {
+  const unexpectedOption = run(
+    process.execPath,
+    [join(repositoryRoot, "tools", "foundry.mjs"), "doctor", "--harness-only", "--scan", "/"],
+    { allowFailure: true },
+  );
+  assert.notEqual(unexpectedOption.status, 0, "unknown CLI options fail closed");
+  assert.match(unexpectedOption.stderr, /unexpected option: --scan/);
+
   const manifest = loadManifest(join(repositoryRoot, "manifest", "foundry.json"));
   assert.deepEqual(validateManifest(manifest), [], "production manifest is valid");
+
+  const nestedScratch = mkdtempSync(join(tmpdir(), "foundry-nested-producer-test-"));
+  try {
+    const nestedHarness = join(nestedScratch, "Foundry");
+    copyHarnessTree(nestedHarness);
+    writeFileSync(
+      join(nestedHarness, "README.md"),
+      `nested producer fixture at ${sep}Users${sep}${"kay" + "den"}${sep}instance\n`,
+      "utf8",
+    );
+    git(nestedScratch, ["init", "--initial-branch", "codex/test"]);
+    git(nestedScratch, ["add", "."]);
+    git(nestedScratch, [
+      "-c",
+      "user.name=Foundry Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "-m",
+      "nested producer fixture",
+    ]);
+    const nestedDiagnosis = await doctorFoundry({ harnessRoot: nestedHarness, manifest });
+    assert.match(
+      nestedDiagnosis.errors.join("\n"),
+      /README\.md: host-specific absolute path/,
+      "producer-mode doctor scans tracked files relative to the enclosing repository root",
+    );
+  } finally {
+    rmSync(nestedScratch, { recursive: true, force: true });
+  }
+
   assert.equal(manifest.components.length, 8, "four native Halls plus four installed Modules are declared");
 
   const nativeComponents = manifest.components.filter((component) => component.tier === "native-hall");
@@ -301,7 +344,7 @@ async function main() {
     assert.ok(existsSync(join(instanceRoot, ".local", "foundry", "adoption-receipt.json")));
 
     const memory = readFileSync(join(instanceRoot, "Wiki", "MEMORY.md"), "utf8");
-    assert.match(memory, /Cold Fixture Memory/);
+    assert.match(memory, /# Foundry Memory/);
     assert.doesNotMatch(
       memory,
       /(?<!\[)\[[A-Z][A-Z0-9_ -]+\](?!\])/,
@@ -317,7 +360,7 @@ async function main() {
 
     const workflows = JSON.parse(readFileSync(join(instanceRoot, ".foundry", "workflows.json"), "utf8"));
     assert.equal(workflows.workflows[0].enabled, false);
-    assert.equal(workflows.workflows[0].policy, "Foundry/scheduler/AFK_POLICY.md");
+    assert.equal(workflows.workflows[0].policy, "Foundry/Scheduled/Captain/AFK_POLICY.md");
 
     for (const component of installedComponents) {
       const destination = join(harnessRoot, component.destination);
@@ -344,7 +387,7 @@ async function main() {
       "installed Module repositories are ignored",
     );
     assert.equal(
-      git(harnessRoot, ["check-ignore", "-q", "forge/AGENTS.md"], { allowFailure: true }).status,
+      git(harnessRoot, ["check-ignore", "-q", "Halls/Forge/AGENTS.md"], { allowFailure: true }).status,
       1,
       "native Hall content is tracked, not ignored",
     );
@@ -422,12 +465,12 @@ async function main() {
   try {
     const isolatedHarness = join(isolatedScratch, "Foundry");
     copyHarnessFixture(isolatedHarness);
-    rmSync(join(isolatedHarness, "audit-engine", "CLAUDE.md"));
+    rmSync(join(isolatedHarness, "Halls", "Assay", "CLAUDE.md"));
     const incompleteDiagnosis = await doctorFoundry({ harnessRoot: isolatedHarness, manifest });
     assert.equal(incompleteDiagnosis.ok, false);
     assert.match(
       incompleteDiagnosis.errors.join("\n"),
-      /F-002 native Hall at audit-engine is missing control docs: CLAUDE\.md/,
+      /F-002 native Hall at Halls\/Assay is missing control docs: CLAUDE\.md/,
     );
   } finally {
     rmSync(isolatedScratch, { recursive: true, force: true });

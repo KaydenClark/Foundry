@@ -27,6 +27,8 @@ import {
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { validateWorkflowConfig } from "./captain.mjs";
+import { initializeProjects } from "../Projects/tools/projects.mjs";
+import { initializeWiki } from "../Wiki/tools/wiki.mjs";
 
 const scriptFile = fileURLToPath(import.meta.url);
 const defaultHarnessRoot = resolve(dirname(scriptFile), "..");
@@ -45,22 +47,25 @@ const REQUIRED_HARNESS_PATHS = [
   "manifest/foundry.json",
   "reference/README.md",
   "reference/foundry-schematic-FND-01.html",
-  "scheduler/AFK_POLICY.md",
-  "scheduler/CAPTAIN.md",
-  "scheduler/workflows.example.json",
-  "skills/adoption/SKILL.md",
-  "skills/role-auditor/SKILL.md",
-  "skills/role-captain/SKILL.md",
-  "skills/role-chain-engineer/SKILL.md",
-  "skills/role-designer/SKILL.md",
-  "skills/role-engineer/SKILL.md",
-  "skills/role-planner/SKILL.md",
-  "skills/role-scout/SKILL.md",
+  "Scheduled/Captain/AFK_POLICY.md",
+  "Roles/Captain.md",
+  "Scheduled/Captain/workflows.example.json",
+  "Halls/Forge/skills/adoption/SKILL.md",
+  "Halls/Forge/skills/genesis/SKILL.md",
+  "Roles/Auditor.md",
+  "Roles/Captain.md",
+  "Roles/Chain Engineer.md",
+  "Roles/Designer.md",
+  "Roles/Engineer.md",
+  "Roles/Planner.md",
+  "Roles/Scout.md",
   "templates/ADOPTION.md",
   "templates/GENESIS.md",
-  "templates/Wiki/MEMORY.md",
-  "templates/Wiki/SCHEMA.md",
-  "templates/Wiki/Machine/Foundry Instance.md",
+  "Projects/README.md",
+  "Projects/tools/projects.mjs",
+  "Wiki/MEMORY.md",
+  "Wiki/SCHEMA.md",
+  "Wiki/tools/wiki.mjs",
   "templates/instance/bindings.json",
   "templates/instance/workflows.json",
   "tools/captain.mjs",
@@ -402,9 +407,9 @@ function inspectComponentDestination({ component, harnessRoot, source }) {
 }
 
 // The common baseline every native Hall in this repo actually carries today.
-// LEXICON.md is deliberately excluded: `pip/` (the Ward) predates this check
+// LEXICON.md is deliberately excluded: `Halls/Ward/` (the Ward) predates this check
 // and has no LEXICON.md of its own (WORKBENCH_FEEDBACK.md records the gap).
-// New Halls should still ship one — see `gatehouse/LEXICON.md` — but the
+// New Halls should still ship one — see `Halls/Gatehouse/LEXICON.md` — but the
 // doctor gate only enforces what every existing Hall actually has, so it
 // never fails on a pre-existing, honestly-recorded gap it did not create.
 const NATIVE_HALL_CONTROL_DOCS = [
@@ -521,7 +526,9 @@ export async function adoptFoundry({
     ".local/foundry/adoption-receipt.json",
     "Wiki/MEMORY.md",
     "Wiki/SCHEMA.md",
-    "Wiki/Machine/Foundry Instance.md",
+    "Wiki/Projects/INDEX.md",
+    "Projects/projects.json",
+    "Projects/INDEX.md",
   ];
   const assertInstanceMaterializationPaths = () => {
     for (const relativePath of instanceMaterializationPaths) {
@@ -608,19 +615,15 @@ export async function adoptFoundry({
     ADOPTION_DATE: new Date().toISOString().slice(0, 10),
   };
 
-  const wikiTemplateRoot = join(harnessRoot, "templates", "Wiki");
+  const wikiMemoryExisted = existsSync(join(instanceRoot, "Wiki", "MEMORY.md"));
+  initializeProjects(instanceRoot);
+  initializeWiki(instanceRoot);
   const wikiActions = [
-    ["MEMORY.md", "MEMORY.md"],
-    ["SCHEMA.md", "SCHEMA.md"],
-    [join("Machine", "Foundry Instance.md"), join("Machine", "Foundry Instance.md")],
-  ].map(([templateRelative, destinationRelative]) => ({
-    path: `Wiki/${destinationRelative.split(sep).join("/")}`,
-    action: copyTemplateFile({
-      template: join(wikiTemplateRoot, templateRelative),
-      destination: join(instanceRoot, "Wiki", destinationRelative),
-      replacements,
-    }),
-  }));
+    { path: "Wiki/MEMORY.md", action: wikiMemoryExisted ? "preserved" : "created" },
+    { path: "Wiki/Projects/INDEX.md", action: "generated" },
+    { path: "Projects/projects.json", action: "initialized" },
+    { path: "Projects/INDEX.md", action: "generated" },
+  ];
 
   mkdirSync(foundryState, { recursive: true });
   const bindingAction = copyTemplateFile({
@@ -678,7 +681,7 @@ function listRepositoryFiles(harnessRoot) {
       .filter(Boolean)
       .map((entry) => join(harnessRoot, entry));
   }
-  const ignored = new Set([".git", "Sockets", "Modules", ".worktrees", ".local", ".foundry"]);
+  const ignored = new Set([".git", "Skills", "Modules", ".worktrees", ".local", ".foundry"]);
   const files = [];
   function visit(folder) {
     for (const name of readdirSync(folder)) {
@@ -793,7 +796,9 @@ export async function doctorFoundry({
       ".local/foundry/adoption-receipt.json",
       "Wiki/MEMORY.md",
       "Wiki/SCHEMA.md",
-      "Wiki/Machine/Foundry Instance.md",
+      "Wiki/Projects/INDEX.md",
+      "Projects/projects.json",
+      "Projects/INDEX.md",
     ];
     const instancePathErrors = [];
     for (const relativePath of instanceMaterializationPaths) {
@@ -934,19 +939,31 @@ export async function doctorFoundry({
   return { ok: errors.length === 0, errors, warnings, contractValidation };
 }
 
-function parseFlags(args) {
+const COMMAND_OPTIONS = new Map([
+  ["validate-manifest", new Set(["manifest"])],
+  ["plan", new Set(["manifest", "instance-root", "instance-name", "source-map", "dry-run"])],
+  ["adopt", new Set(["manifest", "instance-root", "instance-name", "source-map", "dry-run"])],
+  ["doctor", new Set(["manifest", "instance-root", "harness-only", "json"])],
+]);
+
+function parseFlags(command, args) {
   const values = {};
   const booleans = new Set(["--dry-run", "--json", "--harness-only"]);
+  const allowed = COMMAND_OPTIONS.get(command);
+  if (!allowed) throw new Error(`unknown command: ${command}`);
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
+    if (!token.startsWith("--")) throw new Error(`unexpected argument: ${token}`);
+    const name = token.slice(2);
+    if (!allowed.has(name)) throw new Error(`unexpected option: ${token}`);
+    if (Object.hasOwn(values, name)) throw new Error(`duplicate option: ${token}`);
     if (booleans.has(token)) {
-      values[token.slice(2)] = true;
+      values[name] = true;
       continue;
     }
-    if (!token.startsWith("--")) throw new Error(`unexpected argument: ${token}`);
     const value = args[index + 1];
     if (!value || value.startsWith("--")) throw new Error(`${token} requires a value`);
-    values[token.slice(2)] = value;
+    values[name] = value;
     index += 1;
   }
   return values;
@@ -967,7 +984,7 @@ async function cli() {
     printHelp();
     return;
   }
-  const flags = parseFlags(rest);
+  const flags = parseFlags(command, rest);
   const manifestPath = resolve(flags.manifest ?? defaultManifestPath);
   const manifest = loadManifest(manifestPath);
   if (command === "validate-manifest") {

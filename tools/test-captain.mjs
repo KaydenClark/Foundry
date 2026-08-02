@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -6,9 +7,34 @@ import { fileURLToPath } from "node:url";
 import { levelZeroDecision, stableSignalDigest, validateWorkflowConfig } from "./captain.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const config = JSON.parse(readFileSync(resolve(root, "scheduler", "workflows.example.json"), "utf8"));
+const config = JSON.parse(
+  readFileSync(resolve(root, "Scheduled", "Captain", "workflows.example.json"), "utf8"),
+);
+
+const unexpectedOption = spawnSync(
+  process.execPath,
+  [
+    resolve(root, "tools", "captain.mjs"),
+    "validate",
+    "--config",
+    resolve(root, "Scheduled", "Captain", "workflows.example.json"),
+    "--state",
+    "ignored.json",
+  ],
+  { encoding: "utf8" },
+);
+assert.notEqual(unexpectedOption.status, 0, "command-inapplicable CLI options fail closed");
+assert.match(unexpectedOption.stderr, /unexpected option: --state/);
 
 assert.deepEqual(validateWorkflowConfig(config), []);
+
+const extraConfigField = structuredClone(config);
+extraConfigField.credential = "forbidden";
+assert.match(validateWorkflowConfig(extraConfigField).join("\n"), /workflow config fields/);
+
+const extraWorkflowField = structuredClone(config);
+extraWorkflowField.workflows[0].command = "ignored";
+assert.match(validateWorkflowConfig(extraWorkflowField).join("\n"), /workflows\[0\] fields/);
 
 const duplicate = structuredClone(config);
 duplicate.workflows.push(structuredClone(duplicate.workflows[0]));

@@ -1,5 +1,5 @@
-# Installed Modules keep their own Git histories. The four native Halls
-# (forge/, audit-engine/, pip/, gatehouse/) are ordinary tracked source and
+# Installed Modules keep their own Git histories. The four native Halls under
+# Halls/ are ordinary tracked source and
 # are deliberately not listed here.
 /Modules/
 

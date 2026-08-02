@@ -12,7 +12,7 @@
       "name": "Forge",
       "tier": "native-hall",
       "family": "Halls",
-      "path": "forge",
+      "path": "Halls/Forge",
       "status": "active",
       "provides": ["workbench", "socket-contract-registry"],
       "foldedFrom": "https://github.com/KaydenClark/LLM_Workbench.git"
@@ -22,7 +22,7 @@
       "name": "Assay",
       "tier": "native-hall",
       "family": "Halls",
-      "path": "audit-engine",
+      "path": "Halls/Assay",
       "status": "active",
       "provides": ["read-only-audit"],
       "foldedFrom": "https://github.com/KaydenClark/Audit-Engine.git"
@@ -32,7 +32,7 @@
       "name": "Ward",
       "tier": "native-hall",
       "family": "Halls",
-      "path": "pip",
+      "path": "Halls/Ward",
       "status": "active",
       "provides": ["module-integration-health"],
       "foldedFrom": "https://github.com/KaydenClark/personal-intelligence-platform.git"
@@ -42,7 +42,7 @@
       "name": "Gatehouse",
       "tier": "native-hall",
       "family": "Halls",
-      "path": "gatehouse",
+      "path": "Halls/Gatehouse",
       "status": "planned",
       "provides": ["containment-boundary", "job-order-assignment"]
     },

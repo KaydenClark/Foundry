@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.0",
+  "producerRoot": "Foundry",
+  "productPathMode": "strip-producer-root",
+  "includeRules": [
+    {
+      "category": "source-contract",
+      "files": ["Foundry/source-root.json"]
+    },
+    {
+      "category": "foundry-control",
+      "files": [
+        "Foundry/.gitignore",
+        "Foundry/audit-engine.json",
+        "Foundry/AGENTS.md",
+        "Foundry/BLUEPRINT.md",
+        "Foundry/CLAUDE.md",
+        "Foundry/LEXICON.md",
+        "Foundry/README.md",
+        "Foundry/RUNBOOK.md",
+        "Foundry/TASKBOARD.md",
+        "Foundry/THIRD_PARTY_NOTICES.md",
+        "Foundry/WORKBENCH_FEEDBACK.md"
+      ]
+    },
+    {
+      "category": "foundry-manifest",
+      "prefixes": ["Foundry/manifest/"]
+    },
+    {
+      "category": "foundry-reference",
+      "prefixes": ["Foundry/reference/"]
+    },
+    {
+      "category": "foundry-templates",
+      "prefixes": ["Foundry/templates/"]
+    },
+    {
+      "category": "hall-source",
+      "prefixes": ["Foundry/Halls/"]
+    },
+    {
+      "category": "roles-core",
+      "prefixes": ["Foundry/Roles/"]
+    },
+    {
+      "category": "scheduling-core",
+      "prefixes": ["Foundry/Scheduled/"]
+    },
+    {
+      "category": "foundry-tools",
+      "prefixes": ["Foundry/tools/"]
+    },
+    {
+      "category": "projects-capability",
+      "files": ["Foundry/Projects/README.md", "Foundry/Projects/INDEX.md"],
+      "prefixes": [
+        "Foundry/Projects/schema/",
+        "Foundry/Projects/templates/",
+        "Foundry/Projects/tools/"
+      ]
+    },
+    {
+      "category": "wiki-capability",
+      "files": [
+        "Foundry/Wiki/MEMORY.md",
+        "Foundry/Wiki/README.md",
+        "Foundry/Wiki/SCHEMA.md"
+      ],
+      "prefixes": [
+        "Foundry/Wiki/schema/",
+        "Foundry/Wiki/templates/",
+        "Foundry/Wiki/tools/"
+      ]
+    }
+  ],
+  "prohibitedPrefixes": [
+    { "path": "Foundry/Modules/", "reason": "installed-modules" },
+    { "path": "Foundry/Skills/", "reason": "generated-skills" },
+    { "path": "Foundry/.worktrees/", "reason": "worktrees" },
+    { "path": "Foundry/Wiki/Kayden/", "reason": "private-wiki" },
+    { "path": "Foundry/Wiki/Archive/", "reason": "private-wiki" },
+    { "path": "Foundry/Projects/checkouts/", "reason": "project-checkouts" }
+  ],
+  "runtimeSegments": [
+    ".git",
+    ".worktrees",
+    "node_modules",
+    ".local",
+    "runtime",
+    "state",
+    "build",
+    "dist",
+    "out",
+    "coverage",
+    "__pycache__",
+    "logs",
+    "credentials",
+    "private",
+    "secrets"
+  ],
+  "allowedBasenames": [".env.example"],
+  "secretBasenames": [".env"],
+  "secretNamePrefixes": [".env."],
+  "prohibitedSuffixes": [
+    ".log",
+    ".sqlite",
+    ".sqlite3",
+    ".db",
+    ".pem",
+    ".key",
+    ".pyc"
+  ]
+}

@@ -4,7 +4,7 @@
   "harnessRoot": "{{HARNESS_ROOT}}",
   "socketRegistry": {
     "componentId": "F-001",
-    "path": "{{HARNESS_ROOT}}/forge/tools/socket-registry/registry.json"
+    "path": "{{HARNESS_ROOT}}/Halls/Forge/tools/socket-registry/registry.json"
   },
   "bindings": [
     {
