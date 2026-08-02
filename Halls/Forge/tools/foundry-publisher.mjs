@@ -95,14 +95,22 @@ function gitBuffer(repoRoot, args) {
   return run("git", ["-C", repoRoot, ...SAFE_GIT_OPTIONS, ...args], { encoding: null });
 }
 
+export function trustedGitHubCredentialConfig() {
+  return [
+    "-c",
+    "credential.helper=",
+    "-c",
+    `credential.helper=!${TRUSTED_GH} auth git-credential`,
+  ];
+}
+
 function gitTextWithGitHubAuth(repoRoot, args) {
   if (!existsSync(TRUSTED_GH)) throw new Error(`trusted GitHub CLI is unavailable at ${TRUSTED_GH}`);
   return run("git", [
     "-C",
     repoRoot,
     ...SAFE_GIT_OPTIONS,
-    "-c",
-    `credential.helper=!${TRUSTED_GH} auth git-credential`,
+    ...trustedGitHubCredentialConfig(),
     ...args,
   ], { env: safeEnvironment({ includeHome: true }) });
 }

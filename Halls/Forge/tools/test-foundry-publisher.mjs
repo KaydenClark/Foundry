@@ -18,6 +18,7 @@ import {
   createPublishPlan,
   loadArtifactManifest,
   publishFoundryArtifact,
+  trustedGitHubCredentialConfig,
   verifyStagedArtifact,
 } from "./foundry-publisher.mjs";
 
@@ -76,6 +77,12 @@ function makeProducer(root) {
 
 const scratch = mkdtempSync(join(tmpdir(), "foundry-publisher-test-"));
 try {
+  assert.deepEqual(trustedGitHubCredentialConfig(), [
+    "-c",
+    "credential.helper=",
+    "-c",
+    "credential.helper=!/opt/homebrew/bin/gh auth git-credential",
+  ]);
   const producer = join(scratch, "producer");
   mkdirSync(producer);
   const producerSha = makeProducer(producer);
