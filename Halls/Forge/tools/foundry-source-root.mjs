@@ -6,9 +6,15 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_REPO_ROOT = path.resolve(HERE, '../../../..');
+const PRODUCER_REPO_ROOT = path.resolve(HERE, '../../../..');
+const PRODUCT_REPO_ROOT = path.resolve(HERE, '../../..');
 export const DEFAULT_CONTRACT_REPO_PATH = 'Foundry/source-root.json';
-export const DEFAULT_CONTRACT_PATH = path.join(DEFAULT_REPO_ROOT, DEFAULT_CONTRACT_REPO_PATH);
+export const DEFAULT_REPO_ROOT = fs.existsSync(path.join(PRODUCER_REPO_ROOT, DEFAULT_CONTRACT_REPO_PATH))
+  ? PRODUCER_REPO_ROOT
+  : PRODUCT_REPO_ROOT;
+export const DEFAULT_CONTRACT_PATH = fs.existsSync(path.join(DEFAULT_REPO_ROOT, DEFAULT_CONTRACT_REPO_PATH))
+  ? path.join(DEFAULT_REPO_ROOT, DEFAULT_CONTRACT_REPO_PATH)
+  : path.join(DEFAULT_REPO_ROOT, 'source-root.json');
 
 function stringArray(value, label, errors) {
   if (!Array.isArray(value) || value.some((entry) => typeof entry !== 'string' || entry.length === 0)) {
