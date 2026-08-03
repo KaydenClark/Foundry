@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -57,4 +57,22 @@ test("source scanner covers real files", () => {
   const files = sourceFiles(sourceRoot);
   assert.ok(files.length >= 10);
   assert.ok(files.every((path) => statSync(path).isFile()));
+});
+
+test("every local source import is packaged outside excluded runtime namespaces", () => {
+  const missing = [];
+  const excluded = [];
+  for (const path of sourceFiles(sourceRoot)) {
+    const source = readFileSync(path, "utf8");
+    const relativePath = relative(projectRoot, path);
+    if (relativePath.split(/[\\/]/).some((segment) => ["state", "runtime", "dist", "build"].includes(segment))) {
+      excluded.push(relativePath);
+    }
+    for (const match of source.matchAll(/from\s+["'](\.{1,2}\/[^"']+)["']/g)) {
+      const destination = join(path, "..", match[1]);
+      if (!existsSync(destination)) missing.push(`${relativePath} -> ${match[1]}`);
+    }
+  }
+  assert.deepEqual(excluded, []);
+  assert.deepEqual(missing, []);
 });

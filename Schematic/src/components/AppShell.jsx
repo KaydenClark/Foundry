@@ -1,7 +1,7 @@
 import { ShieldWarning } from "@phosphor-icons/react";
 
 import { routes } from "../router.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 import { TransportControls } from "./TransportControls.jsx";
 
 export function AppShell({ path, navigate, children }) {

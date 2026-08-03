@@ -2,7 +2,7 @@ import { ArrowDown, ArrowUp, Play } from "@phosphor-icons/react";
 
 import { PageHeading } from "../components/PageHeading.jsx";
 import { getPlane } from "../domain/scenario.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 export function WorkflowsPage({ navigate }) {
   const { scenario, run } = useRun();

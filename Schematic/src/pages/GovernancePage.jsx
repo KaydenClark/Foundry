@@ -3,7 +3,7 @@ import { ArrowDown, ArrowUp, Eye, LockKeyOpen } from "@phosphor-icons/react";
 import { FactoryStack } from "../components/FactoryStack.jsx";
 import { PageHeading } from "../components/PageHeading.jsx";
 import { governancePlanes } from "../domain/scenario.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 export function GovernancePage() {
   const { run, scenario } = useRun();

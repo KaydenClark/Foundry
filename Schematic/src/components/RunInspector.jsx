@@ -1,7 +1,7 @@
 import { Cube, IdentificationBadge, ShieldCheck, WarningDiamond } from "@phosphor-icons/react";
 
 import { getPlane } from "../domain/scenario.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 function formatElapsed(milliseconds) {
   const seconds = Math.floor(milliseconds / 1000);

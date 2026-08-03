@@ -67,6 +67,10 @@ ok('Schematic app source maps to the public product without generated output', (
   assert.equal(source.productPath, 'Schematic/src/App.jsx');
   assert.equal(source.category, 'schematic-source');
 
+  const provider = classifyPath(contract, 'Foundry/Schematic/src/store/RunContext.jsx');
+  assert.equal(provider.included, true);
+  assert.equal(provider.productPath, 'Schematic/src/store/RunContext.jsx');
+
   const dependency = classifyPath(contract, 'Foundry/Schematic/node_modules/react/index.js');
   assert.equal(dependency.included, false);
   assert.equal(dependency.reason, 'runtime-segment');

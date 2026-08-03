@@ -31,7 +31,7 @@ behave before any real execution contract exists.
 ```text
 Schematic/
 |-- src/domain/       deterministic scenarios, transitions, and replay
-|-- src/state/        one shared run provider and browser-local history
+|-- src/store/        one shared run provider and browser-local history
 |-- src/components/   app shell, floor stack, journey, inspector, controls
 |-- src/pages/        six synchronized product routes
 |-- tests/            engine, replay, safety, and scenario tests

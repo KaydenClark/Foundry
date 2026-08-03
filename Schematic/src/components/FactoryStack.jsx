@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react";
 
 import { governancePlanes } from "../domain/scenario.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 const rooms = [
   { id: "ward", label: "WARD", sub: "REPORTS AFTER ASSAY", icon: Megaphone },

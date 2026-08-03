@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react";
 
 import { getPlane } from "../domain/scenario.js";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 export function JourneyRail({ compact = false }) {
   const { scenario, run } = useRun();

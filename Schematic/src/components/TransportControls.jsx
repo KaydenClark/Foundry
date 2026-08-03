@@ -7,7 +7,7 @@ import {
   WarningDiamond,
 } from "@phosphor-icons/react";
 
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 function ControlButton({ label, icon: Icon, onClick, tone = "default", disabled = false, pressed }) {
   return (

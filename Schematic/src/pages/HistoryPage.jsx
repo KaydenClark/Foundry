@@ -2,7 +2,7 @@ import { Repeat, Trash } from "@phosphor-icons/react";
 
 import { PageHeading } from "../components/PageHeading.jsx";
 import { RunInspector } from "../components/RunInspector.jsx";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 export function HistoryPage() {
   const { run, history, replay, clearHistory } = useRun();

@@ -2,7 +2,7 @@ import { ArrowRight, Play, ShieldWarning } from "@phosphor-icons/react";
 
 import { FactoryStack } from "../components/FactoryStack.jsx";
 import { PageHeading } from "../components/PageHeading.jsx";
-import { useRun } from "../state/RunContext.jsx";
+import { useRun } from "../store/RunContext.jsx";
 
 export function FactoryOverview({ navigate }) {
   const { run, currentStep, progress } = useRun();
