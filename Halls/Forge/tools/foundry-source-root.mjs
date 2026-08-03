@@ -70,14 +70,17 @@ export function validateContract(contract) {
     }
   }
 
-  if (!Array.isArray(contract.prohibitedPrefixes)) {
-    errors.push('prohibitedPrefixes must be an array');
-  } else {
-    for (const [index, entry] of contract.prohibitedPrefixes.entries()) {
+  for (const key of ['excludedPrefixes', 'prohibitedPrefixes']) {
+    const entries = key === 'excludedPrefixes' && contract[key] === undefined ? [] : contract[key];
+    if (!Array.isArray(entries)) {
+      errors.push(`${key} must be an array`);
+      continue;
+    }
+    for (const [index, entry] of entries.entries()) {
       if (!entry || typeof entry !== 'object' || typeof entry.path !== 'string' || typeof entry.reason !== 'string') {
-        errors.push(`prohibitedPrefixes[${index}] must carry string path and reason`);
+        errors.push(`${key}[${index}] must carry string path and reason`);
       } else if (!normalizedRepoPath(entry.path) || !entry.path.startsWith(`${contract.producerRoot}/`)) {
-        errors.push(`prohibitedPrefixes[${index}].path must be relative to ${contract.producerRoot}/`);
+        errors.push(`${key}[${index}].path must be relative to ${contract.producerRoot}/`);
       }
     }
   }
@@ -102,6 +105,12 @@ export function classifyPath(contract, candidate) {
   for (const entry of contract.prohibitedPrefixes) {
     if (repoPath.startsWith(entry.path)) {
       return { included: false, prohibited: true, reason: entry.reason, sourcePath: repoPath };
+    }
+  }
+
+  for (const entry of contract.excludedPrefixes ?? []) {
+    if (repoPath.startsWith(entry.path)) {
+      return { included: false, prohibited: false, reason: entry.reason, sourcePath: repoPath };
     }
   }
 

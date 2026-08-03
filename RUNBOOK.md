@@ -14,6 +14,9 @@ node Projects/tools/test-projects.mjs
 node Wiki/tools/test-wiki.mjs
 node Halls/Forge/tools/test-foundry-source-root.mjs
 node Halls/Forge/tools/test-foundry-publisher.mjs
+npm test --prefix Schematic
+npm run test:safety --prefix Schematic
+npm run build --prefix Schematic
 node tools/spec-workbench.mjs render
 node tools/spec-workbench.mjs doctor
 git diff --check
@@ -22,6 +25,22 @@ git diff --check
 Hall-specific verification remains in each `Halls/*/RUNBOOK.md`. The Assay is
 read-only; the Ward may report expected degraded Module freshness on an instance
 without configured Module state.
+
+Install the Schematic's pinned dependencies once before the full product suite:
+
+```bash
+npm ci --prefix Schematic
+```
+
+The Schematic build writes ignored `Schematic/dist/` and has no server-side or
+production-execution dependency. Its complete local demo and recovery procedure
+live in `Schematic/RUNBOOK.md`.
+
+The immutable source inventory deliberately excludes the declared
+producer-only Module class. It still fails on every unclassified, private,
+secret, runtime, or generated path before an artifact can be approved.
+Adoption adds `/Modules/` to that product checkout's local Git exclusions; it
+does not rewrite tracked `.gitignore` policy or publish local Git metadata.
 
 ## Projects And Wiki
 

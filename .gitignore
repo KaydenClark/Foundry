@@ -1,9 +1,5 @@
-# Installed Modules keep their own Git histories. The four native Halls under
-# Halls/ are ordinary tracked source and
-# are deliberately not listed here.
-/Modules/
-
-# Registered component worktrees and all deployment-local state are untracked.
+# Halls and Modules are ordinary workspace-tracked source. Registered component
+# worktrees and deployment-local state are not.
 /.worktrees/
 /.local/
 /.foundry/

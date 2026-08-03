@@ -13,6 +13,7 @@ capabilities, install metadata for optional Modules, and deterministic tools.
 ```text
 Foundry/
 |-- Halls/{Forge,Assay,Ward,Gatehouse}/  native product source
+|-- Schematic/                           standalone six-floor simulator
 |-- Roles/                               reusable authority contracts
 |-- Projects/                            explicit enrollment/index capability
 |-- Wiki/                                generic memory schema and routing
@@ -38,14 +39,18 @@ with all four Halls and can verify them without additional Hall clones.
 
 ## Ownership Boundary
 
-The product owns its controls, Halls, generic Projects/Wiki behavior, Roles,
-scheduling primitives, manifest, templates, references, and tools. A deployed
-instance owns populated project data and memory, active bindings and workflows,
-credentials, receipts, logs, provider configuration, services, and worktrees.
+The product owns its controls, Halls, the public-safe Schematic interface,
+generic Projects/Wiki behavior, Roles, scheduling primitives, manifest,
+templates, references, and tools. A deployed instance owns populated project
+data and memory, active bindings and workflows, credentials, receipts, logs,
+provider configuration, services, and worktrees.
 
 Installed Module source and release history remain in each Module repository.
 The manifest may declare compatible implementations, but socket contracts are
 the only integration boundary; filesystem reach-arounds are invalid.
+Adoption records `/Modules/` in checkout-local Git exclusions before installing
+declared Modules. This keeps product checkouts clean without imposing the
+product's runtime ignore policy on an independently tracked producer tree.
 
 ## Source And Publication
 
@@ -54,6 +59,9 @@ public repository is an output and is never an authoring input. Packaging reads
 one immutable producer commit, constructs a clean temporary tree, enforces the
 publication/exclusion contract, scans for secrets and host coupling, and
 compares the result byte-for-byte before an explicit `integration` push.
+Tracked producer-only Module source is an explicit non-published class. The
+inventory may omit that declared class, while unclassified, private, secret,
+and runtime paths still fail closed.
 
 Product controls describe this mechanism only. Private producer or instance
 contents, filenames, task state, and purpose do not belong in the public tree.
@@ -80,5 +88,7 @@ product Git. Plan mode is read-only. A failed preflight leaves no partial clone.
 - Roles are canonical under `Roles/`; scheduling policy is canonical under
   `Scheduled/Captain/`.
 - Projects and Wiki are portable capabilities, never copied instance data.
+- Schematic is a native product interface whose initial deterministic engine
+  simulates Job Orders locally and cannot execute commands or change Actuality.
 - Modules keep independent repositories and are installed, not vendored.
 - Automated delivery stops at `integration`; `main` promotion is owner-only.

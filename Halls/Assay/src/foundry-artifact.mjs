@@ -98,8 +98,25 @@ function walk(root) {
   return files.sort();
 }
 
+function confidentialityText(content) {
+  const jpeg = content.length >= 3 && content[0] === 0xff && content[1] === 0xd8 && content[2] === 0xff;
+  const png = content.length >= 8 && content.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  if (!jpeg && !png) return content.toString("utf8");
+  const runs = [];
+  let current = "";
+  for (const byte of content) {
+    if (byte >= 0x20 && byte <= 0x7e) current += String.fromCharCode(byte);
+    else {
+      if (current.length >= 8) runs.push(current);
+      current = "";
+    }
+  }
+  if (current.length >= 8) runs.push(current);
+  return runs.join("\n");
+}
+
 function scan(path, content) {
-  const text = content.toString("utf8");
+  const text = confidentialityText(content);
   const checks = [
     [new RegExp(["/", "Users", "/", "[^/\\s]+", "/"].join("")), "host-specific absolute path"],
     [/\b[A-Za-z]:\\(?!\/)[^\s"']+/, "host-specific absolute path"],

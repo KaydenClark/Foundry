@@ -61,9 +61,23 @@ ok('Hall source maps to its product-relative path', () => {
   assert.equal(hall.category, 'hall-source');
 });
 
-ok('installed, generated, private, runtime, and secret paths fail closed', () => {
+ok('Schematic app source maps to the public product without generated output', () => {
+  const source = classifyPath(contract, 'Foundry/Schematic/src/App.jsx');
+  assert.equal(source.included, true);
+  assert.equal(source.productPath, 'Schematic/src/App.jsx');
+  assert.equal(source.category, 'schematic-source');
+
+  const dependency = classifyPath(contract, 'Foundry/Schematic/node_modules/react/index.js');
+  assert.equal(dependency.included, false);
+  assert.equal(dependency.reason, 'runtime-segment');
+
+  const build = classifyPath(contract, 'Foundry/Schematic/dist/index.html');
+  assert.equal(build.included, false);
+  assert.equal(build.reason, 'runtime-segment');
+});
+
+ok('generated, private, runtime, and secret paths fail closed', () => {
   const cases = [
-    ['Foundry/Modules/OpenBrain/README.md', 'installed-modules'],
     ['Foundry/Skills/PUBLISHED.md', 'generated-skills'],
     ['Foundry/.worktrees/task/HEAD', 'worktrees'],
     ['Foundry/Wiki/Kayden/Profile.md', 'private-wiki'],
@@ -89,6 +103,11 @@ ok('installed, generated, private, runtime, and secret paths fail closed', () =>
   assert.equal(rootPrivate.reason, 'outside-producer-root');
 
   assert.equal(classifyPath(contract, 'Foundry/Halls/Forge/.env.example').included, true);
+
+  const moduleSource = classifyPath(contract, 'Foundry/Modules/OpenBrain/README.md');
+  assert.equal(moduleSource.included, false);
+  assert.equal(moduleSource.prohibited, false);
+  assert.equal(moduleSource.reason, 'producer-only-modules');
 });
 
 ok('immutable inventory reports exact included product paths', () => {
@@ -109,15 +128,35 @@ ok('immutable inventory reports exact included product paths', () => {
   }
 });
 
-ok('immutable inventory rejects a tracked prohibited path', () => {
-  const root = makeRepo(contract);
+ok('immutable inventory permits a declared tracked producer-only prefix without publishing it', () => {
+  const producerContract = {
+    ...contract,
+    excludedPrefixes: [{ path: 'Foundry/Modules/', reason: 'producer-only-modules' }],
+    prohibitedPrefixes: contract.prohibitedPrefixes.filter((entry) => entry.path !== 'Foundry/Modules/')
+  };
+  const root = makeRepo(producerContract);
   try {
     write(root, 'Foundry/Modules/OpenBrain/README.md');
     git(root, ['add', 'Foundry/Modules/OpenBrain/README.md']);
-    git(root, ['commit', '-qm', 'plant prohibited module']);
+    git(root, ['commit', '-qm', 'track producer-only module source']);
     const report = inventoryRef({ repoRoot: root, ref: 'HEAD' });
-    assert.ok(report.errors.some((error) => error.includes('Foundry/Modules/OpenBrain/README.md')));
-    assert.ok(report.errors.some((error) => error.includes('installed-modules')));
+    assert.deepEqual(report.errors, []);
+    assert.equal(report.productPaths.includes('Modules/OpenBrain/README.md'), false);
+    assert.equal(report.excludedPaths, 1);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+ok('immutable inventory rejects a tracked prohibited path', () => {
+  const root = makeRepo(contract);
+  try {
+    write(root, 'Foundry/Wiki/Kayden/Profile.md');
+    git(root, ['add', 'Foundry/Wiki/Kayden/Profile.md']);
+    git(root, ['commit', '-qm', 'plant prohibited private wiki path']);
+    const report = inventoryRef({ repoRoot: root, ref: 'HEAD' });
+    assert.ok(report.errors.some((error) => error.includes('Foundry/Wiki/Kayden/Profile.md')));
+    assert.ok(report.errors.some((error) => error.includes('private-wiki')));
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

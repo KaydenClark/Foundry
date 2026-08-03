@@ -217,8 +217,25 @@ function walkProduct(root) {
   return files.sort();
 }
 
+function confidentialityText(content) {
+  const jpeg = content.length >= 3 && content[0] === 0xff && content[1] === 0xd8 && content[2] === 0xff;
+  const png = content.length >= 8 && content.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  if (!jpeg && !png) return content.toString("utf8");
+  const runs = [];
+  let current = "";
+  for (const byte of content) {
+    if (byte >= 0x20 && byte <= 0x7e) current += String.fromCharCode(byte);
+    else {
+      if (current.length >= 8) runs.push(current);
+      current = "";
+    }
+  }
+  if (current.length >= 8) runs.push(current);
+  return runs.join("\n");
+}
+
 function scanProductFile(productPath, content) {
-  const text = content.toString("utf8");
+  const text = confidentialityText(content);
   const checks = [
     [/\/Users\/[^/\s]+\//, "host-specific absolute path"],
     [/\b[A-Za-z]:\\(?!\/)[^\s"']+/, "host-specific absolute path"],
@@ -243,8 +260,12 @@ function comparePathSets(actual, expected, label) {
 }
 
 function inspectStagedProduct({ repoRoot, producerSha, inventory, productRoot }) {
-  const tree = parseTree(repoRoot, producerSha, inventory.producerRoot);
   const expectedSourcePaths = inventory.entries.map(({ sourcePath }) => sourcePath).sort();
+  const includedPaths = new Set(expectedSourcePaths);
+  const tree = new Map(
+    [...parseTree(repoRoot, producerSha, inventory.producerRoot)]
+      .filter(([sourcePath]) => includedPaths.has(sourcePath)),
+  );
   comparePathSets([...tree.keys()].sort(), expectedSourcePaths, "immutable archive tree");
   for (const productPath of inventory.productPaths) {
     if (!safeProductPath(productPath)) throw new Error(`${productPath}: unsafe product path`);
@@ -315,9 +336,15 @@ export function buildFoundryArtifact({
     const productRoot = join(temporaryRoot, PRODUCT_DIRECTORY);
     mkdirSync(productRoot);
     const archivePath = join(temporaryRoot, "producer.tar");
-    const archive = gitBuffer(repoRoot, ["archive", "--format=tar", `${inventory.producerSha}:${inventory.producerRoot}`]);
+    const archive = gitBuffer(repoRoot, [
+      "archive",
+      "--format=tar",
+      inventory.producerSha,
+      "--",
+      ...inventory.entries.map((entry) => entry.sourcePath),
+    ]);
     writeFileSync(archivePath, archive);
-    run("tar", ["-xf", archivePath, "-C", productRoot]);
+    run("tar", ["-xf", archivePath, "-C", productRoot, "--strip-components=1"]);
     rmSync(archivePath);
 
     const inspected = inspectStagedProduct({

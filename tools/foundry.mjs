@@ -477,6 +477,22 @@ function copyTemplateFile({ template, destination, replacements }) {
   return "created";
 }
 
+function ensureLocalModuleIgnore(harnessRoot) {
+  const gitDirectory = git(harnessRoot, ["rev-parse", "--git-dir"]);
+  if (gitDirectory.status !== 0) throw new Error("Foundry adoption requires a Git checkout");
+  const resolvedGitDirectory = realpathSync(resolve(harnessRoot, gitDirectory.stdout.trim()));
+  const checkoutRoot = realpathSync(harnessRoot);
+  if (resolvedGitDirectory !== join(checkoutRoot, ".git")) {
+    throw new Error("Foundry adoption requires a standalone checkout with local Git metadata");
+  }
+  const excludeFile = join(resolvedGitDirectory, "info", "exclude");
+  mkdirSync(dirname(excludeFile), { recursive: true });
+  const current = existsSync(excludeFile) ? readFileSync(excludeFile, "utf8") : "";
+  if (current.split(/\r?\n/).includes("/Modules/")) return;
+  const prefix = current && !current.endsWith("\n") ? `${current}\n` : current;
+  writeFileSync(excludeFile, `${prefix}/Modules/\n`, "utf8");
+}
+
 function parseBindings(file) {
   const value = readJson(file);
   if (value.schemaVersion !== "1.0" || !Array.isArray(value.bindings)) {
@@ -577,6 +593,7 @@ export async function adoptFoundry({
     return { schemaVersion: "1.0", dryRun: true, harnessRoot: harnessRelative, plan };
   }
 
+  ensureLocalModuleIgnore(harnessRoot);
   const componentResults = [];
   for (const { component, source, inspection } of inspectedComponents) {
     if (component.tier === "native-hall") {
@@ -722,7 +739,7 @@ function portabilityErrors(harnessRoot) {
 function boundaryErrors(harnessRoot, manifest) {
   const errors = [];
   const ignore = readFileSync(join(harnessRoot, ".gitignore"), "utf8");
-  for (const required of ["/Modules/", "/.worktrees/", "/.local/", "/.foundry/"]) {
+  for (const required of ["/.worktrees/", "/.local/", "/.foundry/"]) {
     if (!ignore.split(/\r?\n/).includes(required)) errors.push(`.gitignore missing ${required}`);
   }
 

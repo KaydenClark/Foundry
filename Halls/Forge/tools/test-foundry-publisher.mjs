@@ -47,9 +47,13 @@ function fixtureContract() {
         files: [
           "Foundry/source-root.json",
           "Foundry/README.md",
+          "Foundry/reference/fixture.jpg",
           "Foundry/tools/verify.mjs",
         ],
       },
+    ],
+    excludedPrefixes: [
+      { path: "Foundry/ProducerOnly/", reason: "producer-only-fixture" },
     ],
     prohibitedPrefixes: [
       { path: "Foundry/Modules/", reason: "installed-modules" },
@@ -69,7 +73,13 @@ function makeProducer(root) {
   git(root, ["config", "user.email", "foundry-publisher@example.invalid"]);
   write(root, "Foundry/source-root.json", `${JSON.stringify(fixtureContract(), null, 2)}\n`);
   write(root, "Foundry/README.md", "# Portable Foundry fixture\n");
+  write(root, "Foundry/reference/fixture.jpg", Buffer.concat([
+    Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+    Buffer.from([0x43, 0x3a, 0x5c, 0xff]),
+    Buffer.from([0xff, 0xd9]),
+  ]));
   write(root, "Foundry/tools/verify.mjs", 'console.log("ok - staged fixture verified");\n');
+  write(root, "Foundry/ProducerOnly/private.md", "never enters the product artifact\n");
   git(root, ["add", "Foundry"]);
   git(root, ["commit", "-qm", "fixture producer"]);
   return git(root, ["rev-parse", "HEAD"]);
@@ -96,7 +106,7 @@ try {
     verifyCommands,
   });
   assert.equal(first.producerSha, producerSha);
-  assert.equal(first.fileCount, 3);
+  assert.equal(first.fileCount, 4);
   assert.ok(existsSync(join(firstRoot, "product", "README.md")));
   assert.ok(existsSync(join(firstRoot, "artifact-manifest.json")));
   assert.deepEqual(loadArtifactManifest(firstRoot), first);

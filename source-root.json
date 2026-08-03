@@ -48,6 +48,10 @@
       "prefixes": ["Foundry/Scheduled/"]
     },
     {
+      "category": "schematic-source",
+      "prefixes": ["Foundry/Schematic/"]
+    },
+    {
       "category": "foundry-tools",
       "prefixes": ["Foundry/tools/"]
     },
@@ -74,8 +78,10 @@
       ]
     }
   ],
+  "excludedPrefixes": [
+    { "path": "Foundry/Modules/", "reason": "producer-only-modules" }
+  ],
   "prohibitedPrefixes": [
-    { "path": "Foundry/Modules/", "reason": "installed-modules" },
     { "path": "Foundry/Skills/", "reason": "generated-skills" },
     { "path": "Foundry/.worktrees/", "reason": "worktrees" },
     { "path": "Foundry/Wiki/Kayden/", "reason": "private-wiki" },

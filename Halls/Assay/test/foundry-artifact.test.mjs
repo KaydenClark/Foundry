@@ -24,21 +24,23 @@ function digest(content) {
   return createHash("sha256").update(content).digest("hex");
 }
 
-function makeFixture(root) {
+function makeFixture(root, {
+  productPath = "README.md",
+  content = Buffer.from("# Portable Foundry\n"),
+} = {}) {
   const producer = join(root, "producer");
   const artifact = join(root, "artifact");
   mkdirSync(producer);
   git(producer, ["init", "-q"]);
   git(producer, ["config", "user.name", "Assay Test"]);
   git(producer, ["config", "user.email", "assay@example.invalid"]);
-  const content = Buffer.from("# Portable Foundry\n");
-  write(producer, "Foundry/README.md", content);
+  write(producer, `Foundry/${productPath}`, content);
   git(producer, ["add", "."]);
   git(producer, ["commit", "-qm", "fixture"]);
   const producerSha = git(producer, ["rev-parse", "HEAD"]);
-  write(artifact, "product/README.md", content);
-  const files = [{ path: "README.md", mode: "100644", size: content.length, sha256: digest(content) }];
-  const treeDigest = digest(`100644 ${files[0].sha256} ${content.length} README.md\n`);
+  write(artifact, `product/${productPath}`, content);
+  const files = [{ path: productPath, mode: "100644", size: content.length, sha256: digest(content) }];
+  const treeDigest = digest(`100644 ${files[0].sha256} ${content.length} ${productPath}\n`);
   write(artifact, "artifact-manifest.json", `${JSON.stringify({
     schemaVersion: "1.0",
     artifact: "foundry-clean-product",
@@ -74,6 +76,25 @@ test("independently approves exact immutable artifact bytes", () => {
     });
     assert.deepEqual(JSON.parse(readFileSync(approvalPath, "utf8")), approval);
     assert.equal(git(fixture.producer, ["status", "--porcelain"]), statusBefore);
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
+});
+
+test("checks image integrity without interpreting binary payload as host text", () => {
+  const scratch = mkdtempSync(join(tmpdir(), "foundry-assay-binary-"));
+  try {
+    const content = Buffer.concat([
+      Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+      Buffer.from([0x43, 0x3a, 0x5c, 0xff]),
+      Buffer.from([0xff, 0xd9]),
+    ]);
+    const fixture = makeFixture(scratch, { productPath: "reference/fixture.jpg", content });
+    assert.doesNotThrow(() => reviewFoundryArtifact({
+      producerRepo: fixture.producer,
+      artifactRoot: fixture.artifact,
+      approvalPath: join(scratch, "approval.json"),
+    }));
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }

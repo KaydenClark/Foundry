@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CIC Blueprint — Layout Studies</title>
+  <style>
+    :root { color-scheme: dark; --bg:#07111e; --panel:#0d1b2c; --line:#2a4662; --ink:#e6eff8; --muted:#9db1c6; --blue:#62c4ff; --green:#57d3aa; --amber:#f4b860; --violet:#bca2ff; --red:#ff8990; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(circle at 20% 0,#142d48 0,transparent 34%),var(--bg); color:var(--ink); font:15px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif; }
+    main { max-width:1320px; margin:auto; padding:44px 28px 72px; }
+    .eyebrow, .tag { color:var(--blue); font:700 11px/1 ui-monospace,SFMono-Regular,monospace; letter-spacing:.14em; text-transform:uppercase; }
+    h1 { margin:9px 0 8px; font-size:clamp(30px,5vw,52px); line-height:1; letter-spacing:-.04em; }
+    .lede { max-width:72ch; color:var(--muted); margin:0 0 32px; }
+    .brief { border:1px dashed var(--line); padding:14px 16px; background:#091727aa; color:var(--muted); margin-bottom:36px; }
+    .brief b { color:var(--ink); }
+    .study { margin:52px 0; padding-top:20px; border-top:1px solid var(--line); }
+    h2 { font-size:22px; margin:7px 0; }
+    .study > p { max-width:70ch; color:var(--muted); margin:0 0 20px; }
+    .canvas { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:linear-gradient(135deg,#0e2135,#091523); padding:22px; }
+    .node { border:1px solid var(--line); border-radius:12px; padding:12px; background:linear-gradient(145deg,#142a40,#0c1c2d); min-width:0; }
+    .node b { display:block; font-size:15px; }
+    .node small { color:var(--muted); display:block; margin-top:2px; }
+    .accent-blue { border-color:#258ac3; } .accent-green { border-color:#278d6f; } .accent-amber { border-color:#af7626; } .accent-violet { border-color:#7d60ce; } .accent-red { border-color:#ad5057; }
+    .arrow { color:var(--blue); font-size:25px; text-align:center; align-self:center; }
+    .flow { display:grid; grid-template-columns:1.1fr 34px 1.25fr 34px 1.25fr 34px 1.1fr; align-items:stretch; gap:8px; min-width:900px; }
+    .col { display:grid; gap:10px; align-content:center; }
+    .cap { color:var(--muted); font:700 10px/1 ui-monospace,SFMono-Regular,monospace; letter-spacing:.12em; text-transform:uppercase; margin-bottom:3px; }
+    .flow .node { min-height:82px; }
+    .footer-note { color:var(--muted); font-size:13px; margin:14px 2px 0; }
+    .facility { position:relative; min-height:560px; display:grid; place-items:center; background-image:linear-gradient(#17324c55 1px,transparent 1px),linear-gradient(90deg,#17324c55 1px,transparent 1px); background-size:32px 32px; }
+    .factory { width:min(520px,72vw); border:2px solid var(--blue); border-radius:42px; padding:62px 34px 32px; background:#0e233ae8; position:relative; box-shadow:0 0 80px #2f9bdf22; }
+    .factory > .tag { position:absolute; top:22px; left:34px; }
+    .steward { border:2px solid var(--green); background:#0d2a29; border-radius:20px; padding:22px; text-align:center; margin-bottom:22px; }
+    .steward b { font-size:19px; }
+    .workshops { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .workshop { border:1px solid #49718f; border-radius:12px; padding:12px 9px; text-align:center; background:#102a41; color:var(--muted); }
+    .workshop strong { display:block; color:var(--ink); }
+    .external { position:absolute; width:180px; }
+    .external.left { left:5%; top:15%; } .external.right { right:5%; top:15%; } .external.bottom { bottom:6%; width:250px; text-align:center; }
+    .external .node { margin:12px 0; }
+    .dashed { border-style:dashed; }
+    .planes { display:grid; grid-template-columns:280px 1fr 250px; gap:22px; align-items:stretch; min-width:950px; }
+    .plane-stack { display:grid; gap:8px; }
+    .plane { padding:11px 13px; border-left:4px solid var(--line); background:#102137; color:var(--muted); }
+    .plane b { color:var(--ink); display:block; }
+    .plane:nth-child(1){border-color:var(--blue)} .plane:nth-child(2){border-color:var(--green)} .plane:nth-child(3){border-color:var(--amber)} .plane:nth-child(4){border-color:var(--violet)} .plane:nth-child(5){border-color:#98a7b4} .plane:nth-child(6){border-color:var(--red)}
+    .gate { border:1px solid var(--green); border-radius:18px; padding:20px; background:#0b2928; display:grid; align-content:center; gap:14px; }
+    .gate h3 { margin:0; font-size:20px; }
+    .gate-row { display:grid; grid-template-columns:1fr 28px 1fr; gap:8px; align-items:center; }
+    .receipt { border:1px solid #2b896c; border-radius:9px; padding:10px; color:var(--muted); }
+    .mirror-card { border:1px solid var(--violet); border-radius:18px; padding:18px; background:#1b1630; }
+    .mirror-card h3 { margin:0 0 12px; }
+    .status { margin:8px 0; padding:9px; border-radius:8px; background:#241e41; color:var(--muted); }
+    .status b { color:var(--green); }
+    @media (max-width:900px) { .canvas { overflow-x:auto; } .facility { min-width:900px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Disposable prototype · not CIC implementation</div>
+    <h1>Blueprint tab — three ways to see the Factory</h1>
+    <p class="lede">Question: which visual structure explains the Foundry’s intended design without confusing it with Mirror’s live telemetry? Observable verdict: identify the layout that makes the hierarchy, work flow, and truth controls legible at a glance. Disposal boundary: this standalone HTML study is local reference material only.</p>
+    <div class="brief"><b>Shared design assumptions:</b> Foundry is portable; Factory is a host-scoped deployment; one Facility Steward/Servitor operates each Factory; Workshops are projects; Workbenches are their harnesses; CIC Blueprint is stable design while Mirror is live state.</div>
+
+    <section class="study">
+      <div class="tag">Study A · flow-first</div>
+      <h2>“What happens when I shout into a Door?”</h2>
+      <p>Best for a first-time explanation and for checking the pick-up/put-down loop. It makes the Factory a left-to-right journey.</p>
+      <div class="canvas"><div class="flow">
+        <div class="col"><div class="cap">Doors</div><div class="node accent-blue"><b>CIC Command Door</b><small>voice or typed order</small></div><div class="node accent-blue"><b>Direct engine Door</b><small>Codex · Claude · future</small></div></div>
+        <div class="arrow">→</div>
+        <div class="col"><div class="cap">Factory</div><div class="node accent-green"><b>Facility Steward</b><small>routes engine + effort; protects shared state</small></div><div class="node"><b>Contract work order</b><small>scope · acceptance · claim</small></div></div>
+        <div class="arrow">→</div>
+        <div class="col"><div class="cap">Workshop</div><div class="node accent-amber"><b>Workbench</b><small>project harness</small></div><div class="node"><b>Agent / Run</b><small>disposable worker attempt</small></div></div>
+        <div class="arrow">→</div>
+        <div class="col"><div class="cap">Check-in</div><div class="node accent-green"><b>Evidence gate</b><small>receipts · audit · exact SHA</small></div><div class="node accent-violet"><b>Mirror</b><small>live result and freshness</small></div></div>
+      </div></div>
+      <div class="footer-note">Use this as a “Factory story” page or as one panel in Blueprint.</div>
+    </section>
+
+    <section class="study">
+      <div class="tag">Study B · facility-first</div>
+      <h2>“What is inside the Factory, and what reaches outside?”</h2>
+      <p>Best for your original foundry schematic. It makes the Steward, Workshops, and external sockets/modules spatially obvious.</p>
+      <div class="canvas facility">
+        <div class="external left"><div class="node accent-blue"><b>Doors</b><small>CIC · Codex · Claude</small></div><div class="node accent-violet"><b>Mirror</b><small>live operational view</small></div></div>
+        <div class="factory"><div class="tag">Factory · host-scoped Foundry deployment</div><div class="steward"><b>Facility Steward / Servitor</b><small>one persistent operating identity · engine is selected at activation</small></div><div class="workshops"><div class="workshop"><strong>Workshop</strong>Project A<br><small>Workbench</small></div><div class="workshop"><strong>Workshop</strong>Project B<br><small>Workbench</small></div><div class="workshop"><strong>Workshop</strong>Project C<br><small>Workbench</small></div></div></div>
+        <div class="external right"><div class="node accent-green"><b>Recall socket</b><small>memory access</small></div><div class="node accent-amber"><b>Messaging socket</b><small>alerts / notifications</small></div><div class="node accent-blue"><b>Interface socket</b><small>CIC</small></div></div>
+        <div class="external bottom"><div class="node dashed"><b>Portable Foundry</b><small>same harness can establish another Factory on another host</small></div></div>
+      </div>
+      <div class="footer-note">Use this as the visual “site plan.” It gives sockets/modules an external, plug-in feel.</div>
+    </section>
+
+    <section class="study">
+      <div class="tag">Study C · control-first</div>
+      <h2>“What prevents the Factory from lying to itself?”</h2>
+      <p>Best for explaining the six planes and your pick-up/put-down rule. It makes the control system visible rather than decorative.</p>
+      <div class="canvas"><div class="planes">
+        <div class="plane-stack"><div class="cap">Ordered truth stack</div><div class="plane"><b>1 · Actuality</b>what is real</div><div class="plane"><b>2 · Evidence</b>claims about reality</div><div class="plane"><b>3 · Contract</b>current plan + work order</div><div class="plane"><b>4 · Memory</b>Wiki + ADR rationale</div><div class="plane"><b>5 · Projection</b>what CIC renders</div><div class="plane"><b>6 · Command</b>what Kayden asks for</div></div>
+        <div class="gate"><div class="tag">Workshop access control</div><h3>Pick up → change → put down</h3><div class="gate-row"><div class="receipt"><b>Pick up</b><br>contract work order<br>scope · claim · proof</div><div class="arrow">→</div><div class="receipt"><b>Actuality</b><br>bounded workshop change</div></div><div class="gate-row"><div class="receipt"><b>Put down</b><br>evidence receipts<br>audit if required</div><div class="arrow">→</div><div class="receipt"><b>Verify</b><br>deterministic close<br>or owner verdict</div></div></div>
+        <div class="mirror-card"><div class="tag">Live only</div><h3>Mirror</h3><div class="status"><b>WORKING</b><br>Engine: Codex · effort: medium</div><div class="status"><b>Evidence fresh</b><br>last receipt: 42 sec ago</div><div class="status"><b>Task home</b><br>Mac Mini Factory</div></div>
+      </div></div>
+      <div class="footer-note">Use this as the trust-and-governance page, not the introductory overview.</div>
+    </section>
+  </main>
+</body>
+</html>

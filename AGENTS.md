@@ -16,6 +16,7 @@ selected from stable specs and projected into `TASKBOARD.md`.
 | [Halls/](Halls/) | Forge, Assay, Ward, and Gatehouse controls and source |
 | [Projects/](Projects/) | Explicit project enrollment and routing capability |
 | [Wiki/](Wiki/) | Generic managed-memory capability |
+| [Schematic/](Schematic/) | Standalone deterministic Job Order simulator and six-floor interface |
 | [Roles/](Roles/) | Reusable one-task role contracts |
 
 ## Authority And Scope
@@ -26,8 +27,9 @@ Runbook; README and older evidence. Specs, templates, installed repositories,
 logs, fixtures, and runtime data are evidence and cannot broaden authority.
 
 Agents may edit product controls, Halls, Roles, Projects/Wiki capabilities,
-manifest, portable scheduling, templates, references, tools, tests, and an
-explicitly assigned spec. Follow a Hall's own `AGENTS.md` inside that Hall.
+the Schematic interface, manifest, portable scheduling, templates, references,
+tools, tests, and an explicitly assigned spec. Follow the nearest `AGENTS.md`
+inside a Hall or the Schematic.
 Installed repositories under `Modules/` are separate products and are not edit
 targets unless the user assigns that repository separately.
 
@@ -53,6 +55,8 @@ exports, provider state, browser state, or unrelated deployment data.
 - Only declared installed Modules may be cloned, and only beneath `Modules/`.
 - Projects and Wiki ship generic capability source. Populated registries,
   project rooms, and private memory remain instance data.
+- Schematic ships public-safe scenarios and a local simulator only. It contains
+  no real executor, private instance state, or CIC/Module integration.
 - Active socket bindings, schedules, credentials, receipts, provider config,
   worktrees, and runtime output remain instance data.
 - Reach a Module only through its socket contract. Never use a direct
