@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "foundry-clearance-policy",
+  "actorClasses": {
+    "observer": { "actions": [], "pathPrefixes": [], "requiredGates": [] },
+    "auditor": { "actions": [], "pathPrefixes": [], "requiredGates": ["audit"] },
+    "pawn": { "actions": ["journal.validate"], "pathPrefixes": ["journal/"], "requiredGates": ["authority"] },
+    "steward": { "actions": ["passage.record"], "pathPrefixes": ["journal/"], "requiredGates": ["authority", "single-writer"] },
+    "engineer": {
+      "actions": [
+        "lifecycle.migrate.v1-to-v2",
+        "lifecycle.claim",
+        "lifecycle.handoff",
+        "lifecycle.terminal",
+        "lifecycle.repair",
+        "lifecycle.parent.ingest-child"
+      ],
+      "pathPrefixes": ["state/", "journal/events/"],
+      "requiredGates": ["authority", "freshness", "single-writer"]
+    },
+    "owner": { "actions": ["*"], "pathPrefixes": [""], "requiredGates": ["owner-command"] }
+  },
+  "ownerOverride": {
+    "requiredFields": ["commandId", "actions", "paths", "expiresAt", "reason", "proofGates"]
+  },
+  "denial": { "recoveryRoute": "repair-and-reevaluate" }
+}

@@ -6,40 +6,135 @@
     "relativePath": "tools/socket-registry/registry.json",
     "validator": ["node", "tools/socket-contract.mjs", "validate"]
   },
+  "identityRegistry": {
+    "relativePath": "manifest/identity-registry.json",
+    "validator": ["node", "tools/identity-registry.mjs"]
+  },
   "components": [
     {
       "id": "F-001",
       "name": "Forge",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/LLM_Workbench.git",
-      "ref": "integration",
-      "destination": "Sockets/Forge",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Forge",
       "status": "active",
-      "provides": ["workbench", "socket-contract-registry"]
+      "provides": ["workbench", "socket-contract-registry"],
+      "foldedFrom": "https://github.com/KaydenClark/LLM_Workbench.git"
     },
     {
       "id": "F-002",
-      "name": "Audit Engine",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/Audit-Engine.git",
-      "ref": "integration",
-      "destination": "Sockets/Audit Engine",
+      "name": "Assay",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Assay",
       "status": "active",
-      "provides": ["read-only-audit"]
+      "provides": ["read-only-audit"],
+      "foldedFrom": "https://github.com/KaydenClark/Audit-Engine.git"
     },
     {
       "id": "P-012",
-      "name": "Personal Intelligence Platform",
-      "family": "Sockets",
-      "remote": "https://github.com/KaydenClark/personal-intelligence-platform.git",
-      "ref": "integration",
-      "destination": "Sockets/Personal Intelligence Platform",
+      "name": "Gauge",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Gauge",
       "status": "active",
-      "provides": ["module-integration-health"]
+      "provides": ["integration-transport-health", "activity-notification"],
+      "foldedFrom": "https://github.com/KaydenClark/personal-intelligence-platform.git"
+    },
+    {
+      "id": "G-001",
+      "name": "Gatehouse",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Gatehouse",
+      "status": "planned",
+      "provides": ["containment-boundary", "passage-scan-infrastructure"]
+    },
+    {
+      "id": "F-003",
+      "name": "Intake",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Intake",
+      "status": "planned",
+      "provides": ["candidate-job-order"]
+    },
+    {
+      "id": "F-004",
+      "name": "Validation",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Validation",
+      "status": "planned",
+      "provides": ["passage-findings"]
+    },
+    {
+      "id": "F-005",
+      "name": "Orchestration",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Orchestration",
+      "status": "planned",
+      "provides": ["work-routing", "delegation"]
+    },
+    {
+      "id": "F-006",
+      "name": "Design",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Design",
+      "status": "planned",
+      "provides": ["solution-design"]
+    },
+    {
+      "id": "F-007",
+      "name": "Knowledge",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Knowledge",
+      "status": "planned",
+      "provides": ["organizational-knowledge-sockets"]
+    },
+    {
+      "id": "F-008",
+      "name": "Scheduling",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Scheduling",
+      "status": "planned",
+      "provides": ["schedule-execution"]
+    },
+    {
+      "id": "F-009",
+      "name": "Production",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Production",
+      "status": "planned",
+      "provides": ["product-project-actuality"]
+    },
+    {
+      "id": "F-010",
+      "name": "Ward",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Ward",
+      "status": "planned",
+      "provides": ["triage", "bounded-repair", "integration"]
+    },
+    {
+      "id": "F-011",
+      "name": "Shipping",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Shipping",
+      "status": "planned",
+      "provides": ["producer-product-packaging"]
     },
     {
       "id": "P-010",
       "name": "OpenBrain",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/OpenBrain.git",
       "ref": "integration",
@@ -50,6 +145,7 @@
     {
       "id": "P-005",
       "name": "Command Information Center",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/command-information-center.git",
       "ref": "Integration",
@@ -60,6 +156,7 @@
     {
       "id": "M-002",
       "name": "Servitor Slack",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/Slack.git",
       "ref": "integration",
@@ -70,6 +167,7 @@
     {
       "id": "M-001",
       "name": "Servitor Discord",
+      "tier": "installed-module",
       "family": "Modules",
       "remote": "https://github.com/KaydenClark/Discord.git",
       "ref": "integration",

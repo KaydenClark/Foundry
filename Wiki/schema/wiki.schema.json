@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foundry.local/schema/wiki.schema.json",
+  "title": "Foundry Managed Memory Note",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "status", "sensitivity", "authority", "sources"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "kind": {
+      "enum": ["root-memory", "project-index", "project-pointer", "project-memory"]
+    },
+    "status": { "const": "active" },
+    "sensitivity": { "enum": ["normal", "private", "restricted"] },
+    "authority": { "enum": ["canonical", "derived"] },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

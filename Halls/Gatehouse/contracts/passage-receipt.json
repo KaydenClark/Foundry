@@ -1,0 +1,8 @@
+{
+  "socketId": "3P7X",
+  "owner": "Gatehouse",
+  "purpose": "Append-only evidence of every protected Job Order passage.",
+  "required": ["id", "jobOrderId", "responsibleParty", "actor", "timestamp", "source", "destination", "clearanceBand", "scope", "purpose", "scanResult"],
+  "scanResults": ["recorded", "blocked"],
+  "nonGoals": ["route selection", "policy decision", "Canon write", "Grounding write"]
+}

@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "contract": "pip-retrieval-transport.openapi.json",
+  "description": "Concrete request/response fixtures for the PIP-owned cross-model retrieval transport (S-001/TK-001). Proves client identity is checked, no backend credential ever reaches a client, provenance/freshness survive translation (falling back to explicit 'unknown' rather than a fabricated value while OpenBrain S-003/TK-003 is incomplete), and the adapter fails closed on disable/unreachable/unauthorized/invalid states without touching canonical Markdown/Git or OpenBrain ingestion.",
+  "cases": [
+    {
+      "state": "success_fresh",
+      "summary": "Approved client retrieves results where OpenBrain has already supplied a truthful freshness signal.",
+      "httpStatus": 200,
+      "request": {
+        "clientId": "cic-operator-console",
+        "clientToken": "<per-client token, opaque to PIP's client registry, never OpenBrain's token>",
+        "query": "GPT_OS Foundry socket ownership",
+        "matchCount": 4,
+        "matchThreshold": 0.2,
+        "filterVault": "machine"
+      },
+      "response": {
+        "query": "GPT_OS Foundry socket ownership",
+        "count": 1,
+        "results": [
+          {
+            "content": "Foundry Sockets own the socket contract; instances own the binding.",
+            "provenance": {
+              "source": "Wiki/Machine/GPT_OS Workspace.md",
+              "vault": "machine",
+              "freshness": { "status": "fresh", "checkedAt": "2026-07-21T00:00:00.000Z" }
+            }
+          }
+        ],
+        "transport": { "adapter": "pip-mcp-adapter", "adapterVersion": "1.0.0", "upstreamContractVersion": "1.0.0", "state": "enabled" }
+      }
+    },
+    {
+      "state": "success_unknown_freshness",
+      "summary": "Current real upstream case: OpenBrain's query-wiki contract does not yet emit provenance/freshness fields (blocked on OpenBrain S-003/TK-003, which itself waits on S-002 and S-004). PIP must propagate an explicit 'unknown' status rather than inventing 'fresh'.",
+      "httpStatus": 200,
+      "request": {
+        "clientId": "second-approved-agent",
+        "clientToken": "<per-client token>",
+        "query": "PIP transport contract",
+        "matchCount": 8,
+        "matchThreshold": 0.2,
+        "filterVault": null
+      },
+      "response": {
+        "query": "PIP transport contract",
+        "count": 1,
+        "results": [
+          {
+            "content": "opaque upstream match content, unchanged from OpenBrain's response",
+            "provenance": {
+              "source": null,
+              "vault": null,
+              "freshness": { "status": "unknown", "checkedAt": null }
+            }
+          }
+        ],
+        "transport": { "adapter": "pip-mcp-adapter", "adapterVersion": "1.0.0", "upstreamContractVersion": "1.0.0", "state": "enabled" }
+      }
+    },
+    {
+      "state": "unauthorized_client",
+      "summary": "clientId/clientToken is missing, malformed, or not on PIP's approved registry. Fails closed before any upstream call; no OpenBrain credential is ever at risk.",
+      "httpStatus": 401,
+      "request": {
+        "clientId": "unregistered-client",
+        "clientToken": "wrong-or-missing",
+        "query": "anything"
+      },
+      "response": {
+        "error": "unauthorized_client",
+        "message": "clientId is not on the approved registry.",
+        "transport": { "adapter": "pip-mcp-adapter", "state": "unauthorized" }
+      }
+    },
+    {
+      "state": "invalid_request",
+      "summary": "Malformed request body (missing query, or a field outside bounds). Rejected by the same validation the transport enforces before touching the client registry or upstream.",
+      "httpStatus": 400,
+      "request": {
+        "clientId": "cic-operator-console",
+        "clientToken": "<per-client token>",
+        "query": ""
+      },
+      "response": {
+        "error": "invalid_request",
+        "message": "query must be a non-empty string of at most 8000 characters.",
+        "transport": { "adapter": "pip-mcp-adapter", "state": "invalid_request" }
+      }
+    },
+    {
+      "state": "adapter_disabled",
+      "summary": "Owner has flipped the adapter's local kill switch (e.g. PIP_ADAPTER_ENABLED=false). PIP fails closed immediately, before checking client identity or calling OpenBrain. Canonical Markdown/Git and OpenBrain ingestion are untouched; recovery is re-enabling the flag and re-running doctor/health.",
+      "httpStatus": 403,
+      "request": {
+        "clientId": "cic-operator-console",
+        "clientToken": "<per-client token>",
+        "query": "anything"
+      },
+      "response": {
+        "error": "adapter_disabled",
+        "message": "The PIP retrieval adapter is disabled by the operator. No request reached OpenBrain.",
+        "transport": { "adapter": "pip-mcp-adapter", "state": "disabled" }
+      }
+    },
+    {
+      "state": "upstream_unreachable",
+      "summary": "OpenBrain's query-wiki endpoint could not be reached or returned a transport-level failure. PIP never fabricates a result set to paper over the outage; it reports the failure and lets the caller retry or fall back.",
+      "httpStatus": 502,
+      "request": {
+        "clientId": "cic-operator-console",
+        "clientToken": "<per-client token>",
+        "query": "anything"
+      },
+      "response": {
+        "error": "upstream_unreachable",
+        "message": "OpenBrain query-wiki did not respond. No results were fabricated.",
+        "transport": { "adapter": "pip-mcp-adapter", "state": "unreachable" }
+      }
+    }
+  ]
+}

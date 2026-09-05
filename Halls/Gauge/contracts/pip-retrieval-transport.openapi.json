@@ -1,0 +1,145 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Personal Intelligence Platform retrieval transport",
+    "version": "1.0.0",
+    "description": "MCP-compatible, read-only transport PIP exposes to approved clients. PIP terminates client identity here, translates it server-side to OpenBrain's own bearer token, and calls OpenBrain's authoritative query-wiki contract. No client ever receives OpenBrain's bearer token or any Supabase/service-role credential. Defined under PIP S-001/TK-001; implementation of a live provider round trip is separately blocked on OpenBrain S-003/TK-003."
+  },
+  "paths": {
+    "/pip/retrieve": {
+      "post": {
+        "security": [{ "clientBearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["clientId", "query"],
+                "additionalProperties": false,
+                "properties": {
+                  "clientId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "description": "Identity of the approved client (agent/app). Distinct from any backend credential; checked against PIP's own client registry, never forwarded upstream."
+                  },
+                  "query": { "type": "string", "minLength": 1, "maxLength": 8000, "pattern": "\\S" },
+                  "matchCount": { "type": "integer", "minimum": 1, "maximum": 20, "default": 8 },
+                  "matchThreshold": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.2 },
+                  "filterVault": {
+                    "oneOf": [
+                      { "type": "string", "enum": ["kayden", "machine", "history"] },
+                      { "type": "null" }
+                    ],
+                    "default": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retrieval completed, including an empty result set. Every result item carries a provenance/freshness envelope even when the upstream OpenBrain contract does not yet supply those fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["query", "count", "results", "transport"],
+                  "properties": {
+                    "query": { "type": "string" },
+                    "count": { "type": "integer", "minimum": 0 },
+                    "results": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/ResultEnvelope" }
+                    },
+                    "transport": { "$ref": "#/components/schemas/TransportMeta" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/Error" },
+          "401": { "$ref": "#/components/responses/Error" },
+          "403": { "$ref": "#/components/responses/Error" },
+          "502": { "$ref": "#/components/responses/Error" },
+          "500": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "clientBearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Per-client PIP-issued token, checked against PIP's client registry. Never OpenBrain's own bearer token; PIP never forwards a client token upstream and never forwards its own upstream token downstream."
+      }
+    },
+    "schemas": {
+      "Freshness": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": { "type": "string", "enum": ["fresh", "stale", "unknown"] },
+          "checkedAt": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] }
+        },
+        "description": "status is 'unknown' whenever the upstream contract does not supply a truthful freshness signal. PIP never fabricates 'fresh'."
+      },
+      "Provenance": {
+        "type": "object",
+        "required": ["freshness"],
+        "properties": {
+          "source": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+          "vault": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+          "freshness": { "$ref": "#/components/schemas/Freshness" }
+        }
+      },
+      "ResultEnvelope": {
+        "type": "object",
+        "required": ["provenance"],
+        "additionalProperties": true,
+        "properties": {
+          "provenance": { "$ref": "#/components/schemas/Provenance" }
+        },
+        "description": "Wraps one opaque OpenBrain match. additionalProperties carries through whatever content fields OpenBrain returns; PIP adds only the provenance envelope and never rewrites match content."
+      },
+      "TransportMeta": {
+        "type": "object",
+        "required": ["adapter", "adapterVersion", "state"],
+        "properties": {
+          "adapter": { "const": "pip-mcp-adapter" },
+          "adapterVersion": { "type": "string" },
+          "upstreamContractVersion": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+          "state": { "type": "string", "enum": ["enabled"] }
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Client, auth, adapter-disabled, or upstream failure. The adapter fails closed: on 401/403/502/500 results are always omitted or empty, never fabricated.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["error", "transport"],
+              "properties": {
+                "error": { "type": "string" },
+                "message": { "type": "string" },
+                "transport": {
+                  "type": "object",
+                  "required": ["adapter", "state"],
+                  "properties": {
+                    "adapter": { "const": "pip-mcp-adapter" },
+                    "state": { "type": "string", "enum": ["disabled", "unreachable", "unauthorized", "invalid_request", "error"] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "folders": [
+    { "name": "Personal Intelligence Platform", "path": "." },
+    { "name": "OpenBrain", "path": "../../Modules/OpenBrain" },
+    { "name": "Command Information Center", "path": "../../Modules/Command Information Center" }
+  ],
+  "settings": {
+    "files.exclude": { "**/.local": true }
+  }
+}

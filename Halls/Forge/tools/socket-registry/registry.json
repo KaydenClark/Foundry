@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "foundry-socket-contract-registry",
+  "owner": "Foundry Sockets family (the Forge / KaydenClark/LLM_Workbench)",
+  "provenance": "S-014 TK-002 (Foundry Vertical Slice Model). Extracts core component C-003 (socket registry) from prose into a machine-resolvable contract.",
+  "note": "One record per K-### socket. Each record declares the module-agnostic contract only — capability + contract surface + the request/response/invariant contract — never the implementation. This artifact TRAVELS with the Sockets family. Instance binding rows (which module fills a socket here) live in the GPT_OS Project Source Registry and validate AGAINST this contract; they are not stored here. Recall (K-001) carries a derived mirror of the ID map, but this Git artifact is canonical and wins on disagreement.",
+  "sockets": {
+    "K-001": {
+      "socket": "recall",
+      "capability": "Derived, provenance-bearing memory/context retrieval over approved canon, plus capture-class storage for DB-native data. The Wiki remembers; the recall module recalls.",
+      "contractSurface": {
+        "protocol": "request/response",
+        "entrypoint": "recall.query",
+        "schemaPointer": "tools/socket-registry/schema.mjs#recall"
+      },
+      "contract": {
+        "request": {
+          "required": ["query"],
+          "optional": ["id"],
+          "fields": {
+            "query": "Natural-language recall request.",
+            "id": "Optional bare typed ID (e.g. K-003, P-010) to resolve to its current name, source, and provenance."
+          }
+        },
+        "response": {
+          "required": ["value", "source", "freshness"],
+          "fields": {
+            "value": "The recalled value.",
+            "source": "Provenance pointer to the canonical file/path/note the value derives from.",
+            "freshness": "One of fresh | stale | offline | unknown, carrying an asOf timestamp."
+          }
+        },
+        "invariants": [
+          "Every recall answer exposes source (provenance) and freshness; an answer without both is not contract-conformant.",
+          "Recall is a derived mirror. When a recall answer disagrees with the Git-canonical registry, the registry wins and the mirror is stale.",
+          "A consumer reaches recall ONLY through the declared entrypoint. Reading the recall module's files or database directly is a reach-around and is not a valid connection through this socket."
+        ]
+      },
+      "moduleAgnostic": true
+    },
+    "K-005": {
+      "socket": "lifecycle-transition",
+      "capability": "Validate and execute exact claim, handoff, repair, parent/child, and terminal lifecycle transitions with one atomic state-plus-Journal commit under cooperative exact-tip compare-and-swap.",
+      "contractSurface": {
+        "protocol": "request/response",
+        "entrypoint": "lifecycle.transition",
+        "schemaPointer": "tools/socket-registry/schema.mjs#lifecycleTransition"
+      },
+      "contract": {
+        "request": {
+          "required": ["schemaVersion", "currentState", "nextState", "event", "predecessor", "expectedTip", "jobOrder", "action", "requestedScope", "clearance"],
+          "optional": ["actualTip"]
+        },
+        "response": {
+          "required": ["outcome", "receiptDisposition", "findings"],
+          "optional": ["expectedTip", "treePlan", "receipt", "recovery", "projections", "candidateSha", "authoritativeTip", "closureBlocked"]
+        },
+        "invariants": [
+          "The primitive is stage-agnostic and performs no target mutation when schema, scope, tip, trusted Gatehouse evaluation, or Journal validation fails.",
+          "An adopting instance binds the real Gatehouse evaluator, policy provenance, Job Order identity/revision, exact grant, and gates before accepting requests; none is caller-replaceable.",
+          "A caller-claimed Clearance must match that bound evaluator's decision and compiled-policy digest.",
+          "Every accepted mutation contains lifecycle state and exactly one Knowledge-validated Journal event in the same canonical tree and returns an exact-commit recovery receipt.",
+          "Denial persistence is non-recursive; repair has a one-attempt scope-bound budget; parent/child redelivery is idempotent; Projection is post-commit and cannot roll back authority.",
+          "The contract never self-claims, widens scope, accepts its own work, or advances a protected branch."
+        ]
+      },
+      "moduleAgnostic": true
+    },
+    "K-006": {
+      "socket": "grounding-journal",
+      "capability": "Validate, canonically encode, digest-chain, replay, recover, and project health for immutable Grounding Journal events paired with lifecycle state.",
+      "contractSurface": {
+        "protocol": "request/response",
+        "entrypoint": "groundingJournal.validateEvent",
+        "schemaPointer": "tools/socket-registry/schema.mjs#groundingJournal"
+      },
+      "contract": {
+        "request": {
+          "required": ["event", "predecessor", "pairedState"]
+        },
+        "response": {
+          "required": ["valid", "eventDigest", "findings"]
+        },
+        "invariants": [
+          "Canonical encoding, sequence, prior digest, state pairing, idempotency, replay, and privacy checks are deterministic.",
+          "Recovery exact-matches the expected Journal digest before journal-health Projection can be fresh.",
+          "State without its event and an event without its paired state both fail closed.",
+          "The contract validates Grounding and never grants authority or mutates lifecycle state."
+        ]
+      },
+      "moduleAgnostic": true
+    }
+  }
+}

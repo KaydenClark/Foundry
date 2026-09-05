@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  controlCandidates,
+  loadLocalFiles,
+  scoreWorkbench
+} from './evaluate-workbench.mjs';
+
+const controls = controlCandidates();
+const empty = controls.find((candidate) => candidate.name === 'control:no-template');
+const singleFile = controls.find((candidate) => candidate.name === 'control:single-instruction-file');
+
+assert.equal(scoreWorkbench(empty.files).score, 0, 'no-template control should score zero');
+
+const singleFileScore = scoreWorkbench(singleFile.files).score;
+assert.ok(singleFileScore > 0, 'single instruction file should score above zero');
+assert.ok(singleFileScore < 20, 'single instruction file should stay far below a workbench');
+
+const localFiles = loadLocalFiles(fileURLToPath(new URL('..', import.meta.url)));
+const localEvaluation = scoreWorkbench(localFiles);
+const localScore = localEvaluation.score;
+assert.ok(localScore >= 90, `local workbench should pass the core rubric, got ${localScore}`);
+assert.ok(localScore > singleFileScore, 'local workbench should beat the simple baseline');
+
+const activeWorkState = localEvaluation.breakdown.find((item) => item.id === 'active_work_state');
+assert.ok(activeWorkState, 'active work state should be present in the rubric');
+assert.ok(
+  !activeWorkState.missing.includes('hot spec projection'),
+  'local workbench should use TASKBOARD.md as the active spec projection'
+);
+assert.ok(
+  !activeWorkState.missing.includes('stable spec lifecycle'),
+  'local workbench should keep durable capability truth in stable specs'
+);
+
+const verificationContract = localEvaluation.breakdown.find((item) => item.id === 'verification_contract');
+assert.ok(verificationContract, 'verification contract should be present in the rubric');
+assert.ok(
+  !verificationContract.missing.includes('meaningful coverage policy'),
+  'local workbench should document the meaningful coverage policy'
+);
+
+const executiveInterface = localEvaluation.breakdown.find((item) => item.id === 'executive_interface');
+assert.ok(executiveInterface, 'executive interface criterion should be present in the rubric');
+assert.equal(
+  executiveInterface.missing.length,
+  0,
+  `local workbench should satisfy the executive interface criterion, missing: ${executiveInterface.missing.join(', ')}`
+);
+
+const singleFileExec = scoreWorkbench(singleFile.files).breakdown.find((item) => item.id === 'executive_interface');
+assert.ok(
+  singleFileExec && singleFileExec.score === 0,
+  'a bare instruction file should score zero on the executive interface criterion'
+);
+
+const productAcceptance = localEvaluation.breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(productAcceptance, 'product acceptance criterion should be present in the rubric');
+assert.equal(
+  productAcceptance.missing.length,
+  0,
+  `local workbench should satisfy the product acceptance criterion, missing: ${productAcceptance.missing.join(', ')}`
+);
+
+const singleFileProduct = scoreWorkbench(singleFile.files).breakdown.find((item) => item.id === 'product_acceptance');
+assert.ok(
+  singleFileProduct && singleFileProduct.score === 0,
+  'a bare instruction file should score zero on the product acceptance criterion'
+);
+
+const root = fileURLToPath(new URL('..', import.meta.url));
+const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-evaluator-entry-'));
+const linkedRoot = path.join(temp, 'checkout');
+fs.symlinkSync(root, linkedRoot, 'dir');
+try {
+  const output = execFileSync(process.execPath, [
+    path.join(linkedRoot, 'tools', 'evaluate-workbench.mjs'),
+    '--path', linkedRoot
+  ], { encoding: 'utf8' });
+  assert.match(output, /# Workbench Evaluation/,
+    'the evaluator must run when invoked through a symlinked checkout path');
+} finally {
+  fs.rmSync(temp, { recursive: true, force: true });
+}
+
+console.log(`ok - evaluator self-test passed; local score ${localScore}, single-file baseline ${singleFileScore}`);

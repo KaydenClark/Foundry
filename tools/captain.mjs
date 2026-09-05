@@ -42,10 +42,19 @@ function canonicalize(value) {
   );
 }
 
+function hasExactKeys(value, expected) {
+  const actual = Object.keys(value).sort();
+  const required = [...expected].sort();
+  return actual.length === required.length && actual.every((key, index) => key === required[index]);
+}
+
 export function validateWorkflowConfig(config) {
   const errors = [];
   if (!config || typeof config !== "object" || Array.isArray(config)) {
     return ["workflow config must be a JSON object"];
+  }
+  if (!hasExactKeys(config, ["schemaVersion", "statePath", "workflows"])) {
+    errors.push("workflow config fields must be exactly schemaVersion, statePath, and workflows");
   }
   if (config.schemaVersion !== "1.0") errors.push("schemaVersion must be '1.0'");
   if (!isSafeRelativePath(config.statePath)) errors.push("statePath must be a safe relative path");
@@ -59,6 +68,9 @@ export function validateWorkflowConfig(config) {
     if (!workflow || typeof workflow !== "object" || Array.isArray(workflow)) {
       errors.push(`${prefix} must be an object`);
       continue;
+    }
+    if (!hasExactKeys(workflow, ["id", "enabled", "activation", "roleSkill", "policy"])) {
+      errors.push(`${prefix} fields must be exactly id, enabled, activation, roleSkill, and policy`);
     }
     if (!/^[a-z][a-z0-9-]*$/.test(workflow.id ?? "")) {
       errors.push(`${prefix}.id must be lowercase kebab-case`);
@@ -109,13 +121,24 @@ function writeJsonAtomic(file, value) {
   renameSync(temporary, file);
 }
 
-function parseFlags(args) {
+const COMMAND_OPTIONS = new Map([
+  ["validate", new Set(["config"])],
+  ["level-zero", new Set(["signals", "state"])],
+]);
+
+function parseFlags(command, args) {
   const values = {};
+  const allowed = COMMAND_OPTIONS.get(command);
+  if (!allowed) throw new Error(`unknown command: ${command}`);
   for (let index = 0; index < args.length; index += 2) {
     const key = args[index];
     const value = args[index + 1];
-    if (!key?.startsWith("--") || !value) throw new Error(`invalid option near ${key ?? "end of input"}`);
-    values[key.slice(2)] = value;
+    if (!key?.startsWith("--")) throw new Error(`unexpected argument: ${key ?? "end of input"}`);
+    const name = key.slice(2);
+    if (!allowed.has(name)) throw new Error(`unexpected option: ${key}`);
+    if (Object.hasOwn(values, name)) throw new Error(`duplicate option: ${key}`);
+    if (!value || value.startsWith("--")) throw new Error(`${key} requires a value`);
+    values[name] = value;
   }
   return values;
 }
@@ -133,7 +156,7 @@ function cli() {
     printHelp();
     return;
   }
-  const flags = parseFlags(rest);
+  const flags = parseFlags(command, rest);
   if (command === "validate") {
     if (!flags.config) throw new Error("--config is required");
     const errors = validateWorkflowConfig(readJson(resolve(flags.config)));

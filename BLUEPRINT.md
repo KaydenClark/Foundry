@@ -1,218 +1,145 @@
-# Servitor Foundry - Blueprint
+# Foundry Blueprint
 
 **Status:** active
 **Product repository:** `github.com/KaydenClark/Foundry`
 **Staging branch:** `integration`
 
-This repository is the portable Servitor Foundry harness. It owns the reusable
-composition and governance layer; a deployment such as GPT_OS is one instance
-that adopts it.
-
-> Foundry : instance :: Workbench : project.
+The Foundry is a portable agent operating system. Its currently declared Canon
+roster contains thirteen native Halls; an explicit Canon amendment may change
+that roster, so thirteen is not a permanent product invariant. The integrated
+checkout contains every currently declared Hall path. It also contains reusable
+roles and scheduling mechanics, project and memory capabilities, install
+metadata for optional Modules, and deterministic tools.
 
 ## Product Map
 
-A Foundry turns one instance root into a governed set of Workbench rooms. The
-harness supplies controls, installation metadata, socket composition,
-Captain/scheduler policy, roles-as-skills, setup protocols, and verification.
-It installs Sockets and Modules from their own repositories and never absorbs
-their source histories.
-
-Reference deployment layout:
-
 ```text
-<instance-root>/
-|-- Foundry/                    <- this repository
-|   |-- AGENTS.md
-|   |-- BLUEPRINT.md
-|   |-- RUNBOOK.md
-|   |-- manifest/foundry.json
-|   |-- Sockets/               <- installed repos; ignored by Foundry Git
-|   |-- Modules/               <- installed repos; ignored by Foundry Git
-|   `-- .worktrees/            <- registered worktrees; ignored by Foundry Git
-|-- Wiki/                      <- live instance memory; never harness data
-|-- Projects/                  <- instance project rooms
-|-- .foundry/                  <- instance bindings and installation marker
-`-- .local/foundry/            <- receipts, scheduler state, and runtime output
+Foundry/
+|-- Halls/                               native source for the Canon-declared Hall roster
+|-- Schematic/                           separately owned visual blueprint
+|-- Roles/                               remaining legacy authority contracts during role-skill migration
+|-- Projects/                            explicit enrollment/index capability
+|-- Wiki/                                generic memory schema and routing
+|-- Scheduled/Captain/                   reusable AFK policy/configuration
+|-- Modules/                             ignored installed product repositories
+|-- manifest/foundry.json                component declaration
+|-- templates/                           adoption and instance templates
+`-- tools/                               lifecycle, adoption, and Captain tools
 ```
 
-The harness root is resolved from the running tool, while the instance root is
-an explicit argument. No host-specific absolute path is part of the contract.
+## Current Hall Roster
 
-## Ownership Model
+This table is the current thirteen-Hall declaration. Hall count and composition
+may change only through an explicit Canon amendment that also updates identities,
+contracts, migration evidence, and every derived projection.
 
-### Foundry harness
-
-Tracked in `KaydenClark/Foundry`:
-
-- the root control surface and stable harness specs;
-- `manifest/foundry.json`, its schema checks, and component destinations;
-- socket-registry discovery and binding validation through the installed Forge;
-- Captain/scheduler policy and portable configuration templates;
-- Team roles delivered as `skills/role-*`, never as a second `Roles/` store;
-- Foundry control-plane tools and repeatable tests;
-- `templates/ADOPTION.md`, `templates/GENESIS.md`, the adoption skill, and the
-  template Wiki;
-- explanatory reference material that contains no live-health claims.
-
-### Installed Sockets and Modules
-
-Each row is cloned by the manifest into an ignored destination and retains its
-own remote, branch, Git metadata, controls, tests, and release history.
-
-| Family | Stable ID | Component | Remote | Staging ref | Destination |
-|---|---|---|---|---|---|
-| Socket | F-001 | Forge | `KaydenClark/LLM_Workbench` | `integration` | `Sockets/Forge` |
-| Socket | F-002 | Audit Engine | `KaydenClark/Audit-Engine` | `integration` | `Sockets/Audit Engine` |
-| Socket | P-012 | Personal Intelligence Platform | `KaydenClark/personal-intelligence-platform` | `integration` | `Sockets/Personal Intelligence Platform` |
-| Module | P-010 | OpenBrain | `KaydenClark/OpenBrain` | `integration` | `Modules/OpenBrain` |
-| Module | P-005 | Command Information Center | `KaydenClark/command-information-center` | `Integration` | `Modules/Command Information Center` |
-| Module | M-002 | Servitor Slack | `KaydenClark/Slack` | `integration` | `Modules/Slack` |
-| Module | M-001 | Servitor Discord (paused) | `KaydenClark/Discord` | `integration` | `Modules/Discord` |
-
-Repository visibility is not a composition rule. An adopter needs existing
-non-interactive read access for private component repositories; the harness
-never stores or provisions credentials.
-
-### Instance data
-
-The deployment, not the harness, owns:
-
-- live Wiki memory and per-room brains;
-- project rooms and the instance routing registry;
-- socket bindings, module configuration, and credentials;
-- `.local` receipts, logs, caches, scheduler counters, and runtime state;
-- launchd/systemd/Task Scheduler bindings and host-specific paths;
-- provider discovery symlinks, active handoffs, worktrees, and local recovery
-  material.
-
-### Historical and archive material
-
-Superseded controls, completed one-release manifests, expired handoffs,
-grilling diaries after promotion, migration-only tools, and stale live-status
-drawings remain evidence. They are not active harness machinery and are not
-silently copied into a new instance.
-
-## GPT_OS Source Split Map (TK-001)
-
-This is a build map, not a file-move plan. GPT_OS remains untouched until the
-owner approves the separate live cutover.
-
-| Current GPT_OS scrap | Disposition | Harness result | Entanglement / cutover note |
+| ID | Hall | Path | Responsibility |
 |---|---|---|---|
-| `Roles/` | `move-to-foundry-harness` | Re-author the seven durable contracts as `skills/role-*` with an explicit in-context/no-spawn header. | Reconcile with GPT_OS S-016. Do not copy raw files or retire `Roles/` until that spec's checks and TK-003 cutover run. Instance-specific paths/model policy are parameterized. |
-| `Scheduled/` | `move-to-foundry-harness` (split) | Ship generic Captain/AFK policy, workflow schema/examples, and schedule-install guidance. | `READY_QUEUE.md`, active enrollment, handoff flags, external automation state, project-specific schedules, and local counters remain instance data. PR-34 and completed verifier manifests are archive evidence. |
-| `tools/` | `move-to-foundry-harness` (split) | Foundry owns manifest/adoption/doctor, portable Captain controls, binding checks, and cross-instance verification. | GPT_OS `.gitignore` whitelists specific tools and root controls call `Foundry/Sockets/Forge/tools/spec-workbench.mjs`; neither path nor mirror scope changes before TK-003. `foundry-migration-preflight` and the fixed PR-34 executor are historical/instance-specific. `wiki-cloud-projects.json` is instance data. |
-| `SKILLs Maker/` | `defer` | No raw copy in the first harness. | `create-skill` is a candidate reusable build skill; `update-harness` duplicates the Forge-owned canonical skill; the dataset skill is project/personal-specific; DOCX/source packages need provenance and ownership review. |
-| `project templates/` | `defer` | Foundry references the installed Forge for Workbench/project templates. | `VISUAL_DESIGN.md` is an instance preference, not a Foundry contract. Do not create a second template owner. |
-| `.agents/` | `keep-instance` | Adoption may create provider discovery links from a template, never track the live link or diary. | Current `.agents/skills` is an absolute symlink to the Forge; grilling diary/prep files are transient or historical instance material. |
-| `handoffs/` | `keep-instance` | Define a receipt/handoff schema only. | Live handoffs and their freshness belong to the deployment; archive them after their owning work closes. |
-| `grilling/` | `archive` | No active harness folder. | The provisional staging README is superseded by the gitignored `.agents/grilling diary` flow and stable specs. |
-| `Foundry/reference/` | `move-to-foundry-harness` | Ship a portable, non-authoritative architecture reference. | The current drawing contains historical Discord/model/live-status labels; adapt it and label it as a map, never a health source. |
-| `Foundry/CIC-worktrees/` | `archive` | None. | Verified empty leftover. Remove only during owner-approved cutover/cleanup. |
-| `Foundry/.worktrees/` | `keep-instance` | Ship only the ignored destination convention and safety rules. | Eleven registered worktrees are live Git metadata owned by their component repositories; never move, copy, or hand-delete them during harness build. |
+| 2K7P | Intake | `Halls/Intake/` | Deterministically creates candidate Job Orders only |
+| 8L4T | Validation | `Halls/Validation/` | Read-only passage findings for Orchestration |
+| 6V1N | Gatehouse | `Halls/Gatehouse/` | Passage infrastructure, clearance, scans, and append-only receipts; authorizes nothing |
+| 3W9H | Orchestration | `Halls/Orchestration/` | Decomposes, routes, delegates, and places work |
+| 5B2Y | Design | `Halls/Design/` | Develops complex solutions when selected by Orchestration |
+| 1R6F | Knowledge | `Halls/Knowledge/` | Houses organizational-knowledge Socket contracts, including Recall |
+| 7C4J | Scheduling | `Halls/Scheduling/` | Makes Orchestration-selected schedules run reliably |
+| 7M2Q | Forge | `Halls/Forge/` | Builds and improves the Foundry producer itself |
+| 9P8A | Production | `Halls/Production/` | Makes bounded changes to products and projects the Foundry produces |
+| 4X8C | Assay | `Halls/Assay/` | Read-only independent audit and judgment |
+| 6G3S | Ward | `Halls/Ward/` | Bounded repair and integration into `integration` |
+| 9D3R | Gauge | `Halls/Gauge/` | Observes Gatehouse passages and supplies derived live visibility and notifications |
+| 2N5E | Shipping | `Halls/Shipping/` | Packages a declared producer into a reproducible deployable product; name provisional |
 
-### Tool ownership detail
+A Hall is native tracked source. A Module is optional, separately owned, and
+installed from its own product repository. The canonical Foundry clone therefore
+arrives with every Hall in the current Canon declaration.
 
-| Tool family | Destination |
-|---|---|
-| manifest, adoption, harness doctor, boundary/portability checks | Foundry harness |
-| Captain decision core, Git preflight, ready-queue projection, save gate | Foundry harness after instance-root/state paths are parameters |
-| socket contract registry and validator | Installed Forge; Foundry manifest points to it and never duplicates it |
-| project index, Wiki/vault link checks, instance ID/binding registry | Split: reusable validators in harness; live registry, project list, and cloud target config in instance |
-| fixed Workbench PR-34 executor/manifest | archive; one-release GPT_OS evidence |
-| Foundry physical-migration preflight | archive after TK-003; cutover-only evidence, not a permanent setup API |
+## FUID Identity Contract
 
-## Socket Composition Contract
+FUID is the permanent identity shared across Foundry architecture and work.
+Four-character uppercase base36 values identify Halls, Modules, Sockets, and
+Projects/Workshops. Six-character values identify Specs, Tickets, Intent
+requests, Job Orders, and passage receipts. The identifier encodes no type or
+parentage; those remain registry fields.
 
-The install manifest declares repositories and where their traveling contracts
-can be found. It never records secrets or an active instance binding.
+All-zero is reserved. New sequential allocation starts at `0001`/`000001`,
+advances `0-9A-Z`, persists one high-water mark per width, and skips every active
+or retired value. S-001's existing opaque identities are grandfathered permanent
+FUIDs outside the new sequential chain and remain reserved rather than being
+renumbered. Typed IDs remain unique compatibility aliases and no migration
+bulk-renames historical paths.
 
-The installed Forge owns the Git-canonical socket contract registry. The
-instance copies `templates/instance/bindings.json` to
-`<instance-root>/.foundry/bindings.json` and may then choose which compatible
-Module fills each socket. A connection is valid only through the declared
-contract entrypoint; filesystem/database reach-arounds are rejected.
+The portable registry owns product entities, validation, and allocator rules.
+An instance registry owns private Project/Workshop and work-item allocations;
+portable validation may compose that registry without publishing its contents.
+Canonical registries and task controls allocate. Recall may resolve only with
+provenance and freshness and fails closed to Canon.
 
-Current proven registry coverage is K-001 recall. K-002 messaging and K-003
-interface components are installed and represented in the instance binding
-template, but their machine-readable Forge contract records are still pending;
-the doctor reports them as pending instead of inventing or duplicating a
-contract. K-004 finance remains planned and unbound.
+Every Spec and Ticket carries immutable `Created` and substantive `Last worked`
+dates. Claim, close, completion, and explicit content mutation advance Last
+worked. Rendering, projection refresh, lookup, and polling do not. `Updated`
+remains a temporary compatibility field while consumers migrate. S-002 owns the
+portable implementation and root S-036 owns the instance/CIC slice.
 
-## Control Surface
+## Ownership Boundary
 
-| Artifact | Owns |
-|---|---|
-| `AGENTS.md` | authority, boundaries, work loop, Git, safety, proof |
-| `BLUEPRINT.md` | product/instance architecture and ownership split |
-| `LEXICON.md` | shared Foundry definitions |
-| `TASKBOARD.md` | generated hot projection of active harness specs |
-| `specs/` | durable capability requirements, tickets, decisions, and proof |
-| `RUNBOOK.md` | exact setup, validation, audit, recovery, and Git commands |
-| `README.md` | human-facing clone and "set up my foundry" entrypoint |
-| `CLAUDE.md` | thin provider bridge to `AGENTS.md` |
+The product owns its controls, Halls,
+generic Projects/Wiki behavior, Roles, scheduling primitives, manifest,
+templates, references, and tools. A deployed instance owns populated project
+data and memory, active bindings and workflows, credentials, receipts, logs,
+provider configuration, services, and worktrees.
 
-## Setup And Adoption Flow
+Installed Module source and release history remain in each Module repository.
+The manifest may declare compatible implementations, but socket contracts are
+the only integration boundary; filesystem reach-arounds are invalid.
+Adoption records `/Modules/` in checkout-local Git exclusions before installing
+declared Modules. This keeps product checkouts clean without imposing the
+product's runtime ignore policy on an independently tracked producer tree.
 
-1. Create or select an instance root; never assume a username or home path.
-2. Clone `KaydenClark/Foundry` into `<instance-root>/Foundry` at an explicit ref.
-3. Run `foundry.mjs adopt --instance-root <instance-root>`.
-4. Validate the manifest before any clone. Refuse duplicate IDs/destinations,
-   absolute/traversing destinations, embedded credentials, and binding data.
-5. Clone each component to its ignored destination and check out its declared
-   staging ref. Existing destinations must have the expected origin; adoption
-   never overwrites or resets them.
-6. Seed the template Wiki only when the target files do not exist. An existing
-   Wiki is inventoried and preserved for the later migration/cutover plan.
-7. Copy the binding template into instance-owned `.foundry/`, keeping paths
-   relative to the instance and leaving credentials absent.
-8. Write a sanitized receipt under `.local/foundry/` with manifest digest,
-   harness source ref/SHA, component remotes/refs/resolved SHAs, and checks run.
-9. Run Foundry doctor, boundary and portability tests, then Audit Engine against
-   the Foundry checkout. Audit Engine remains read-only toward the target.
-10. Stop at `integration`. Live service bindings and an existing deployment's
-    ownership cutover require the separate owner gate.
+## Source And Publication
 
-## Architecture And Invariants
+This product is generated from an independently tracked producer source. The
+public repository is an output and is never an authoring input. Packaging reads
+one immutable producer commit, constructs a clean temporary tree, enforces the
+publication/exclusion contract, scans for secrets and host coupling, and
+compares the result byte-for-byte before an explicit `integration` push.
+Tracked producer-only Module source is an explicit non-published class. The
+inventory may omit that declared class, while unclassified, private, secret,
+and runtime paths still fail closed.
 
-- Build the portable contract; do not relocate the live GPT_OS tree.
-- Installed repositories remain independent Git roots and are always ignored by
-  the Foundry repository.
-- Instance paths are parameters. Committed artifacts contain no host-specific
-  absolute paths, credentials, `.env` values, or runtime state.
-- The template Wiki is shippable; live memory is never copied back into the
-  harness.
-- Roles are skills that change the current agent's stance. They never spawn an
-  agent; explicit Captain dispatch creates separate tasks.
-- Audit is read-only and fail-visible. Missing private-repo access, pending
-  socket contracts, or unavailable checks are reported, not papered over.
-- `integration` is the automation finish line. Only the owner promotes to
-  `main`.
+Product controls describe this mechanism only. Private producer or instance
+contents, filenames, task state, and purpose do not belong in the public tree.
 
-## Non-Goals
+## Adoption Contract
 
-- Vendoring Sockets or Modules.
-- Moving GPT_OS controls, live Wiki, worktrees, projects, secrets, launchd
-  bindings, or runtime data during TK-001/TK-002.
-- Completing K-002/K-003 machine-readable socket contracts in a second owner.
-- Publishing a supported external distribution or changing repository
-  visibility.
-- Performing the GPT_OS live cutover; that is S-018/TK-003 and owner-gated.
+Adoption validates the whole manifest before mutation, verifies native Halls in
+place, clones only installed Modules into ignored destinations, preserves
+existing Wiki/binding/workflow files, and writes instance receipts outside
+product Git. Plan mode is read-only. A failed preflight leaves no partial clone.
 
-## Spec Catalog
+## Capability Catalog
 
 <!-- spec-catalog:start -->
-| Spec | Description | Status |
-|---|---|---|
-| [S-001 - Portable Foundry Harness](specs/S-001-portable-foundry-harness/SPEC.md) | Design, build, and prove the first portable install-by-manifest Foundry harness without moving a live instance. | active |
+| FUID | Spec alias | Description | Status | Created | Last worked |
+|---|---|---|---|---|---|
+| 00005E | [S-001 - Hall Architecture And Identity Registry](specs/S-001-hall-architecture-and-identity-registry/SPEC.md) | Establish the thirteen-Hall Foundry architecture, durable identity model, and staged passage contracts. | complete | 2026-08-12 | 2026-08-17 |
+| 000002 | [S-002 - FUID Registry And Lifecycle](specs/S-002-fuid-registry-and-lifecycle/SPEC.md) | Extend the Foundry identity registry and Workbench lifecycle with fixed-width base36 FUID allocation, aliases, and Created/Last worked metadata. | complete | 2026-08-18 | 2026-08-18 |
+| 00009K | [S-003 - Heartbeat Socket](specs/S-003-heartbeat-socket/SPEC.md) | Publish one portable FUID-primary Heartbeat Socket and a privacy-safe Gauge feed that exposes current Foundry activity without inventing lifecycle state. | planned | 2026-08-30 | 2026-08-30 |
+| 00009O | [S-004 - Job Order Flight Observation Feed](specs/S-004-job-order-flight-observation-feed/SPEC.md) | Publish a privacy-safe Gauge observation feed for real seven-stage Job Order flights derived from lifecycle, Journal-health, and passage Actuality. | planned | 2026-08-30 | 2026-08-30 |
 <!-- spec-catalog:end -->
 
 ## Design Decisions
 
-| Decision | Rationale | Date |
-|---|---|---|
-| Harness checkout lives at `<instance-root>/Foundry` | Keeps reusable controls/components together while Wiki, projects, bindings, and runtime remain instance-owned siblings. | 2026-07-21 |
-| Install repositories from an explicit manifest | Preserves component histories and makes a blank adoption deterministic and auditable. | 2026-07-21 |
-| Forge remains the socket-contract registry owner | Extends S-014 without creating a parallel registry in the composition repository. | 2026-07-21 |
-| Convert roles to skills in the new harness | Matches S-016's target mechanism without moving or prematurely retiring GPT_OS role sources. | 2026-07-21 |
+- Physical organization is `Halls/`; a socket is a capability contract housed
+  inside a Hall, not a filesystem tier.
+- Role delivery is migrating to flat shared skills; `Roles/` contains the
+  remaining legacy contracts during that transition. Scheduling policy is
+  canonical under `Scheduled/Captain/`.
+- Projects and Wiki are portable capabilities, never copied instance data.
+- Schematic is a separately owned Projection producer. It is the interactive
+  visual blueprint of Canon and the intended end-state design, not the native
+  product interface, not CIC, and not live Actuality. Its deterministic Job
+  Order runs are explanatory simulations only. It remains producer-only during
+  migration; S-035 requires the next authorized Shipping artifact to include it
+  in the Foundry product only after named Proof and independent Assay gates pass.
+- Modules keep independent repositories and are installed, not vendored.
+- Automated delivery stops at `integration`; `main` promotion is owner-only.

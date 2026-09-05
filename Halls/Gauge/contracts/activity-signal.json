@@ -1,0 +1,8 @@
+{
+  "socketId": "6A9G",
+  "owner": "Gauge",
+  "purpose": "Derived activity signal from a Gatehouse passage receipt.",
+  "required": ["id", "receiptId", "channel", "kind", "actionable"],
+  "channels": ["cic", "responsible-hall", "discord"],
+  "nonGoals": ["route selection", "policy decision", "Canon write", "Grounding write"]
+}

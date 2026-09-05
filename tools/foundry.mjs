@@ -27,6 +27,9 @@ import {
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { validateWorkflowConfig } from "./captain.mjs";
+import { validateIdentityRegistry } from "./identity-registry.mjs";
+import { initializeProjects } from "../Projects/tools/projects.mjs";
+import { initializeWiki } from "../Wiki/tools/wiki.mjs";
 
 const scriptFile = fileURLToPath(import.meta.url);
 const defaultHarnessRoot = resolve(dirname(scriptFile), "..");
@@ -43,28 +46,32 @@ const REQUIRED_HARNESS_PATHS = [
   "TASKBOARD.md",
   "audit-engine.json",
   "manifest/foundry.json",
+  "manifest/identity-registry.json",
   "reference/README.md",
   "reference/foundry-schematic-FND-01.html",
-  "scheduler/AFK_POLICY.md",
-  "scheduler/CAPTAIN.md",
-  "scheduler/workflows.example.json",
-  "skills/adoption/SKILL.md",
-  "skills/role-auditor/SKILL.md",
-  "skills/role-captain/SKILL.md",
-  "skills/role-chain-engineer/SKILL.md",
-  "skills/role-designer/SKILL.md",
-  "skills/role-engineer/SKILL.md",
-  "skills/role-planner/SKILL.md",
-  "skills/role-scout/SKILL.md",
+  "Scheduled/Captain/AFK_POLICY.md",
+  "Roles/Captain.md",
+  "Scheduled/Captain/workflows.example.json",
+  "Halls/Forge/skills/adoption/SKILL.md",
+  "Halls/Forge/skills/genesis/SKILL.md",
+  "Roles/Auditor.md",
+  "Roles/Captain.md",
+  "Roles/Chain Engineer.md",
+  "Roles/Designer.md",
+  "Roles/Planner.md",
+  "Roles/Scout.md",
   "templates/ADOPTION.md",
   "templates/GENESIS.md",
-  "templates/Wiki/MEMORY.md",
-  "templates/Wiki/SCHEMA.md",
-  "templates/Wiki/Machine/Foundry Instance.md",
+  "Projects/README.md",
+  "Projects/tools/projects.mjs",
+  "Wiki/MEMORY.md",
+  "Wiki/SCHEMA.md",
+  "Wiki/tools/wiki.mjs",
   "templates/instance/bindings.json",
   "templates/instance/workflows.json",
   "tools/captain.mjs",
   "tools/markdown-table.mjs",
+  "tools/identity-registry.mjs",
   "tools/spec-workbench.mjs",
   "tools/test-captain.mjs",
   "tools/test-foundry.mjs",
@@ -177,6 +184,19 @@ function findInstanceOnlyKeys(value, location = "manifest") {
   return errors;
 }
 
+const VALID_TIERS = new Set(["native-hall", "installed-module"]);
+const TIER_FAMILY = { "native-hall": "Halls", "installed-module": "Modules" };
+
+// A native Hall (the Forge, the Assay, the Ward, the Gatehouse) is tracked
+// source inside this very repository: it arrives with `git clone` of the
+// Foundry itself and carries no remote, ref, or install destination. An
+// installed Module (OpenBrain, CIC, Slack, Discord) is optional and remains a
+// separately owned repository the adoption manifest clones on request. See
+// S-024 and root LEXICON.md "Hall" / "Foundry Module".
+export function componentLocation(component) {
+  return component?.tier === "native-hall" ? component?.path : component?.destination;
+}
+
 export function validateManifest(manifest) {
   const errors = [];
   if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
@@ -190,15 +210,15 @@ export function validateManifest(manifest) {
     errors.push("components must be a non-empty array");
   } else {
     const ids = new Set();
-    const destinations = new Set();
+    const locations = new Set();
     for (const [index, component] of manifest.components.entries()) {
       const prefix = `components[${index}]`;
       if (!component || typeof component !== "object" || Array.isArray(component)) {
         errors.push(`${prefix}: component must be an object`);
         continue;
       }
-      if (!/^(?:F|P|M)-\d{3}$/.test(component.id ?? "")) {
-        errors.push(`${prefix}.id must match F-###, P-###, or M-###`);
+      if (!/^(?:F|P|M|G)-\d{3}$/.test(component.id ?? "")) {
+        errors.push(`${prefix}.id must match F-###, P-###, M-###, or G-###`);
       } else if (ids.has(component.id)) {
         errors.push(`${prefix}: duplicate component id '${component.id}'`);
       } else {
@@ -207,34 +227,67 @@ export function validateManifest(manifest) {
       if (typeof component.name !== "string" || !component.name.trim()) {
         errors.push(`${prefix}.name must be a non-empty string`);
       }
-      if (!["Sockets", "Modules"].includes(component.family)) {
-        errors.push(`${prefix}.family must be Sockets or Modules`);
+      if (!["active", "paused", "planned"].includes(component.status)) {
+        errors.push(`${prefix}.status must be active, paused, or planned`);
       }
-      for (const remoteError of remoteErrors(component.remote)) {
-        errors.push(`${prefix}.remote ${remoteError}`);
+
+      if (!VALID_TIERS.has(component.tier)) {
+        errors.push(`${prefix}.tier must be native-hall or installed-module`);
+        continue;
       }
-      if (
-        typeof component.ref !== "string" ||
-        !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(component.ref) ||
-        component.ref.includes("..") ||
-        component.ref.endsWith("/")
-      ) {
-        errors.push(`${prefix}.ref must be a safe explicit Git branch name`);
+      const expectedFamily = TIER_FAMILY[component.tier];
+      if (component.family !== expectedFamily) {
+        errors.push(`${prefix}.family must be '${expectedFamily}' for tier '${component.tier}'`);
       }
-      if (!isSafeRelativePath(component.destination)) {
-        errors.push(`${prefix}.destination must be a safe relative path`);
-      } else {
-        if (component.family && !component.destination.startsWith(`${component.family}/`)) {
-          errors.push(`${prefix}.destination must live under ${component.family}/`);
+
+      if (component.tier === "native-hall") {
+        if ("remote" in component) errors.push(`${prefix}: native Hall components must not declare a remote`);
+        if ("ref" in component) errors.push(`${prefix}: native Hall components must not declare a ref`);
+        if ("destination" in component) {
+          errors.push(`${prefix}: native Hall components must not declare a destination`);
         }
-        if (destinations.has(component.destination)) {
-          errors.push(`${prefix}: duplicate destination '${component.destination}'`);
+        if (!isSafeRelativePath(component.path)) {
+          errors.push(`${prefix}.path must be a safe relative path`);
+        } else if (component.path.startsWith("Modules/")) {
+          errors.push(`${prefix}.path must not live under Modules/`);
+        } else if (locations.has(component.path)) {
+          errors.push(`${prefix}: duplicate location '${component.path}'`);
         } else {
-          destinations.add(component.destination);
+          locations.add(component.path);
         }
-      }
-      if (!["active", "paused"].includes(component.status)) {
-        errors.push(`${prefix}.status must be active or paused`);
+        if ("foldedFrom" in component) {
+          for (const foldedFromError of remoteErrors(component.foldedFrom)) {
+            errors.push(`${prefix}.foldedFrom ${foldedFromError}`);
+          }
+        }
+      } else {
+        if ("path" in component) errors.push(`${prefix}: installed Module components must not declare a path`);
+        if ("foldedFrom" in component) {
+          errors.push(`${prefix}: installed Module components must not declare foldedFrom`);
+        }
+        for (const remoteError of remoteErrors(component.remote)) {
+          errors.push(`${prefix}.remote ${remoteError}`);
+        }
+        if (
+          typeof component.ref !== "string" ||
+          !/^[A-Za-z0-9][A-Za-z0-9._/-]*$/.test(component.ref) ||
+          component.ref.includes("..") ||
+          component.ref.endsWith("/")
+        ) {
+          errors.push(`${prefix}.ref must be a safe explicit Git branch name`);
+        }
+        if (!isSafeRelativePath(component.destination)) {
+          errors.push(`${prefix}.destination must be a safe relative path`);
+        } else {
+          if (!component.destination.startsWith(`${expectedFamily}/`)) {
+            errors.push(`${prefix}.destination must live under ${expectedFamily}/`);
+          }
+          if (locations.has(component.destination)) {
+            errors.push(`${prefix}: duplicate location '${component.destination}'`);
+          } else {
+            locations.add(component.destination);
+          }
+        }
       }
     }
   }
@@ -257,6 +310,23 @@ export function validateManifest(manifest) {
       errors.push("socketRegistry.validator must be a non-empty argv array");
     } else if (["sh", "bash", "zsh", "cmd", "powershell", "pwsh"].includes(registry.validator[0])) {
       errors.push("socketRegistry.validator must not invoke a shell");
+    }
+  }
+  const identityRegistry = manifest.identityRegistry;
+  if (!identityRegistry || typeof identityRegistry !== "object" || Array.isArray(identityRegistry)) {
+    errors.push("identityRegistry must be an object");
+  } else {
+    if (!isSafeRelativePath(identityRegistry.relativePath)) {
+      errors.push("identityRegistry.relativePath must be a safe relative path");
+    }
+    if (
+      !Array.isArray(identityRegistry.validator) ||
+      identityRegistry.validator.length < 2 ||
+      identityRegistry.validator.some((argument) => typeof argument !== "string" || !argument)
+    ) {
+      errors.push("identityRegistry.validator must be a non-empty argv array");
+    } else if (["sh", "bash", "zsh", "cmd", "powershell", "pwsh"].includes(identityRegistry.validator[0])) {
+      errors.push("identityRegistry.validator must not invoke a shell");
     }
   }
   errors.push(...findInstanceOnlyKeys(manifest));
@@ -355,6 +425,46 @@ function inspectComponentDestination({ component, harnessRoot, source }) {
   return { action: "reuse", destination };
 }
 
+// The common baseline every native Hall must carry. Shared vocabulary is owned
+// by the root Lexicon; a Hall may add a local Lexicon when it has terms beyond
+// that shared map, so it is not an adoption gate.
+const NATIVE_HALL_CONTROL_DOCS = [
+  "AGENTS.md",
+  "BLUEPRINT.md",
+  "RUNBOOK.md",
+  "TASKBOARD.md",
+  "CLAUDE.md",
+  "README.md",
+];
+
+function inspectNativeHall({ component, harnessRoot }) {
+  assertNoSymbolicLinkSegments(harnessRoot, component.path, `${component.id} path`);
+  const location = join(harnessRoot, component.path);
+  if (!existsSync(location) || !statSync(location).isDirectory()) {
+    throw new Error(`${component.id} native Hall is missing at ${component.path}`);
+  }
+  const missing = NATIVE_HALL_CONTROL_DOCS.filter((doc) => !existsSync(join(location, doc)));
+  if (missing.length) {
+    throw new Error(
+      `${component.id} native Hall at ${component.path} is missing control docs: ${missing.join(", ")}`,
+    );
+  }
+  return { action: "native", destination: location };
+}
+
+function nativeHallErrors(harnessRoot, manifest) {
+  const errors = [];
+  for (const component of manifest.components) {
+    if (component.tier !== "native-hall") continue;
+    try {
+      inspectNativeHall({ component, harnessRoot });
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
+  return errors;
+}
+
 function installComponent({ component, harnessRoot, source }) {
   const inspection = inspectComponentDestination({ component, harnessRoot, source });
   if (inspection.action === "clone") {
@@ -381,6 +491,22 @@ function copyTemplateFile({ template, destination, replacements }) {
   mkdirSync(dirname(destination), { recursive: true });
   writeFileSync(destination, rendered, "utf8");
   return "created";
+}
+
+function ensureLocalModuleIgnore(harnessRoot) {
+  const gitDirectory = git(harnessRoot, ["rev-parse", "--git-dir"]);
+  if (gitDirectory.status !== 0) throw new Error("Foundry adoption requires a Git checkout");
+  const resolvedGitDirectory = realpathSync(resolve(harnessRoot, gitDirectory.stdout.trim()));
+  const checkoutRoot = realpathSync(harnessRoot);
+  if (resolvedGitDirectory !== join(checkoutRoot, ".git")) {
+    throw new Error("Foundry adoption requires a standalone checkout with local Git metadata");
+  }
+  const excludeFile = join(resolvedGitDirectory, "info", "exclude");
+  mkdirSync(dirname(excludeFile), { recursive: true });
+  const current = existsSync(excludeFile) ? readFileSync(excludeFile, "utf8") : "";
+  if (current.split(/\r?\n/).includes("/Modules/")) return;
+  const prefix = current && !current.endsWith("\n") ? `${current}\n` : current;
+  writeFileSync(excludeFile, `${prefix}/Modules/\n`, "utf8");
 }
 
 function parseBindings(file) {
@@ -432,7 +558,9 @@ export async function adoptFoundry({
     ".local/foundry/adoption-receipt.json",
     "Wiki/MEMORY.md",
     "Wiki/SCHEMA.md",
-    "Wiki/Machine/Foundry Instance.md",
+    "Wiki/Projects/INDEX.md",
+    "Projects/projects.json",
+    "Projects/INDEX.md",
   ];
   const assertInstanceMaterializationPaths = () => {
     for (const relativePath of instanceMaterializationPaths) {
@@ -461,6 +589,9 @@ export async function adoptFoundry({
     ? sha256File(manifestPath)
     : sha256(`${JSON.stringify(manifest)}\n`);
   const inspectedComponents = manifest.components.map((component) => {
+    if (component.tier === "native-hall") {
+      return { component, source: null, inspection: inspectNativeHall({ component, harnessRoot }) };
+    }
     const source = sourceOverrides[component.id] ?? component.remote;
     const inspection = inspectComponentDestination({ component, harnessRoot, source });
     return { component, source, inspection };
@@ -468,23 +599,37 @@ export async function adoptFoundry({
   const plan = inspectedComponents.map(({ component, inspection }) => ({
     id: component.id,
     name: component.name,
-    destination: component.destination,
-    remote: component.remote,
-    ref: component.ref,
+    tier: component.tier,
+    location: componentLocation(component),
+    remote: component.remote ?? null,
+    ref: component.ref ?? null,
     action: inspection.action,
   }));
   if (dryRun) {
     return { schemaVersion: "1.0", dryRun: true, harnessRoot: harnessRelative, plan };
   }
 
+  ensureLocalModuleIgnore(harnessRoot);
   const componentResults = [];
-  for (const { component, source } of inspectedComponents) {
+  for (const { component, source, inspection } of inspectedComponents) {
+    if (component.tier === "native-hall") {
+      componentResults.push({
+        id: component.id,
+        name: component.name,
+        family: component.family,
+        tier: component.tier,
+        path: component.path,
+        action: inspection.action,
+      });
+      continue;
+    }
     const installed = installComponent({ component, harnessRoot, source });
     const commit = git(installed.destination, ["rev-parse", "HEAD"]).stdout.trim();
     componentResults.push({
       id: component.id,
       name: component.name,
       family: component.family,
+      tier: component.tier,
       destination: component.destination,
       remote: component.remote,
       source,
@@ -503,19 +648,15 @@ export async function adoptFoundry({
     ADOPTION_DATE: new Date().toISOString().slice(0, 10),
   };
 
-  const wikiTemplateRoot = join(harnessRoot, "templates", "Wiki");
+  const wikiMemoryExisted = existsSync(join(instanceRoot, "Wiki", "MEMORY.md"));
+  initializeProjects(instanceRoot);
+  initializeWiki(instanceRoot);
   const wikiActions = [
-    ["MEMORY.md", "MEMORY.md"],
-    ["SCHEMA.md", "SCHEMA.md"],
-    [join("Machine", "Foundry Instance.md"), join("Machine", "Foundry Instance.md")],
-  ].map(([templateRelative, destinationRelative]) => ({
-    path: `Wiki/${destinationRelative.split(sep).join("/")}`,
-    action: copyTemplateFile({
-      template: join(wikiTemplateRoot, templateRelative),
-      destination: join(instanceRoot, "Wiki", destinationRelative),
-      replacements,
-    }),
-  }));
+    { path: "Wiki/MEMORY.md", action: wikiMemoryExisted ? "preserved" : "created" },
+    { path: "Wiki/Projects/INDEX.md", action: "generated" },
+    { path: "Projects/projects.json", action: "initialized" },
+    { path: "Projects/INDEX.md", action: "generated" },
+  ];
 
   mkdirSync(foundryState, { recursive: true });
   const bindingAction = copyTemplateFile({
@@ -565,15 +706,26 @@ export async function adoptFoundry({
   return receipt;
 }
 
+function isNestedProducerCheckout(harnessRoot) {
+  const topLevel = git(harnessRoot, ["rev-parse", "--show-toplevel"], { allowFailure: true });
+  if (topLevel.status !== 0 || !topLevel.stdout.trim()) return false;
+  const repositoryRoot = resolve(topLevel.stdout.trim());
+  return repositoryRoot !== resolve(harnessRoot)
+    && resolve(repositoryRoot, "Foundry") === resolve(harnessRoot)
+    && existsSync(join(harnessRoot, "source-root.json"));
+}
+
 function listRepositoryFiles(harnessRoot) {
   const listed = git(harnessRoot, ["ls-files", "-z"], { allowFailure: true });
   if (listed.status === 0 && listed.stdout) {
+    const producerCheckout = isNestedProducerCheckout(harnessRoot);
     return listed.stdout
       .split("\0")
       .filter(Boolean)
+      .filter((entry) => !producerCheckout || !entry.startsWith("Modules/"))
       .map((entry) => join(harnessRoot, entry));
   }
-  const ignored = new Set([".git", "Sockets", "Modules", ".worktrees", ".local", ".foundry"]);
+  const ignored = new Set([".git", "Skills", "Modules", ".worktrees", ".local", ".foundry"]);
   const files = [];
   function visit(folder) {
     for (const name of readdirSync(folder)) {
@@ -588,6 +740,13 @@ function listRepositoryFiles(harnessRoot) {
   return files;
 }
 
+export function readPortableText(file) {
+  const content = readFileSync(file);
+  const sample = content.subarray(0, Math.min(content.length, 8192));
+  if (sample.includes(0)) return null;
+  return content.toString("utf8");
+}
+
 function portabilityErrors(harnessRoot) {
   const errors = [];
   const forbiddenAbsolute = `${sep}Users${sep}${["kay", "den"].join("")}`;
@@ -595,15 +754,16 @@ function portabilityErrors(harnessRoot) {
   const githubTokenPrefix = ["github", "pat", "_"].join("_");
   const apiKeyPrefix = ["s", "k", "-"].join("");
   const secretPattern = new RegExp(
-    `(?:${credentialPrefix}|${githubTokenPrefix}|${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
+    `(?:${credentialPrefix}|${githubTokenPrefix}|\\b${apiKeyPrefix}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of listRepositoryFiles(harnessRoot)) {
     let content;
     try {
-      content = readFileSync(file, "utf8");
+      content = readPortableText(file);
     } catch {
       continue;
     }
+    if (content === null) continue;
     const rel = relative(harnessRoot, file).split(sep).join("/");
     if (content.includes(forbiddenAbsolute)) errors.push(`${rel}: host-specific absolute path`);
     if (secretPattern.test(content)) errors.push(`${rel}: secret-shaped value`);
@@ -614,17 +774,21 @@ function portabilityErrors(harnessRoot) {
 function boundaryErrors(harnessRoot, manifest) {
   const errors = [];
   const ignore = readFileSync(join(harnessRoot, ".gitignore"), "utf8");
-  for (const required of ["/Sockets/", "/Modules/", "/.worktrees/", "/.local/", "/.foundry/"]) {
+  for (const required of ["/.worktrees/", "/.local/", "/.foundry/"]) {
     if (!ignore.split(/\r?\n/).includes(required)) errors.push(`.gitignore missing ${required}`);
   }
 
+  const installedDestinations = manifest.components
+    .filter((component) => component.tier === "installed-module")
+    .map((component) => component.destination);
   const staged = git(harnessRoot, ["ls-files", "--stage"], { allowFailure: true });
+  const producerCheckout = isNestedProducerCheckout(harnessRoot);
   if (staged.status === 0) {
     for (const line of staged.stdout.split(/\r?\n/).filter(Boolean)) {
       const [metadata, trackedPath = ""] = line.split("\t", 2);
       const mode = metadata.split(" ")[0];
       if (mode === "160000") errors.push(`${trackedPath}: gitlink is forbidden`);
-      if (manifest.components.some((component) => trackedPath.startsWith(`${component.destination}/`))) {
+      if (!producerCheckout && installedDestinations.some((destination) => trackedPath.startsWith(`${destination}/`))) {
         errors.push(`${trackedPath}: installed component content is tracked`);
       }
       if (trackedPath.startsWith(".worktrees/")) errors.push(`${trackedPath}: worktree content is tracked`);
@@ -661,10 +825,25 @@ export async function doctorFoundry({
     if (!existsSync(join(harnessRoot, required))) errors.push(`missing harness path: ${required}`);
   }
   errors.push(...validateManifest(manifest));
+  const identityRegistryPath = join(harnessRoot, manifest.identityRegistry?.relativePath ?? "manifest/identity-registry.json");
+  if (!existsSync(identityRegistryPath)) {
+    errors.push("missing identity registry");
+  } else {
+    try {
+      errors.push(...validateIdentityRegistry(readJson(identityRegistryPath)).map((error) => `identity registry: ${error}`));
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
   if (existsSync(join(harnessRoot, ".gitignore"))) {
     errors.push(...boundaryErrors(harnessRoot, manifest));
   }
   errors.push(...portabilityErrors(harnessRoot));
+  // Native Halls arrive with the harness clone itself, so their completeness
+  // (present, real directory, all seven control docs) is a harness-only check:
+  // a cold clone of the Foundry alone must yield a working Forge, Assay, Ward,
+  // and Gatehouse with zero additional clones (S-024 acceptance criterion).
+  errors.push(...nativeHallErrors(harnessRoot, manifest));
 
   if (instanceRoot) {
     let harnessRelative;
@@ -680,7 +859,9 @@ export async function doctorFoundry({
       ".local/foundry/adoption-receipt.json",
       "Wiki/MEMORY.md",
       "Wiki/SCHEMA.md",
-      "Wiki/Machine/Foundry Instance.md",
+      "Wiki/Projects/INDEX.md",
+      "Projects/projects.json",
+      "Projects/INDEX.md",
     ];
     const instancePathErrors = [];
     for (const relativePath of instanceMaterializationPaths) {
@@ -734,6 +915,7 @@ export async function doctorFoundry({
     }
 
     for (const component of manifest.components) {
+      if (component.tier === "native-hall") continue; // verified harness-only, above.
       try {
         assertNoSymbolicLinkSegments(harnessRoot, component.destination, `${component.id} destination`);
       } catch (error) {
@@ -786,7 +968,7 @@ export async function doctorFoundry({
         const registryOwner = manifest.components.find(
           (component) => component.id === manifest.socketRegistry.componentId,
         );
-        const registryRoot = registryOwner ? join(harnessRoot, registryOwner.destination) : null;
+        const registryRoot = registryOwner ? join(harnessRoot, componentLocation(registryOwner)) : null;
         if (registryRoot && existsSync(registryRoot)) {
           const [command, ...args] = manifest.socketRegistry.validator;
           const validation = run(command, args, { cwd: registryRoot, allowFailure: true });
@@ -820,19 +1002,31 @@ export async function doctorFoundry({
   return { ok: errors.length === 0, errors, warnings, contractValidation };
 }
 
-function parseFlags(args) {
+const COMMAND_OPTIONS = new Map([
+  ["validate-manifest", new Set(["manifest"])],
+  ["plan", new Set(["manifest", "instance-root", "instance-name", "source-map", "dry-run"])],
+  ["adopt", new Set(["manifest", "instance-root", "instance-name", "source-map", "dry-run"])],
+  ["doctor", new Set(["manifest", "instance-root", "harness-only", "json"])],
+]);
+
+function parseFlags(command, args) {
   const values = {};
   const booleans = new Set(["--dry-run", "--json", "--harness-only"]);
+  const allowed = COMMAND_OPTIONS.get(command);
+  if (!allowed) throw new Error(`unknown command: ${command}`);
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
+    if (!token.startsWith("--")) throw new Error(`unexpected argument: ${token}`);
+    const name = token.slice(2);
+    if (!allowed.has(name)) throw new Error(`unexpected option: ${token}`);
+    if (Object.hasOwn(values, name)) throw new Error(`duplicate option: ${token}`);
     if (booleans.has(token)) {
-      values[token.slice(2)] = true;
+      values[name] = true;
       continue;
     }
-    if (!token.startsWith("--")) throw new Error(`unexpected argument: ${token}`);
     const value = args[index + 1];
     if (!value || value.startsWith("--")) throw new Error(`${token} requires a value`);
-    values[token.slice(2)] = value;
+    values[name] = value;
     index += 1;
   }
   return values;
@@ -853,7 +1047,7 @@ async function cli() {
     printHelp();
     return;
   }
-  const flags = parseFlags(rest);
+  const flags = parseFlags(command, rest);
   const manifestPath = resolve(flags.manifest ?? defaultManifestPath);
   const manifest = loadManifest(manifestPath);
   if (command === "validate-manifest") {

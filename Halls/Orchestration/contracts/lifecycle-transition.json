@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "lifecycle-transition-contract",
+  "transitions": ["v1-unclaimed-to-v2-unclaimed", "claim", "handoff", "repair", "parent-child-ingestion", "terminal"],
+  "requestFields": ["schemaVersion", "currentState", "nextState", "event", "predecessor", "expectedTip", "jobOrder", "action", "requestedScope", "clearance"],
+  "requiredWrites": ["journal/events/<sequence>-<event-id>.json", "state/lifecycle.json"],
+  "authoritativeBoundary": ["canonical-current-state", "canonical-raw-event-bytes", "immutable-event-introduction-bytes", "contiguous-journal", "unique-event-identity", "historical-introducing-state-pair", "derived-journal-predecessor", "unoccupied-or-identical-event", "exact-tip"],
+  "clearanceBinding": ["factory-bound-real-gatehouse-evaluator", "compiled-policy-digest", "job-order-id-revision", "actor-class", "exact-action-path-grant", "required-gates", "evaluation-time", "owner-command"],
+  "gitBoundary": ["absolute-executable", "scrubbed-process-environment", "repository-local-transport-redirect-rejected-before-lifecycle-read"],
+  "writer": { "mode": "instance-bound-direct-descendant-non-force", "trustedScratch": "fixed-root-fresh-owner-only-child", "readBackRequired": true, "receiptRequired": true },
+  "denial": { "mode": "trusted-non-recursive", "failure": "deny-unrecorded", "targetRemainsDenied": true },
+  "repair": { "attempts": 1, "protectedScopeAutomatic": false },
+  "parentReceiptIdentity": "valid-map-and-same-child-requires-canonical-receipt-equality",
+  "projection": { "timing": "post-commit", "failureRollsBackAuthority": false },
+  "casOutcomes": ["accepted", "accepted-idempotent", "accepted-projection-failed", "deny-recorded", "deny-unrecorded", "conflict", "retryable-pre-cas", "repair-exhausted", "recovery-required"]
+}

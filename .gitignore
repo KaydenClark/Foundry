@@ -1,8 +1,5 @@
-# Installed Sockets and Modules keep their own Git histories.
-/Sockets/
-/Modules/
-
-# Registered component worktrees and all deployment-local state are untracked.
+# Halls and Modules are ordinary workspace-tracked source. Registered component
+# worktrees and deployment-local state are not.
 /.worktrees/
 /.local/
 /.foundry/

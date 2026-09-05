@@ -7,7 +7,7 @@
       "enabled": false,
       "activation": "event-driven",
       "roleSkill": "role-captain",
-      "policy": "{{HARNESS_ROOT}}/scheduler/AFK_POLICY.md"
+      "policy": "{{HARNESS_ROOT}}/Scheduled/Captain/AFK_POLICY.md"
     }
   ]
 }

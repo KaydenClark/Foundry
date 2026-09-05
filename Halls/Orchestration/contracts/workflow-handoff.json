@@ -1,0 +1,16 @@
+{
+  "socketId": "4O7R",
+  "owner": "Orchestration",
+  "purpose": "Route a Job Order through only the Halls it needs and define the implementation, audit, integration, and optional productization handoff.",
+  "required": ["jobOrderId", "responsibleParty", "target", "implementationHall", "optionalPassages", "scheduled", "implementation", "assay", "ward", "productization"],
+  "implementationRouting": {
+    "foundry-producer": "Forge",
+    "product": "Production",
+    "project": "Production"
+  },
+  "optionalPassages": ["Design", "Knowledge", "Scheduling"],
+  "requiredAfterImplementation": ["Assay", "Ward"],
+  "wardOutcomes": ["merge-integration", "repair", "return-production"],
+  "shipping": "Required only when a declared producer is being packaged into a reproducible deployable product.",
+  "nonGoals": ["Gatehouse routing", "self-audit", "self-merge", "integration-to-main promotion"]
+}

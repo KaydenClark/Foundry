@@ -1,68 +1,90 @@
-# Servitor Foundry
+# Foundry
 
-Servitor Foundry is a portable governance harness for a set of AI-assisted
-Workbench rooms. Clone it into an instance, run one adoption command, and it
-installs its Sockets and Modules from their own repositories without vendoring
-them.
+The Foundry is a portable agent operating system whose currently declared Canon
+roster contains thirteen native Halls. An explicit Canon amendment may change
+that roster; the count is not a permanent product invariant. The product also
+contains reusable roles and scheduling, explicit
+Projects and Wiki capabilities, and safe installation tooling for optional
+Modules.
 
-> Foundry : instance :: Workbench : project.
+This repository is the public, open-source Foundry template. It contains only
+portable product source: adopters supply their own projects, private memory,
+credentials, provider configuration, schedules, runtime state, and optional
+Module access. Foundry is released under the [MIT License](LICENSE).
 
-## Set Up My Foundry
-
-Prerequisites: Git, Node.js 22+, and existing read access to every private
-component repository in `manifest/foundry.json`.
-
-```bash
-mkdir my-foundry-instance
-cd my-foundry-instance
-git clone --branch integration https://github.com/KaydenClark/Foundry.git Foundry
-node Foundry/tools/foundry.mjs plan --instance-root "$PWD" --instance-name "My Foundry"
-node Foundry/tools/foundry.mjs adopt --instance-root "$PWD" --instance-name "My Foundry"
-node Foundry/tools/foundry.mjs doctor --instance-root "$PWD"
-```
-
-The clone destinations are beneath `Foundry/Sockets/` and `Foundry/Modules/`,
-but those paths are ignored by the Foundry repository. Live memory, bindings,
-receipts, projects, credentials, and scheduler state live in the instance root
-outside the harness checkout.
-
-The first run writes a sanitized receipt to
-`.local/foundry/adoption-receipt.json`. It never writes a credential.
-
-## Audit The Adoption
-
-Audit Engine is installed by the manifest. It stays network-free, so Captain or
-another trusted caller fetches the Foundry upstream first and passes the exact
-fetch provenance with the audit request. Follow `RUNBOOK.md` -> Audit An
-Adopted Foundry for the reproducible command.
-
-A direct diagnostic without provenance is still read-only, but deliberately
-returns `attention` instead of claiming upstream health:
+## Start Here
 
 ```bash
-node "Foundry/Sockets/Audit Engine/bin/audit-engine.mjs" --project "$PWD/Foundry" --json
+node tools/foundry.mjs validate-manifest
+node tools/foundry.mjs doctor --harness-only
+node tools/test-foundry.mjs
+node tools/test-captain.mjs
+node tools/spec-workbench.mjs doctor
 ```
 
-With trusted provenance, Audit Engine checks repository identity, controls, Git
-state, upstream synchronization, worktree safety, and the explicit
-`audit-engine.json` validations. It is read-only toward the Foundry checkout.
+The checkout contains all thirteen paths in the currently declared Hall roster.
+A future roster change still requires an explicit Canon amendment and matching
+identity, manifest, migration, and projection updates.
 
-## What Is Tracked
+The checkout also contains:
 
-- root controls and stable specs;
-- the credential-free install manifest;
-- Foundry adoption/doctor and Captain control-plane tools;
-- roles-as-skills plus adoption/bootstrap skills;
-- Captain/scheduler policy and instance configuration templates;
-- ADOPTION, GENESIS, and the template Wiki;
-- non-authoritative reference material and deterministic tests.
+- every current native Hall under `Halls/`;
+- remaining legacy `Roles/` contracts during role-skill migration and
+  `Scheduled/Captain/` reusable mechanics;
+- `Projects/` and `Wiki/` generic enrollment/memory tooling;
+- `manifest/`, `templates/`, and `tools/` for adoption and validation.
 
-## What Is Not Tracked
+## Plan Or Adopt
 
-- installed Sockets/Modules or registered worktrees;
-- live Wiki memory, projects, bindings, `.local` state, launch services, logs,
-  databases, exports, or secrets;
-- private-repository credentials or `.env` values.
+Plan is read-only:
 
-Read `BLUEPRINT.md` for the complete ownership/scrap split and `RUNBOOK.md` for
-exact verification and recovery.
+```bash
+node tools/foundry.mjs plan --instance-root /ABSOLUTE/INSTANCE
+```
+
+Adoption may clone the optional Modules declared by the manifest and writes
+instance receipts outside product Git:
+
+```bash
+node tools/foundry.mjs adopt --instance-root /ABSOLUTE/INSTANCE
+node tools/foundry.mjs doctor --instance-root /ABSOLUTE/INSTANCE
+```
+
+Read `templates/ADOPTION.md` before adopting an existing deployment. Existing
+Wiki, bindings, workflows, Module checkouts, and runtime state are preserved.
+
+## Reinstall Or Restart
+
+Treat a tagged GitHub release as the recovery package. Clone that tag into a
+new checkout, verify it before installation, then run the read-only plan before
+adopting it into an instance:
+
+```bash
+git clone --branch TAG --depth 1 https://github.com/KaydenClark/Foundry.git Foundry
+cd Foundry
+node tools/foundry.mjs validate-manifest
+node tools/foundry.mjs doctor --harness-only
+node tools/test-foundry.mjs
+node tools/foundry.mjs plan --instance-root /ABSOLUTE/INSTANCE
+```
+
+Only run `adopt` after reviewing the plan and satisfying the instance's own
+authorization, privacy, and recovery requirements. Adoption does not enable an
+active schedule implicitly.
+
+## Boundaries
+
+Halls are native product source. Modules are independent products installed
+under ignored `Modules/` destinations. Populated project rooms, private memory,
+credentials, active schedules/bindings, logs, worktrees, and provider state are
+instance data and are never published with this repository.
+
+Development targets `integration`; only the owner promotes `integration` to
+`main`.
+
+## Foundry Schematic
+
+The separately owned Schematic app is the interactive visual blueprint of
+Foundry Canon and the intended end-state design. It is producer-side material
+and is not included in this public package. It is not the Foundry native product
+interface, not CIC, and not a live Actuality mirror.

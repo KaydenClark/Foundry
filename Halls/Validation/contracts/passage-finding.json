@@ -1,0 +1,8 @@
+{
+  "socketId": "8V2F",
+  "owner": "Validation",
+  "purpose": "Read-only findings about one Gatehouse passage for Orchestration.",
+  "required": ["id", "receiptId", "status", "findings"],
+  "statuses": ["clear", "attention", "unverified"],
+  "nonGoals": ["routing", "delegation", "Canon write", "Actuality write"]
+}

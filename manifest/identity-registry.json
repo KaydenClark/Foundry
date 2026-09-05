@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "2.0",
+  "artifact": "foundry-identity-registry",
+  "description": "Permanent opaque identities for the portable Foundry. Legacy typed IDs remain aliases until their consumers migrate.",
+  "entities": {
+    "7M2Q": { "id": "7M2Q", "type": "hall", "name": "Forge", "home": "Halls/Forge", "aliases": ["F-001"] },
+    "4X8C": { "id": "4X8C", "type": "hall", "name": "Assay", "home": "Halls/Assay", "aliases": ["F-002"] },
+    "9D3R": { "id": "9D3R", "type": "hall", "name": "Gauge", "home": "Halls/Gauge", "aliases": ["P-012"] },
+    "6V1N": { "id": "6V1N", "type": "hall", "name": "Gatehouse", "home": "Halls/Gatehouse", "aliases": ["G-001"] },
+    "2K7P": { "id": "2K7P", "type": "hall", "name": "Intake", "home": "Halls/Intake", "aliases": ["F-003"] },
+    "8L4T": { "id": "8L4T", "type": "hall", "name": "Validation", "home": "Halls/Validation", "aliases": ["F-004"] },
+    "3W9H": { "id": "3W9H", "type": "hall", "name": "Orchestration", "home": "Halls/Orchestration", "aliases": ["F-005"] },
+    "5B2Y": { "id": "5B2Y", "type": "hall", "name": "Design", "home": "Halls/Design", "aliases": ["F-006"] },
+    "1R6F": { "id": "1R6F", "type": "hall", "name": "Knowledge", "home": "Halls/Knowledge", "aliases": ["F-007"] },
+    "7C4J": { "id": "7C4J", "type": "hall", "name": "Scheduling", "home": "Halls/Scheduling", "aliases": ["F-008"] },
+    "9P8A": { "id": "9P8A", "type": "hall", "name": "Production", "home": "Halls/Production", "aliases": ["F-009"] },
+    "6G3S": { "id": "6G3S", "type": "hall", "name": "Ward", "home": "Halls/Ward", "aliases": ["F-010"] },
+    "2N5E": { "id": "2N5E", "type": "hall", "name": "Shipping", "home": "Halls/Shipping", "aliases": ["F-011"] },
+    "4Q7B": { "id": "4Q7B", "type": "module", "name": "OpenBrain", "home": "Modules/OpenBrain", "aliases": ["P-010"] },
+    "8F2L": { "id": "8F2L", "type": "module", "name": "Command Information Center", "home": "Modules/Command Information Center", "aliases": ["P-005"] },
+    "3D6V": { "id": "3D6V", "type": "module", "name": "Servitor Slack", "home": "Modules/Slack", "aliases": ["M-002"] },
+    "1T9C": { "id": "1T9C", "type": "module", "name": "Servitor Discord", "home": "Modules/Discord", "aliases": ["M-001"] },
+    "5R1K": { "id": "5R1K", "type": "socket", "name": "Recall", "home": "Halls/Knowledge", "aliases": ["K-001"] },
+    "3P7X": { "id": "3P7X", "type": "socket", "name": "Passage Receipt", "home": "Halls/Gatehouse", "aliases": [] },
+    "8V2F": { "id": "8V2F", "type": "socket", "name": "Passage Finding", "home": "Halls/Validation", "aliases": [] },
+    "6A9G": { "id": "6A9G", "type": "socket", "name": "Activity Signal", "home": "Halls/Gauge", "aliases": [] },
+    "4O7R": { "id": "4O7R", "type": "socket", "name": "Workflow Handoff", "home": "Halls/Orchestration", "aliases": [] },
+    "000K": { "id": "000K", "type": "socket", "name": "Lifecycle Transition", "home": "Halls/Orchestration", "aliases": ["K-005"] },
+    "000L": { "id": "000L", "type": "socket", "name": "Grounding Journal", "home": "Halls/Knowledge", "aliases": ["K-006"] }
+  },
+  "retired": {},
+  "allocation": {
+    "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "zeroReserved": true,
+    "neverReuse": true,
+    "widths": { "architectural": 4, "work": 6 },
+    "authority": "canonical-instance-registry"
+  },
+  "work": {
+    "idPattern": "^[A-Z0-9]{6}$",
+    "types": ["spec", "ticket", "intent-request", "job-order", "passage-receipt"],
+    "neverReuse": true
+  },
+  "runtime": {
+    "idPattern": "^[A-Z0-9]{6}$",
+    "types": ["job-order", "passage-receipt"],
+    "neverReuse": true
+  }
+}
