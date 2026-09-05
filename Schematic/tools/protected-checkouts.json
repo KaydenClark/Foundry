@@ -1,0 +1,4 @@
+{
+  "note": "Standalone Schematic launch preflight. WORKSPACE owns checkout pins; this room has no independently protected checkout and no generated package is a launch prerequisite.",
+  "checkouts": []
+}

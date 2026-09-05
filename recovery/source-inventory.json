@@ -1,0 +1,463 @@
+{
+  "schemaVersion": 1,
+  "status": "undeployed-recovery-snapshot",
+  "files": [
+    {
+      "path": "Schematic/index.html",
+      "sha256": "f95aac4ac0a42e738d67caadc453fb446d626bb060ed0e9fa0d37cb079fee880"
+    },
+    {
+      "path": "Schematic/package-lock.json",
+      "sha256": "00a50e19b4787b5208a2297dca40ac3d5bced0dafa89122f37cbfee5261a1d57"
+    },
+    {
+      "path": "Schematic/package.json",
+      "sha256": "cf63086b5e8bce3620810638526db86a2954cc559d09f204a62dec01f0289b2c"
+    },
+    {
+      "path": "Schematic/public/favicon.svg",
+      "sha256": "6e7229ae3bfc41993d32630cd9c0ad899b67156f7112e1c14017f47faeaecda8"
+    },
+    {
+      "path": "Schematic/src/App.jsx",
+      "sha256": "708eae39d6af241caadcdbea1620733db53e6ee2c4da45c13c06fa45b16744ba"
+    },
+    {
+      "path": "Schematic/src/assets/factory/actuality-floor.png",
+      "sha256": "656ad0eeede9a42f2413534c172a442c6c1cc6554d4537bc2cdcb5b163030ebb"
+    },
+    {
+      "path": "Schematic/src/assets/factory/governance-floor.png",
+      "sha256": "21e123d41ae0e8de5bb85a222e34d0b8a24a2c1e95065f476ccd1f828f97405f"
+    },
+    {
+      "path": "Schematic/src/components/AppShell.jsx",
+      "sha256": "1c1be420929afdf7f3d9d4fff2eb64a55916d6a7b6817073cceb25e519f36a39"
+    },
+    {
+      "path": "Schematic/src/components/CampusAtlas.jsx",
+      "sha256": "f4f344f415434d68dc9bc6a1dd7ef3dad2e22adcfff9cf3699abe7c9fad2759c"
+    },
+    {
+      "path": "Schematic/src/components/FactoryStack.jsx",
+      "sha256": "bb12bc183508f40aaf376d991b4568923a2d8042a2c88197d9a43aeece258574"
+    },
+    {
+      "path": "Schematic/src/components/GovernanceFloorPlan.jsx",
+      "sha256": "fc8270a3b3443e7a00969f6e7f9d6a5e527061339abe3ca67a271f287f6d1d38"
+    },
+    {
+      "path": "Schematic/src/components/JourneyRail.jsx",
+      "sha256": "24046a1231bf720085768b83aa9f90fd115b39cfd8750fd741fd5a2a033ad987"
+    },
+    {
+      "path": "Schematic/src/components/PageHeading.jsx",
+      "sha256": "f9e49bf16c1b6c6d95d3cb6c3372dfad4ce7df423cbbf9b957ec2e67cddc37e7"
+    },
+    {
+      "path": "Schematic/src/components/ReferenceExplorer.jsx",
+      "sha256": "f5abc824340e617344fa64cc52c3dee80e7cc641ce2b3a41ad76d561b142af21"
+    },
+    {
+      "path": "Schematic/src/components/RunInspector.jsx",
+      "sha256": "a3e0dc1d45195452e384956860b1d0c4678f5cfbccb54af80bc9450bd9ecab5e"
+    },
+    {
+      "path": "Schematic/src/components/ScenarioLibraryPanel.jsx",
+      "sha256": "a99f50dd29635aeddd2b36445e926892386ec30c608af6e6a6dc14313e190a65"
+    },
+    {
+      "path": "Schematic/src/components/SchematicControls.jsx",
+      "sha256": "53fb0ccfdf50eeef7962a7044923f21ce178ac4a87ccf1b5dd91a2cb4d4bec1d"
+    },
+    {
+      "path": "Schematic/src/components/TransportControls.jsx",
+      "sha256": "9735fdb5515df7f9a8bb0a87d589031e045cec8370581bdd13ef4d8ae7645413"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowExecutionRail.jsx",
+      "sha256": "8d7c89f0c856bcade98862ad0580879af62c6e3021f7926622b0a22c94db717d"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowFloorPlan.jsx",
+      "sha256": "010e25ebcacae72d81b41e2e7180d7007443b3ea0ce5940a678a6bd5df7d38c3"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowHistory.js",
+      "sha256": "1d73bd5f79a36d5d792cceccd6157ec5b2e5f6b27255e143f5395aa42fdb884f"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowScenarioPicker.jsx",
+      "sha256": "862ab838810ab01277e625e2b1c9a55d6d42bad8df01632a49b3c92e0e5dc7d8"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowTelemetry.jsx",
+      "sha256": "64ca852c1cdad102dced40edfb0d7f1b8993972482e8a53eb6f8c34fd9d0bc9b"
+    },
+    {
+      "path": "Schematic/src/components/campus.css",
+      "sha256": "ef8871957c80f751b46d98b22f41342d2ccdd231469e66b39df9287df15ab40c"
+    },
+    {
+      "path": "Schematic/src/components/factoryAtlas.css",
+      "sha256": "8af6306fafae209e330ac01de8f60ec5c653f08be803c51756d4cd46188b76f0"
+    },
+    {
+      "path": "Schematic/src/domain/campus.js",
+      "sha256": "84090dfeb84eeec347729be003970b3876935611dbd4345e4873bf57a23920e2"
+    },
+    {
+      "path": "Schematic/src/domain/engine.js",
+      "sha256": "d65bc809511bf7d9ed0ba865a04daad8869fb7defcc2f65994cbc3af8b179e89"
+    },
+    {
+      "path": "Schematic/src/domain/focus.js",
+      "sha256": "8b68d0d1cef6c83ea27b644908389fad1404865c07f8ec94c0d1e361809017c8"
+    },
+    {
+      "path": "Schematic/src/domain/foundryProjection.js",
+      "sha256": "5d241a50b139cd3d3c1e67261a1e637385b80e83e9bcfdcff82d9a76d2b44f82"
+    },
+    {
+      "path": "Schematic/src/domain/governanceGuide.js",
+      "sha256": "d1efba7b1e2add621afbdf7fc676a842535603d2e562389e1824af871dc6953c"
+    },
+    {
+      "path": "Schematic/src/domain/jobOrder.js",
+      "sha256": "6e435fb260e0a70bba05ab51661ee5456e8b6d729c94b17f924c5064d0f2044b"
+    },
+    {
+      "path": "Schematic/src/domain/projectionSignature.js",
+      "sha256": "fd55f22fcc29d1f6726aece41637e52c7cdb2e861c7d88b157e2ae5553a46eb7"
+    },
+    {
+      "path": "Schematic/src/domain/referenceRegistry.js",
+      "sha256": "7f54f6564356981ad403996faee88ae9f63c21fe38a68f1eb62cbfa526c7daa7"
+    },
+    {
+      "path": "Schematic/src/domain/scenario.js",
+      "sha256": "22b08a865f44da29402c3a64d636f08c3455f9bc61efc5ebafea057ad9c0fa57"
+    },
+    {
+      "path": "Schematic/src/domain/scenarioLibrary.js",
+      "sha256": "35f148c3d3a8b86567f34d4594f70c59aac4c1343f5b6316e8f4dedcdeb48c3b"
+    },
+    {
+      "path": "Schematic/src/domain/scenarioPortability.js",
+      "sha256": "d6dfcc392b3c75885aeb8ea447b70f041ee868534c86c025d0fc29787b71c34a"
+    },
+    {
+      "path": "Schematic/src/domain/workflowFoundrySemantics.js",
+      "sha256": "b3cfd4bb2ed15610a512dd5c03c86b33468dbf64a18e3c4077415d96a5560dbe"
+    },
+    {
+      "path": "Schematic/src/domain/workflowPresentation.js",
+      "sha256": "0fb1351c78e26e659d4634611573c7241eba7204bf44bbcdf9bb64f4fa6ca5dd"
+    },
+    {
+      "path": "Schematic/src/domain/workflowProof.js",
+      "sha256": "a238eb31d456e883becaa16a52aadb92814b601ccdc7cccbe5db5808d399c9d1"
+    },
+    {
+      "path": "Schematic/src/main.jsx",
+      "sha256": "101fd2c7f102f0e697bea7f8e193d2d7e8030e4e8047b8ce949a416938458c61"
+    },
+    {
+      "path": "Schematic/src/pages/FoundryPage.jsx",
+      "sha256": "85c408ff6b6da4ccc1578a6a835dbde7476e9ba4010005c95309e89e14d092d8"
+    },
+    {
+      "path": "Schematic/src/pages/GovernancePage.jsx",
+      "sha256": "74430fcfb55bc67b2c3fad032397399fa8d55274f592c96dc0082745a899348a"
+    },
+    {
+      "path": "Schematic/src/pages/HistoryPage.jsx",
+      "sha256": "90debc158dd5b78ed32ad295882f89c332e563f603b6dff64c1b690cc3a791ee"
+    },
+    {
+      "path": "Schematic/src/pages/ReferencePages.jsx",
+      "sha256": "a8c95d2b60ad11fb84a82e6143d235d9eb5d423f1b1ae82707cc481c627c9537"
+    },
+    {
+      "path": "Schematic/src/pages/RunPlayer.jsx",
+      "sha256": "83ec93dcc0d182f08bb9f5d6babe95d16f5f7cae89605b01c58a9ac82472d673"
+    },
+    {
+      "path": "Schematic/src/pages/WorkflowPage.jsx",
+      "sha256": "cce249cbd6bda4189fe22ddf433c319d0de4afa41b31c849bd00734767eb2965"
+    },
+    {
+      "path": "Schematic/src/pages/WorkflowsPage.jsx",
+      "sha256": "5de95aaa15be0bc32caad60d0c920f4c457f178c7afdc5d24f28d51c53a57946"
+    },
+    {
+      "path": "Schematic/src/quality/simulatorContract.js",
+      "sha256": "0dcad9218442ce0411b91cbe3ac9103070ad68381f8cfb852696faeddf36666f"
+    },
+    {
+      "path": "Schematic/src/router.js",
+      "sha256": "e4a073d707daf237b1e50a0649003e763e6a10d267f8b20d2871e2ea0721b168"
+    },
+    {
+      "path": "Schematic/src/store/RunContext.jsx",
+      "sha256": "c5038173c5452d364e2b94b6b5d77f690e1d885254639405165d6df87435058d"
+    },
+    {
+      "path": "Schematic/src/store/ViewContext.jsx",
+      "sha256": "761b8df8103504804691742c5e0d7537303645593b5b05709738f8d9875468ae"
+    },
+    {
+      "path": "Schematic/src/store/historyStorage.js",
+      "sha256": "3af33cf6fffd8a720bd6092d2b7e6bb03972211712d5d1eddbc8093828168c2b"
+    },
+    {
+      "path": "Schematic/src/store/replayRun.js",
+      "sha256": "28abafcbc0be3a3ea7cecdf94abfab7522beae16d9ff1e3f70a038856e7cdce1"
+    },
+    {
+      "path": "Schematic/src/store/scenarioLibraryStorage.js",
+      "sha256": "608c4307c28c6b36b3e79f00aae9d84547668add9e6850308f911a993613114b"
+    },
+    {
+      "path": "Schematic/src/store/scenarioSession.js",
+      "sha256": "b8fe40204d09249628802cecb2e977736b4d68912bf2c2d3cd61106c60bcbfd3"
+    },
+    {
+      "path": "Schematic/src/store/scenarioTransfer.js",
+      "sha256": "b704960de0ae35193fbfcffdd5f9efdfce4dda5d815a277fa9398ec5bce76a6d"
+    },
+    {
+      "path": "Schematic/src/styles.css",
+      "sha256": "c5cdf4509ba33fb252c7657b9394230801534287244b54daf67eec521b8a2cd6"
+    },
+    {
+      "path": "Schematic/src/view/atlasTopology.js",
+      "sha256": "3e9d8a5e36acefcc7489d86dc5acd255c90b8216a95f950667b552f6a38a5961"
+    },
+    {
+      "path": "Schematic/src/view/atlasView.js",
+      "sha256": "fff97766bd2ede7dd6e14b707e6bfd794655d463f175b6bd66cf8a5225ebfead"
+    },
+    {
+      "path": "Schematic/tests/atlas-topology.test.js",
+      "sha256": "00efba3a8d7dc484c5d2c6a326e9ee105220c03db2fb66450be78bf1b4fb2499"
+    },
+    {
+      "path": "Schematic/tests/atlas-view.test.js",
+      "sha256": "25de18cfdec5c9b031e98ccb4f42d1e14bb2860062cfd2e0dc35aac4fd27143d"
+    },
+    {
+      "path": "Schematic/tests/campus.test.js",
+      "sha256": "cb910bc93969b8ab248ee6244f2397158b63f102199e6f2ae3c124b06f11f007"
+    },
+    {
+      "path": "Schematic/tests/engine.test.js",
+      "sha256": "79d27bf32757d16d1aeaa14f269b0afbe5e4fb22b669d59fd026c0de0b03a45e"
+    },
+    {
+      "path": "Schematic/tests/factory-stack.test.js",
+      "sha256": "a1b6c3a7b14035835ecb01c1f16589cc22f0f119a969d7c4844c4991d54860aa"
+    },
+    {
+      "path": "Schematic/tests/final-quality.test.js",
+      "sha256": "3f5b02bf23cd3017dc640c920c8c37a34cc82f6e1ac735a0c4d8b875777d7d89"
+    },
+    {
+      "path": "Schematic/tests/flight-cycle.test.js",
+      "sha256": "e6f79710c231775bacb65fd3c89609120700f63366291856c0644e52d750671a"
+    },
+    {
+      "path": "Schematic/tests/focus.test.js",
+      "sha256": "a575cbc6725b1fd03f6c65936fe4b2ff3d94141373e31f12c735cb1a75caaf55"
+    },
+    {
+      "path": "Schematic/tests/foundry-projection.test.js",
+      "sha256": "b1825595cb6535b5c75961512ba40802888b50f3446205e9a25dff258b06dfbc"
+    },
+    {
+      "path": "Schematic/tests/governance-guide.test.js",
+      "sha256": "edc944c3bbd796639f2d3ed4b1f75ab9adb372473d7e30f18d9ec08bd0848ea9"
+    },
+    {
+      "path": "Schematic/tests/job-order.test.js",
+      "sha256": "2ae1f34db759c1e510ec9c3a744e05795f634ff61427a424e41258975621eeca"
+    },
+    {
+      "path": "Schematic/tests/legibility.test.js",
+      "sha256": "e220e05739d3dcb84aebee3c1bfb89de94b15d207dcc4fdce2efad438b757272"
+    },
+    {
+      "path": "Schematic/tests/network-binding.test.js",
+      "sha256": "49d2a5586f29fab1538d2950a102d1c7baedd692e94cb8ced0ef01b2ea3c1914"
+    },
+    {
+      "path": "Schematic/tests/projection-drift.test.js",
+      "sha256": "9f2f63c743eedf3c14bdbaab082868fa5d0db5c989b184c9a4d4ae5b495df1db"
+    },
+    {
+      "path": "Schematic/tests/quality-gate.test.js",
+      "sha256": "d7d4110b6063a86a96f8909d6ca19a5e5913dbfc6df03e0d5364a235f9baf638"
+    },
+    {
+      "path": "Schematic/tests/reference-registry.test.js",
+      "sha256": "d717a729fc1fec24d4db5180a0535f5040e2d49ee0f45e1b2aea9cdd8e5bce09"
+    },
+    {
+      "path": "Schematic/tests/release-schematic.test.js",
+      "sha256": "7148f741bcc987f3fbe7c4a10516b4ecf7f6bf5e5be105fb9ec1694ba7262501"
+    },
+    {
+      "path": "Schematic/tests/routes.test.js",
+      "sha256": "7f13c2aadcbbfc13c04533c83f5897c634245d483ec78e00e6efab0dc7cce751"
+    },
+    {
+      "path": "Schematic/tests/safety.test.js",
+      "sha256": "96ebaa2dd0077a079f6bf31503f0b4ac1d1f7df30468a3f08174d9096ca42f89"
+    },
+    {
+      "path": "Schematic/tests/scenario-library.test.js",
+      "sha256": "8cf6553d03216d3f889471d81b3548e4765f7cbd987ad1cd5308310b2c3498be"
+    },
+    {
+      "path": "Schematic/tests/scenario-portability.test.js",
+      "sha256": "09b8862f4b1743a4727b6fa9362a86d05df1a1612045b4dfa543567dcd997e2b"
+    },
+    {
+      "path": "Schematic/tests/workflow-foundry-semantics.test.js",
+      "sha256": "8b0811af1ec28a78b51ad621ab8f9ea17efd913701383cec7bd869a0715c5a47"
+    },
+    {
+      "path": "Schematic/tests/workflow-history-recovery.test.js",
+      "sha256": "af1e9f053638ffb351558af94c70fa45614ca297869c4ff170b5354028273b4d"
+    },
+    {
+      "path": "Schematic/tests/workflow-presentation.test.js",
+      "sha256": "31716a336b6e80fa1346c916a5c73329d794a72833d4c76743074203029aff84"
+    },
+    {
+      "path": "Schematic/tests/workflow-proof.test.js",
+      "sha256": "c30d7234c69483a4b08eae810b545f34d9eca828a0a1e805b8bdc861b23fc598"
+    },
+    {
+      "path": "Schematic/vite.config.js",
+      "sha256": "5a4c0e5646f5fd9c8da15d1303391c38e528680b257f4f0f632326c88cc1390f"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/preflight.mjs",
+      "sha256": "7266c86190556bc37ba53d81cf5f957358ffb04d4cb34530f0a2fc9fb6799842"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/preflight-launch-snapshot.mjs",
+      "sha256": "97a546bc798185a884424783bd44756315c0a5d0c5ce8418a9765f80b35a9ab4"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/job-order-workspace.mjs",
+      "sha256": "f870fbaed995c176c735195eef3fcdade7665a626532832d16786d6191b8188c"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/job-order-landing-proof.mjs",
+      "sha256": "eaae08416a0cb9cd8318aa21ebab7c395bd029f7fc3184bac77ec25579731634"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/workspace-paths.mjs",
+      "sha256": "278913268a6f7f8c298716c177b145f77255553e0c8900835b27839c193c4976"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-preflight.mjs",
+      "sha256": "178106eacfbfe29f6c460d50199975003d0b7565d28288181f3be9ac23523387"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-preflight-launch-snapshot.mjs",
+      "sha256": "61a24d4a82d34acce293a38de8e4146f91f2c6457cdd7959c1dd7fa040c232e4"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-job-order-workspace.mjs",
+      "sha256": "df4fea837913311b8a78c2a2f3bacd931686a1b4830ddb739ca32b58a8ce364e"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-job-order-landing-proof.mjs",
+      "sha256": "a030c91b73e0c981ac573ae90c6cefe2a296f952ac78ed9c11e74fa0cf715849"
+    },
+    {
+      "path": "recovery/flight-skills/sitrep/SKILL.md",
+      "sha256": "356f2852737d2baae8af7b655b1d9487e79aef7727aa4dd0095fe1bc47dc2187"
+    },
+    {
+      "path": "recovery/flight-skills/preflight/SKILL.md",
+      "sha256": "93db4959657f496e36b1c03fef64329c2f8c541b512aea512ab738307db72013"
+    },
+    {
+      "path": "recovery/flight-skills/launch-flight/SKILL.md",
+      "sha256": "1a3aec53c9cb638fdc983cab371b710ce74aee021e31da71f78e9eccd91f1a7f"
+    },
+    {
+      "path": "recovery/flight-skills/launch-flight/scripts/check-fixtures.mjs",
+      "sha256": "7e7af92fdcfbbbaa9bb0d9b24104f08fe5c68166bf0d9a991c9a20b2b61bfb75"
+    },
+    {
+      "path": "recovery/flight-skills/in-flight/SKILL.md",
+      "sha256": "a09bf0d1372242ce1ac37862aba2f0dc8e3535719de600fa5f121597eba1e82b"
+    },
+    {
+      "path": "recovery/flight-skills/in-flight/scripts/check-fixtures.mjs",
+      "sha256": "a7ee3beedb876b77a28f2e1d2bdfc94da4dd0d0095470d08315308971fa0c32f"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/SKILL.md",
+      "sha256": "35cf02a13c71a964ed29b24cb3a45431f8c4c5707180d0c8175a1cc25fe3f672"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/scripts/landing-check.mjs",
+      "sha256": "5e1b7c105b8875aaa47a57e93b1906460c25c1df56818d3636700079feabdf70"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/scripts/check-fixtures.mjs",
+      "sha256": "69833d739d2835508bcc5a2d55e0d13e8ded8b786e28ee2776b6c62c3f8e6f92"
+    },
+    {
+      "path": "recovery/flight-skills/land/SKILL.md",
+      "sha256": "b391f60b91e0e9f183dc5aa2d73d502d1a7581ab70475c7040b14194000b716f"
+    },
+    {
+      "path": "recovery/flight-skills/postflight-check/SKILL.md",
+      "sha256": "0ab72fab119c610adbf2afead1e48d4779d7e88999c48970bc0a99a0b271ce6a"
+    },
+    {
+      "path": "Schematic/AGENTS.md",
+      "sha256": "2af7e08c04a7e2e7445f3d7136fa92ddd82ac3bf0b3bf15e429364f90cf4af6b"
+    },
+    {
+      "path": "Schematic/BLUEPRINT.md",
+      "sha256": "ba82e4b3ab0f0f41a6e8b92ac49bb70131d2e07a00ea97ce1e80835c74cb25fa"
+    },
+    {
+      "path": "Schematic/LEXICON.md",
+      "sha256": "fc83506d7792c3463ef4fa492c41f7de7c14a9852a2b41ec9efee786694be875"
+    },
+    {
+      "path": "Schematic/RUNBOOK.md",
+      "sha256": "70d7842ae65552efa1b76658cc2249c659fc887079c0fb5804fb699c0c0587a0"
+    },
+    {
+      "path": "Schematic/README.md",
+      "sha256": "770413a9dd63d02e4910ecf96829452f8f26eb952416e8acbe7b8b6db715e3ab"
+    },
+    {
+      "path": "Schematic/tools/release-schematic.mjs",
+      "sha256": "06c56ff40d1cf99c7a50d9fa6139ffc3e5725976038c83e2a97d27dc09b8e89c"
+    },
+    {
+      "path": "Schematic/tools/protected-checkouts.json",
+      "sha256": "4aee2c03efa894e9b1be0129311a262d64b1b186e48140b2586992bb007ba61b"
+    },
+    {
+      "path": "Schematic/specs/S-017-thirteen-hall-projection-conformance/SPEC.md",
+      "sha256": "db2200a415cee0097ff7eca4eea7eadc4a5ef9016f77ea0b280f537cf815afac"
+    }
+  ],
+  "transformations": [
+    "Workspace identity and repository fixtures generalized in recovery source; runtime logic otherwise preserved.",
+    "Schematic machine bindings generalized; historical deployment code is preserved but not configured.",
+    "Secret-shaped test payload assembled from fragments without changing runtime fixture value."
+  ]
+}

@@ -1,0 +1,185 @@
+.factory-stack .stack-canvas {
+  min-width: 0;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+}
+
+.factory-stack .stack-canvas[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.factory-stack .stack-canvas:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: -3px;
+}
+
+.factory-stack .stack-world {
+  transform: rotateX(var(--stack-pitch)) rotateY(var(--stack-shell-yaw));
+}
+
+.factory-stack .floor-with-crossing .factory-floor {
+  grid-template-columns: 96px minmax(0, 1fr);
+  height: clamp(86px, calc((100vh - 270px) / 6), 118px);
+}
+
+.factory-stack .floor-with-crossing .factory-floor.is-actuality {
+  height: clamp(98px, calc((100vh - 250px) / 6), 132px);
+}
+
+.factory-stack .floor-rooms.atlas-floor-plan,
+.factory-stack .factory-floor.is-actuality .floor-rooms.atlas-floor-plan {
+  inset: 11% 4% 12%;
+  display: block;
+  transform: none;
+}
+
+.atlas-passageways {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.atlas-passageways line {
+  vector-effect: non-scaling-stroke;
+  stroke: color-mix(in srgb, var(--gold) 36%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+.atlas-passageways .atlas-live-route {
+  stroke: var(--gold);
+  stroke-width: 2;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 3px var(--gold));
+  opacity: var(--route-opacity, .85);
+}
+
+.factory-stack.is-route-hidden .atlas-live-route {
+  display: none;
+}
+
+.atlas-floor-plan .floor-room {
+  position: absolute;
+  z-index: 4;
+  left: var(--room-x);
+  top: var(--room-y);
+  width: 20%;
+  height: 30%;
+  transform: translate(-50%, -50%);
+  transition: left .2s ease, top .2s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.atlas-floor-plan .room-workspace {
+  z-index: 5;
+  width: 28%;
+  height: 38%;
+}
+
+.atlas-floor-plan .room-gatehouse,
+.atlas-floor-plan .room-shipping {
+  width: 22%;
+  height: 32%;
+}
+
+.atlas-floor-plan .room-forge {
+  width: 22%;
+}
+
+.atlas-floor-plan .room-shipping {
+  color: #75a8bb;
+}
+
+.atlas-floor-plan .floor-room.is-planned,
+.atlas-floor-plan .floor-room.is-provisional {
+  border-style: dashed;
+  background: color-mix(in srgb, currentColor 5%, rgba(3, 17, 27, .68));
+}
+
+.atlas-floor-plan .floor-room.is-planned small,
+.atlas-floor-plan .floor-room.is-provisional small {
+  display: block;
+  color: currentColor;
+  opacity: .8;
+}
+
+.atlas-floor-plan .job-token {
+  left: var(--token-x);
+  top: var(--token-y);
+  transition: left .24s ease, top .24s ease, box-shadow .18s ease;
+}
+
+.vertical-crossing.is-route-active {
+  color: var(--gold);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(255, 195, 79, .75));
+}
+
+.factory-stack .vertical-crossing::before {
+  content: none;
+}
+
+.atlas-crossing-anchor {
+  position: absolute;
+  z-index: 3;
+  left: var(--crossing-x);
+  top: var(--crossing-y);
+  bottom: -28%;
+  width: 2px;
+  transform: translateX(-50%);
+  color: #8d681f;
+  background: currentColor;
+  box-shadow: 0 0 5px rgba(255, 195, 79, .3);
+  opacity: var(--crossing-opacity, .8);
+  pointer-events: none;
+}
+
+.atlas-crossing-anchor::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -2px;
+  width: 6px;
+  height: 6px;
+  transform: rotate(45deg);
+  border: 1px solid currentColor;
+  background: var(--panel-deep);
+}
+
+.atlas-crossing-anchor.is-route-active {
+  z-index: 6;
+  color: var(--gold);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px rgba(255, 195, 79, .75));
+}
+
+.atlas-crossing-anchor.is-tripped {
+  color: var(--alarm);
+}
+
+.factory-stack.is-crossings-hidden .atlas-crossing-anchor {
+  opacity: .12;
+}
+
+.factory-stack.is-compact .stack-canvas {
+  min-width: 0;
+}
+
+.factory-stack.is-compact .floor-with-crossing .factory-floor {
+  grid-template-columns: 90px minmax(0, 1fr);
+  height: 82px;
+}
+
+.factory-stack.is-compact .floor-with-crossing .factory-floor.is-actuality {
+  height: 96px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-floor-plan .floor-room,
+  .atlas-floor-plan .job-token {
+    transition: none;
+  }
+}
