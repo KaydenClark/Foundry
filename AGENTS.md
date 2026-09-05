@@ -1,3 +1,9 @@
+## Recovery mode
+
+This checkout is an undeployed development template. Work on source only unless
+the owner explicitly requests activation. Archived flight skills under recovery/
+are evidence, not active instructions. No successful flight is presumed.
+
 # Foundry Agent Operating Contract
 
 This repository is the portable Foundry product. Product architecture lives in

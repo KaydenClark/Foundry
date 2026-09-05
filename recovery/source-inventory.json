@@ -1,0 +1,732 @@
+{
+  "schemaVersion": 1,
+  "status": "undeployed-recovery-snapshot",
+  "files": [
+    {
+      "path": "Schematic/AGENTS.md",
+      "sha256": "2af7e08c04a7e2e7445f3d7136fa92ddd82ac3bf0b3bf15e429364f90cf4af6b"
+    },
+    {
+      "path": "Schematic/BLUEPRINT.md",
+      "sha256": "ba82e4b3ab0f0f41a6e8b92ac49bb70131d2e07a00ea97ce1e80835c74cb25fa"
+    },
+    {
+      "path": "Schematic/LEXICON.md",
+      "sha256": "fc83506d7792c3463ef4fa492c41f7de7c14a9852a2b41ec9efee786694be875"
+    },
+    {
+      "path": "Schematic/README.md",
+      "sha256": "770413a9dd63d02e4910ecf96829452f8f26eb952416e8acbe7b8b6db715e3ab"
+    },
+    {
+      "path": "Schematic/RUNBOOK.md",
+      "sha256": "70d7842ae65552efa1b76658cc2249c659fc887079c0fb5804fb699c0c0587a0"
+    },
+    {
+      "path": "Schematic/index.html",
+      "sha256": "f95aac4ac0a42e738d67caadc453fb446d626bb060ed0e9fa0d37cb079fee880"
+    },
+    {
+      "path": "Schematic/package-lock.json",
+      "sha256": "00a50e19b4787b5208a2297dca40ac3d5bced0dafa89122f37cbfee5261a1d57"
+    },
+    {
+      "path": "Schematic/package.json",
+      "sha256": "cf63086b5e8bce3620810638526db86a2954cc559d09f204a62dec01f0289b2c"
+    },
+    {
+      "path": "Schematic/public/favicon.svg",
+      "sha256": "6e7229ae3bfc41993d32630cd9c0ad899b67156f7112e1c14017f47faeaecda8"
+    },
+    {
+      "path": "Schematic/specs/S-017-thirteen-hall-projection-conformance/SPEC.md",
+      "sha256": "db2200a415cee0097ff7eca4eea7eadc4a5ef9016f77ea0b280f537cf815afac"
+    },
+    {
+      "path": "Schematic/src/App.jsx",
+      "sha256": "708eae39d6af241caadcdbea1620733db53e6ee2c4da45c13c06fa45b16744ba"
+    },
+    {
+      "path": "Schematic/src/assets/factory/actuality-floor.png",
+      "sha256": "656ad0eeede9a42f2413534c172a442c6c1cc6554d4537bc2cdcb5b163030ebb"
+    },
+    {
+      "path": "Schematic/src/assets/factory/governance-floor.png",
+      "sha256": "21e123d41ae0e8de5bb85a222e34d0b8a24a2c1e95065f476ccd1f828f97405f"
+    },
+    {
+      "path": "Schematic/src/components/AppShell.jsx",
+      "sha256": "1c1be420929afdf7f3d9d4fff2eb64a55916d6a7b6817073cceb25e519f36a39"
+    },
+    {
+      "path": "Schematic/src/components/CampusAtlas.jsx",
+      "sha256": "f4f344f415434d68dc9bc6a1dd7ef3dad2e22adcfff9cf3699abe7c9fad2759c"
+    },
+    {
+      "path": "Schematic/src/components/FactoryStack.jsx",
+      "sha256": "bb12bc183508f40aaf376d991b4568923a2d8042a2c88197d9a43aeece258574"
+    },
+    {
+      "path": "Schematic/src/components/GovernanceFloorPlan.jsx",
+      "sha256": "fc8270a3b3443e7a00969f6e7f9d6a5e527061339abe3ca67a271f287f6d1d38"
+    },
+    {
+      "path": "Schematic/src/components/JourneyRail.jsx",
+      "sha256": "24046a1231bf720085768b83aa9f90fd115b39cfd8750fd741fd5a2a033ad987"
+    },
+    {
+      "path": "Schematic/src/components/PageHeading.jsx",
+      "sha256": "f9e49bf16c1b6c6d95d3cb6c3372dfad4ce7df423cbbf9b957ec2e67cddc37e7"
+    },
+    {
+      "path": "Schematic/src/components/ReferenceExplorer.jsx",
+      "sha256": "f5abc824340e617344fa64cc52c3dee80e7cc641ce2b3a41ad76d561b142af21"
+    },
+    {
+      "path": "Schematic/src/components/RunInspector.jsx",
+      "sha256": "a3e0dc1d45195452e384956860b1d0c4678f5cfbccb54af80bc9450bd9ecab5e"
+    },
+    {
+      "path": "Schematic/src/components/ScenarioLibraryPanel.jsx",
+      "sha256": "a99f50dd29635aeddd2b36445e926892386ec30c608af6e6a6dc14313e190a65"
+    },
+    {
+      "path": "Schematic/src/components/SchematicControls.jsx",
+      "sha256": "53fb0ccfdf50eeef7962a7044923f21ce178ac4a87ccf1b5dd91a2cb4d4bec1d"
+    },
+    {
+      "path": "Schematic/src/components/TransportControls.jsx",
+      "sha256": "9735fdb5515df7f9a8bb0a87d589031e045cec8370581bdd13ef4d8ae7645413"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowExecutionRail.jsx",
+      "sha256": "8d7c89f0c856bcade98862ad0580879af62c6e3021f7926622b0a22c94db717d"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowFloorPlan.jsx",
+      "sha256": "010e25ebcacae72d81b41e2e7180d7007443b3ea0ce5940a678a6bd5df7d38c3"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowHistory.js",
+      "sha256": "1d73bd5f79a36d5d792cceccd6157ec5b2e5f6b27255e143f5395aa42fdb884f"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowScenarioPicker.jsx",
+      "sha256": "862ab838810ab01277e625e2b1c9a55d6d42bad8df01632a49b3c92e0e5dc7d8"
+    },
+    {
+      "path": "Schematic/src/components/WorkflowTelemetry.jsx",
+      "sha256": "64ca852c1cdad102dced40edfb0d7f1b8993972482e8a53eb6f8c34fd9d0bc9b"
+    },
+    {
+      "path": "Schematic/src/components/campus.css",
+      "sha256": "ef8871957c80f751b46d98b22f41342d2ccdd231469e66b39df9287df15ab40c"
+    },
+    {
+      "path": "Schematic/src/components/factoryAtlas.css",
+      "sha256": "8af6306fafae209e330ac01de8f60ec5c653f08be803c51756d4cd46188b76f0"
+    },
+    {
+      "path": "Schematic/src/domain/campus.js",
+      "sha256": "84090dfeb84eeec347729be003970b3876935611dbd4345e4873bf57a23920e2"
+    },
+    {
+      "path": "Schematic/src/domain/engine.js",
+      "sha256": "d65bc809511bf7d9ed0ba865a04daad8869fb7defcc2f65994cbc3af8b179e89"
+    },
+    {
+      "path": "Schematic/src/domain/focus.js",
+      "sha256": "8b68d0d1cef6c83ea27b644908389fad1404865c07f8ec94c0d1e361809017c8"
+    },
+    {
+      "path": "Schematic/src/domain/foundryProjection.js",
+      "sha256": "5d241a50b139cd3d3c1e67261a1e637385b80e83e9bcfdcff82d9a76d2b44f82"
+    },
+    {
+      "path": "Schematic/src/domain/governanceGuide.js",
+      "sha256": "d1efba7b1e2add621afbdf7fc676a842535603d2e562389e1824af871dc6953c"
+    },
+    {
+      "path": "Schematic/src/domain/jobOrder.js",
+      "sha256": "6e435fb260e0a70bba05ab51661ee5456e8b6d729c94b17f924c5064d0f2044b"
+    },
+    {
+      "path": "Schematic/src/domain/projectionSignature.js",
+      "sha256": "fd55f22fcc29d1f6726aece41637e52c7cdb2e861c7d88b157e2ae5553a46eb7"
+    },
+    {
+      "path": "Schematic/src/domain/referenceRegistry.js",
+      "sha256": "7f54f6564356981ad403996faee88ae9f63c21fe38a68f1eb62cbfa526c7daa7"
+    },
+    {
+      "path": "Schematic/src/domain/scenario.js",
+      "sha256": "22b08a865f44da29402c3a64d636f08c3455f9bc61efc5ebafea057ad9c0fa57"
+    },
+    {
+      "path": "Schematic/src/domain/scenarioLibrary.js",
+      "sha256": "35f148c3d3a8b86567f34d4594f70c59aac4c1343f5b6316e8f4dedcdeb48c3b"
+    },
+    {
+      "path": "Schematic/src/domain/scenarioPortability.js",
+      "sha256": "d6dfcc392b3c75885aeb8ea447b70f041ee868534c86c025d0fc29787b71c34a"
+    },
+    {
+      "path": "Schematic/src/domain/workflowFoundrySemantics.js",
+      "sha256": "b3cfd4bb2ed15610a512dd5c03c86b33468dbf64a18e3c4077415d96a5560dbe"
+    },
+    {
+      "path": "Schematic/src/domain/workflowPresentation.js",
+      "sha256": "0fb1351c78e26e659d4634611573c7241eba7204bf44bbcdf9bb64f4fa6ca5dd"
+    },
+    {
+      "path": "Schematic/src/domain/workflowProof.js",
+      "sha256": "a238eb31d456e883becaa16a52aadb92814b601ccdc7cccbe5db5808d399c9d1"
+    },
+    {
+      "path": "Schematic/src/main.jsx",
+      "sha256": "101fd2c7f102f0e697bea7f8e193d2d7e8030e4e8047b8ce949a416938458c61"
+    },
+    {
+      "path": "Schematic/src/pages/FoundryPage.jsx",
+      "sha256": "85c408ff6b6da4ccc1578a6a835dbde7476e9ba4010005c95309e89e14d092d8"
+    },
+    {
+      "path": "Schematic/src/pages/GovernancePage.jsx",
+      "sha256": "74430fcfb55bc67b2c3fad032397399fa8d55274f592c96dc0082745a899348a"
+    },
+    {
+      "path": "Schematic/src/pages/HistoryPage.jsx",
+      "sha256": "90debc158dd5b78ed32ad295882f89c332e563f603b6dff64c1b690cc3a791ee"
+    },
+    {
+      "path": "Schematic/src/pages/ReferencePages.jsx",
+      "sha256": "a8c95d2b60ad11fb84a82e6143d235d9eb5d423f1b1ae82707cc481c627c9537"
+    },
+    {
+      "path": "Schematic/src/pages/RunPlayer.jsx",
+      "sha256": "83ec93dcc0d182f08bb9f5d6babe95d16f5f7cae89605b01c58a9ac82472d673"
+    },
+    {
+      "path": "Schematic/src/pages/WorkflowPage.jsx",
+      "sha256": "cce249cbd6bda4189fe22ddf433c319d0de4afa41b31c849bd00734767eb2965"
+    },
+    {
+      "path": "Schematic/src/pages/WorkflowsPage.jsx",
+      "sha256": "5de95aaa15be0bc32caad60d0c920f4c457f178c7afdc5d24f28d51c53a57946"
+    },
+    {
+      "path": "Schematic/src/quality/simulatorContract.js",
+      "sha256": "0dcad9218442ce0411b91cbe3ac9103070ad68381f8cfb852696faeddf36666f"
+    },
+    {
+      "path": "Schematic/src/router.js",
+      "sha256": "e4a073d707daf237b1e50a0649003e763e6a10d267f8b20d2871e2ea0721b168"
+    },
+    {
+      "path": "Schematic/src/store/RunContext.jsx",
+      "sha256": "c5038173c5452d364e2b94b6b5d77f690e1d885254639405165d6df87435058d"
+    },
+    {
+      "path": "Schematic/src/store/ViewContext.jsx",
+      "sha256": "761b8df8103504804691742c5e0d7537303645593b5b05709738f8d9875468ae"
+    },
+    {
+      "path": "Schematic/src/store/historyStorage.js",
+      "sha256": "3af33cf6fffd8a720bd6092d2b7e6bb03972211712d5d1eddbc8093828168c2b"
+    },
+    {
+      "path": "Schematic/src/store/replayRun.js",
+      "sha256": "28abafcbc0be3a3ea7cecdf94abfab7522beae16d9ff1e3f70a038856e7cdce1"
+    },
+    {
+      "path": "Schematic/src/store/scenarioLibraryStorage.js",
+      "sha256": "608c4307c28c6b36b3e79f00aae9d84547668add9e6850308f911a993613114b"
+    },
+    {
+      "path": "Schematic/src/store/scenarioSession.js",
+      "sha256": "b8fe40204d09249628802cecb2e977736b4d68912bf2c2d3cd61106c60bcbfd3"
+    },
+    {
+      "path": "Schematic/src/store/scenarioTransfer.js",
+      "sha256": "b704960de0ae35193fbfcffdd5f9efdfce4dda5d815a277fa9398ec5bce76a6d"
+    },
+    {
+      "path": "Schematic/src/styles.css",
+      "sha256": "c5cdf4509ba33fb252c7657b9394230801534287244b54daf67eec521b8a2cd6"
+    },
+    {
+      "path": "Schematic/src/view/atlasTopology.js",
+      "sha256": "3e9d8a5e36acefcc7489d86dc5acd255c90b8216a95f950667b552f6a38a5961"
+    },
+    {
+      "path": "Schematic/src/view/atlasView.js",
+      "sha256": "fff97766bd2ede7dd6e14b707e6bfd794655d463f175b6bd66cf8a5225ebfead"
+    },
+    {
+      "path": "Schematic/tests/atlas-topology.test.js",
+      "sha256": "00efba3a8d7dc484c5d2c6a326e9ee105220c03db2fb66450be78bf1b4fb2499"
+    },
+    {
+      "path": "Schematic/tests/atlas-view.test.js",
+      "sha256": "25de18cfdec5c9b031e98ccb4f42d1e14bb2860062cfd2e0dc35aac4fd27143d"
+    },
+    {
+      "path": "Schematic/tests/campus.test.js",
+      "sha256": "cb910bc93969b8ab248ee6244f2397158b63f102199e6f2ae3c124b06f11f007"
+    },
+    {
+      "path": "Schematic/tests/engine.test.js",
+      "sha256": "79d27bf32757d16d1aeaa14f269b0afbe5e4fb22b669d59fd026c0de0b03a45e"
+    },
+    {
+      "path": "Schematic/tests/factory-stack.test.js",
+      "sha256": "a1b6c3a7b14035835ecb01c1f16589cc22f0f119a969d7c4844c4991d54860aa"
+    },
+    {
+      "path": "Schematic/tests/final-quality.test.js",
+      "sha256": "3f5b02bf23cd3017dc640c920c8c37a34cc82f6e1ac735a0c4d8b875777d7d89"
+    },
+    {
+      "path": "Schematic/tests/flight-cycle.test.js",
+      "sha256": "e6f79710c231775bacb65fd3c89609120700f63366291856c0644e52d750671a"
+    },
+    {
+      "path": "Schematic/tests/focus.test.js",
+      "sha256": "a575cbc6725b1fd03f6c65936fe4b2ff3d94141373e31f12c735cb1a75caaf55"
+    },
+    {
+      "path": "Schematic/tests/foundry-projection.test.js",
+      "sha256": "b1825595cb6535b5c75961512ba40802888b50f3446205e9a25dff258b06dfbc"
+    },
+    {
+      "path": "Schematic/tests/governance-guide.test.js",
+      "sha256": "edc944c3bbd796639f2d3ed4b1f75ab9adb372473d7e30f18d9ec08bd0848ea9"
+    },
+    {
+      "path": "Schematic/tests/job-order.test.js",
+      "sha256": "2ae1f34db759c1e510ec9c3a744e05795f634ff61427a424e41258975621eeca"
+    },
+    {
+      "path": "Schematic/tests/legibility.test.js",
+      "sha256": "e220e05739d3dcb84aebee3c1bfb89de94b15d207dcc4fdce2efad438b757272"
+    },
+    {
+      "path": "Schematic/tests/network-binding.test.js",
+      "sha256": "49d2a5586f29fab1538d2950a102d1c7baedd692e94cb8ced0ef01b2ea3c1914"
+    },
+    {
+      "path": "Schematic/tests/projection-drift.test.js",
+      "sha256": "9f2f63c743eedf3c14bdbaab082868fa5d0db5c989b184c9a4d4ae5b495df1db"
+    },
+    {
+      "path": "Schematic/tests/quality-gate.test.js",
+      "sha256": "d7d4110b6063a86a96f8909d6ca19a5e5913dbfc6df03e0d5364a235f9baf638"
+    },
+    {
+      "path": "Schematic/tests/reference-registry.test.js",
+      "sha256": "d717a729fc1fec24d4db5180a0535f5040e2d49ee0f45e1b2aea9cdd8e5bce09"
+    },
+    {
+      "path": "Schematic/tests/release-schematic.test.js",
+      "sha256": "7148f741bcc987f3fbe7c4a10516b4ecf7f6bf5e5be105fb9ec1694ba7262501"
+    },
+    {
+      "path": "Schematic/tests/routes.test.js",
+      "sha256": "7f13c2aadcbbfc13c04533c83f5897c634245d483ec78e00e6efab0dc7cce751"
+    },
+    {
+      "path": "Schematic/tests/safety.test.js",
+      "sha256": "96ebaa2dd0077a079f6bf31503f0b4ac1d1f7df30468a3f08174d9096ca42f89"
+    },
+    {
+      "path": "Schematic/tests/scenario-library.test.js",
+      "sha256": "8cf6553d03216d3f889471d81b3548e4765f7cbd987ad1cd5308310b2c3498be"
+    },
+    {
+      "path": "Schematic/tests/scenario-portability.test.js",
+      "sha256": "09b8862f4b1743a4727b6fa9362a86d05df1a1612045b4dfa543567dcd997e2b"
+    },
+    {
+      "path": "Schematic/tests/workflow-foundry-semantics.test.js",
+      "sha256": "8b0811af1ec28a78b51ad621ab8f9ea17efd913701383cec7bd869a0715c5a47"
+    },
+    {
+      "path": "Schematic/tests/workflow-history-recovery.test.js",
+      "sha256": "af1e9f053638ffb351558af94c70fa45614ca297869c4ff170b5354028273b4d"
+    },
+    {
+      "path": "Schematic/tests/workflow-presentation.test.js",
+      "sha256": "31716a336b6e80fa1346c916a5c73329d794a72833d4c76743074203029aff84"
+    },
+    {
+      "path": "Schematic/tests/workflow-proof.test.js",
+      "sha256": "c30d7234c69483a4b08eae810b545f34d9eca828a0a1e805b8bdc861b23fc598"
+    },
+    {
+      "path": "Schematic/tools/protected-checkouts.json",
+      "sha256": "4aee2c03efa894e9b1be0129311a262d64b1b186e48140b2586992bb007ba61b"
+    },
+    {
+      "path": "Schematic/tools/release-schematic.mjs",
+      "sha256": "06c56ff40d1cf99c7a50d9fa6139ffc3e5725976038c83e2a97d27dc09b8e89c"
+    },
+    {
+      "path": "Schematic/vite.config.js",
+      "sha256": "5a4c0e5646f5fd9c8da15d1303391c38e528680b257f4f0f632326c88cc1390f"
+    },
+    {
+      "path": "docs/adr/0001-planes-classify-operations-not-artifacts.md",
+      "sha256": "67abb6a60a1f86649b818c24cbcb412f2e4f9d886405646926c7631249d5f74c"
+    },
+    {
+      "path": "docs/adr/0002-binding-rules-stay-in-current-controls.md",
+      "sha256": "8cef6f8690702acee0afbf12dd51c057e370e4040beb41a9bbda3a7013f74721"
+    },
+    {
+      "path": "docs/adr/0003-full-crud-with-artifact-conditions.md",
+      "sha256": "1c7d992ec51ad9fd0a75e2083b1b9d54603510b56aaefc5400c47b21a836e820"
+    },
+    {
+      "path": "docs/adr/0004-policy-data-and-derived-matrix.md",
+      "sha256": "53dca0a4422e28e78275442b0c807b3d0d38e7f83e194cbe27358889e693885e"
+    },
+    {
+      "path": "docs/adr/0005-machine-enforcement-requires-running-consumers.md",
+      "sha256": "c41098227f7a168ee9adc4c651c1c108aca7676bf0aebc3daaa95efad2a1dd9f"
+    },
+    {
+      "path": "docs/adr/0006-extend-the-existing-clearance-policy.md",
+      "sha256": "2a8826399801a08bb755c901d429dbf5d610e97f82a1f4eaa498a19797ba2162"
+    },
+    {
+      "path": "docs/adr/0007-verbs-name-operations.md",
+      "sha256": "a85947bbc90ff6d34ad0f648dabd5d2db0b5e8ab170356df50c7b6df88daff8e"
+    },
+    {
+      "path": "docs/adr/0008-adrs-and-specs-record-grounding.md",
+      "sha256": "55a27d57f3924a1c7ef784a519597965235fd1798e5072b1b2bd526c9e507b81"
+    },
+    {
+      "path": "docs/adr/0009-job-order-authority-is-an-intersection.md",
+      "sha256": "37b48e61a112e6e8d74f001a4a1da3d5e21ca79e129581df9e1d455732caf8d2"
+    },
+    {
+      "path": "docs/adr/0010-job-orders-coordinate-work-across-chats.md",
+      "sha256": "bd22b8df27061504a6aca88fe7fc99c27e19d3cd52a889365bc14e24eb69b738"
+    },
+    {
+      "path": "docs/adr/0011-job-order-is-an-operation-checklist.md",
+      "sha256": "59e16009d18e100290fef0413cb4d2618c3d9f2bcbbbe68d95da7926c799e946"
+    },
+    {
+      "path": "docs/adr/0012-job-orders-link-to-owning-sources.md",
+      "sha256": "0723274b7b497554c9e06a376e84ef9ebb9c9abff7a5aa1528ce2cd76e766b51"
+    },
+    {
+      "path": "docs/adr/0013-seven-file-workbench-contract.md",
+      "sha256": "d79d29943f99121599f45154458c66a0d93386658272081a6c4a4304fed6685e"
+    },
+    {
+      "path": "docs/adr/0014-workbench-extensions-and-shared-skills.md",
+      "sha256": "5254dc8f4f5110e6a143df7ac6fefe658cbb4051b0b0e46c5c3a4d5d0a86cd9d"
+    },
+    {
+      "path": "docs/adr/0015-workbench-base-and-foundry-capabilities.md",
+      "sha256": "d3bff5e90f448005d829ffde6273a53bafad559af4d31652bd602e3451e90568"
+    },
+    {
+      "path": "docs/adr/0016-project-index-remains-routing.md",
+      "sha256": "fe95ea3a2517534cae8ef323a174bda23951269dbcb50d3fe8793275a333f870"
+    },
+    {
+      "path": "docs/adr/0017-workbench-support-directory-has-six-lanes.md",
+      "sha256": "b782061fba23df8e0cda7d052aeaa5650a741a5124b5237392032ac4350504d0"
+    },
+    {
+      "path": "docs/adr/0018-the-wiki-is-the-knowledge-base.md",
+      "sha256": "929f69b1a7fdb96c0a361324b8e137d512147a8f69ec0078e2fcd7cee7f378bf"
+    },
+    {
+      "path": "docs/adr/0019-session-records-share-one-lane.md",
+      "sha256": "7d5a30fb5cbe1097da7852ce2fe2a5cc58dd0e121edaaf41d1717baac54e9ada"
+    },
+    {
+      "path": "docs/adr/0020-a-check-blocks-only-the-change-it-evaluates.md",
+      "sha256": "ca2a3ae8722be6f833ee0e5313c05adbc79dfee610212496a35ef798bc8a1d8f"
+    },
+    {
+      "path": "docs/adr/0021-job-orders-are-a-form-not-a-precondition.md",
+      "sha256": "97dacc0aa598bfa06a48dc8232cc34ed7793618e43234f00d55d885c572eab8f"
+    },
+    {
+      "path": "docs/adr/0022-workbench-boot-and-discovery-boundaries.md",
+      "sha256": "6f3e4d1bb265c75757d21cea345cc0c68c641121eb478fbf77e7c64873b2aff4"
+    },
+    {
+      "path": "docs/adr/0023-mechanical-guarantees-and-agent-obligations.md",
+      "sha256": "75a714f53776561b8ad7135d61b9b78b4dd81373a39f7cc5684892450a8a134a"
+    },
+    {
+      "path": "docs/adr/0024-delivery-with-independent-proof-closes-a-record.md",
+      "sha256": "372f3d987aee8bbbc9f789d5c01126be70674b5e4bf9d8d77dedb938fb8e49c0"
+    },
+    {
+      "path": "docs/design/foundry-concepts.md",
+      "sha256": "52a5b4ca99179044546f62362d147b0b4a9ec7d37f7a091776145575dd6e820a"
+    },
+    {
+      "path": "docs/design/foundry-lexicon.md",
+      "sha256": "cd9d109d2c62a142132c55b73c17b0cb7a8ec0856dc6a782a055e6b8209395ca"
+    },
+    {
+      "path": "recovery/flight-skills/in-flight/SKILL.md",
+      "sha256": "a09bf0d1372242ce1ac37862aba2f0dc8e3535719de600fa5f121597eba1e82b"
+    },
+    {
+      "path": "recovery/flight-skills/in-flight/scripts/check-fixtures.mjs",
+      "sha256": "a7ee3beedb876b77a28f2e1d2bdfc94da4dd0d0095470d08315308971fa0c32f"
+    },
+    {
+      "path": "recovery/flight-skills/land/SKILL.md",
+      "sha256": "b391f60b91e0e9f183dc5aa2d73d502d1a7581ab70475c7040b14194000b716f"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/SKILL.md",
+      "sha256": "35cf02a13c71a964ed29b24cb3a45431f8c4c5707180d0c8175a1cc25fe3f672"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/scripts/check-fixtures.mjs",
+      "sha256": "69833d739d2835508bcc5a2d55e0d13e8ded8b786e28ee2776b6c62c3f8e6f92"
+    },
+    {
+      "path": "recovery/flight-skills/landing-check/scripts/landing-check.mjs",
+      "sha256": "5e1b7c105b8875aaa47a57e93b1906460c25c1df56818d3636700079feabdf70"
+    },
+    {
+      "path": "recovery/flight-skills/launch-flight/SKILL.md",
+      "sha256": "1a3aec53c9cb638fdc983cab371b710ce74aee021e31da71f78e9eccd91f1a7f"
+    },
+    {
+      "path": "recovery/flight-skills/launch-flight/scripts/check-fixtures.mjs",
+      "sha256": "7e7af92fdcfbbbaa9bb0d9b24104f08fe5c68166bf0d9a991c9a20b2b61bfb75"
+    },
+    {
+      "path": "recovery/flight-skills/postflight-check/SKILL.md",
+      "sha256": "0ab72fab119c610adbf2afead1e48d4779d7e88999c48970bc0a99a0b271ce6a"
+    },
+    {
+      "path": "recovery/flight-skills/preflight/SKILL.md",
+      "sha256": "93db4959657f496e36b1c03fef64329c2f8c541b512aea512ab738307db72013"
+    },
+    {
+      "path": "recovery/flight-skills/sitrep/SKILL.md",
+      "sha256": "356f2852737d2baae8af7b655b1d9487e79aef7727aa4dd0095fe1bc47dc2187"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/PUBLISHED.md",
+      "sha256": "0fd3f6921e3b2be0e2759411cc9a23204b390cfefe4a6abab1dd44d38fed27be"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/README.md",
+      "sha256": "b986e358e9dea9d94c4173fe1f8e7c54644949e78b7f6d13cbd3a3c9a7ae3dc7"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/adoption/SKILL.md",
+      "sha256": "16954037cde190e28c8463baf18b2a4acad69df68e214132b1710bdbe42c7487"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/ask-workbench/SKILL.md",
+      "sha256": "996bc38abf671e6ee333da9ca1b187998cd4b94f566b8e7ef77f821f8412e58e"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/brainstorm/SKILL.md",
+      "sha256": "ebdcc120a90a2ccaede2700b51641667c8e1af6c69d78e81f99770199073895a"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/checkpoint/SKILL.md",
+      "sha256": "b6a80f2c2e81b5b444ff4c1425a4d077a68812ec529e70f2b5c9034d82b60b58"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/code-review/SKILL.md",
+      "sha256": "3b8b842e0fdac1524a1a0672a8332e1c8a4a25f221b028a3fb8cc816fa3633d6"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/genesis/SKILL.md",
+      "sha256": "2c89e004624e0c06f2f3f394e945482e7081676989eb94119787d06577860a5a"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/grill-me/SKILL.md",
+      "sha256": "6189dfceb7304a6e5558f75d87e68fa3bc7fcf7ba120e44f21f8a61fe01eba54"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/grilling/SKILL.md",
+      "sha256": "505e58b67d1f520488423b569bd4427bef01620cc3e147a051dfe4c2c6417498"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/implement/SKILL.md",
+      "sha256": "98b5d57bb70671b09705b335cf91aadd5de62d026d7833fa58821b18d3128c52"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/make-it-so/SKILL.md",
+      "sha256": "196dd17befd686d4b30978c4f3ffff13850f3498ec8db55b7bef19cfae286506"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/sitrep/SKILL.md",
+      "sha256": "356f2852737d2baae8af7b655b1d9487e79aef7727aa4dd0095fe1bc47dc2187"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/to-docs/SKILL.md",
+      "sha256": "289b593caeb42ba7dbea527f47227f5e0cfcc5f50345f275b346f68004824260"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/to-spec/SKILL.md",
+      "sha256": "dbac5e312f924147dd3b48d6cd584542b63d29b0b816a4d993f4bea5cdde7d76"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/to-tickets/SKILL.md",
+      "sha256": "00c58aa6acf598a429fd282a0e950da7ebbc072d7237d0b7fb3e253609d33e03"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/tracer-bullet/SKILL.md",
+      "sha256": "74eeb871d417951a09bfe6c2a421a87b7c5c06982869677b90a27c1bad408336"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/update-harness/SKILL.md",
+      "sha256": "214964c877913713ffdc97b4527795de641f260d7a517bd4319e4a0a673c3e8a"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/writing-great-skills/GLOSSARY.md",
+      "sha256": "cccd684c73fb7a06f523497b0121765f92d2b33d6ef9c51602294849233451d6"
+    },
+    {
+      "path": "recovery/legacy-skill-snapshot/writing-great-skills/SKILL.md",
+      "sha256": "4d6ccbc3760b1bd4107c495a79872286ea69494003f3b0a719fc95b147457061"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-automation.mjs",
+      "sha256": "9f3f9b4ab2b9b7ba096189367c3c2f091b9881cec0b236eb2553107a973fe263"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-chain.mjs",
+      "sha256": "51f39968f72c758a74d086a450849035427360593fbc751a6635bd0e3e851387"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-core.mjs",
+      "sha256": "4b2445fce53b1bea90066e914cf57edb7a8749d76689e94cdb38a1f0015071b0"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-git-preflight.mjs",
+      "sha256": "87a93f66e97a3ba08d229ac10645a3a2cc273f2147cd4716b9133b81e6fc74e0"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-ready-queue.mjs",
+      "sha256": "60c0966e5e1a106cfe2054990a33eaf5f03db74fc1410a7a1f7945b41cb9d9f5"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/captain-workbench-release.mjs",
+      "sha256": "c3b96876a945eb05e8050f5740aa1f8ea6db53fa24507d98ea63915f887c3af3"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/check-skill-topology.mjs",
+      "sha256": "26cd1a1ba39144cb4a2cb8ba9d33ad9d5811e84635af79981c67fba1a5b3b52c"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/checkout-tripwire.mjs",
+      "sha256": "45aeef88162b38a472df1ce9562cc0a03a9fb3a5316e37b613d22928673ea07d"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/cross-system-alignment.mjs",
+      "sha256": "eb5151bb08e73b90090e4ccd209483b802df926723720c831df27197d0bd6961"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/foundry-migration-preflight.mjs",
+      "sha256": "f95538ac5c2a79591fc0e71ec352a87c8bec4e08e1267304123a3f67509a676c"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/foundry-reactivation.mjs",
+      "sha256": "eedc748ab1877dadbaeab3a13fd9c3395714743d3877633443f5db8a31cce718"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/fuid-registry.mjs",
+      "sha256": "80d22f54ea7c029934a86bd466050757afb1f8aef5c5c197564be0b0cca1a0b6"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/id-registry.mjs",
+      "sha256": "cd406834402eccafcf8e205c49cd52b606ad649e1ce4ba2a3f55ae426d387309"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/install-checkout-tripwire.mjs",
+      "sha256": "f01c7f21f6cb78a553b3af82de14221a6e210e00b18dd20ab4b143dbc8449208"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/install-push-guard.mjs",
+      "sha256": "9ff5fb36a5ae5959ff6948e2eaa9eafafe069f40f0864420117769fa36438a82"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/job-order-landing-proof.mjs",
+      "sha256": "eaae08416a0cb9cd8318aa21ebab7c395bd029f7fc3184bac77ec25579731634"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/job-order-workspace.mjs",
+      "sha256": "00898c063cec03e3b741dee3152aeb17b2daa5d8656a7ffdb89d5142896beaa0"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/migrate-work-items.mjs",
+      "sha256": "f25f8310fb34a9f4924ee8446cd9b0b0235bdb26122a5e3457b50248235859e6"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/preflight-launch-snapshot.mjs",
+      "sha256": "97a546bc798185a884424783bd44756315c0a5d0c5ce8418a9765f80b35a9ab4"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/preflight.mjs",
+      "sha256": "cb9bdbaf706970efe3acc30db0ef738bdc78b9e7dd6130ce330ed880702c4a5e"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/project-index.mjs",
+      "sha256": "4f4680fd443b4019759c434657726e5b426e26667b1ff302c87ce29d63f40c57"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/publish-skills.mjs",
+      "sha256": "5a5c807831221ea4846c3adfe9f38defa4d65026a5ea1f0712e98cdea70d1896"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/stop-save-gate.mjs",
+      "sha256": "82670852d061cd81e95b4492bb1b0eff2e607262167b7a10e88518c31ae5dca5"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-job-order-landing-proof.mjs",
+      "sha256": "a030c91b73e0c981ac573ae90c6cefe2a296f952ac78ed9c11e74fa0cf715849"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-job-order-workspace.mjs",
+      "sha256": "df4fea837913311b8a78c2a2f3bacd931686a1b4830ddb739ca32b58a8ce364e"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-preflight-launch-snapshot.mjs",
+      "sha256": "61a24d4a82d34acce293a38de8e4146f91f2c6457cdd7959c1dd7fa040c232e4"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/test-preflight.mjs",
+      "sha256": "178106eacfbfe29f6c460d50199975003d0b7565d28288181f3be9ac23523387"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/vault-links.mjs",
+      "sha256": "c1c67425f73b3bdaadf2d5b3149e0d3ebc1bafc8aa77789f99b8fa571717289a"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/wiki-memory.mjs",
+      "sha256": "0841edacaf11a4c2761633f83328b9d13705d86ab077d47114ee21d9d5b820e0"
+    },
+    {
+      "path": "recovery/workspace/workbench/tools/workspace-paths.mjs",
+      "sha256": "278913268a6f7f8c298716c177b145f77255553e0c8900835b27839c193c4976"
+    }
+  ],
+  "transformations": [
+    "Workspace identity and repository fixtures generalized in recovery source; runtime logic otherwise preserved.",
+    "Schematic machine bindings generalized; historical deployment code is preserved but not configured.",
+    "Secret-shaped test payload assembled from fragments without changing runtime fixture value.",
+    "ADRs and design concepts copied; instance session provenance and individual private closure examples omitted. Additional workspace code and ignored legacy skill snapshot retained with portable identities."
+  ]
+}
