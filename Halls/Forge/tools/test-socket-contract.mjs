@@ -10,7 +10,8 @@ import {
   resolveSocket,
   validateBinding,
   checkConnection,
-  validateRecallResponse
+  validateRecallResponse,
+  validateContractMessage
 } from './socket-contract.mjs';
 
 let passed = 0;
@@ -25,7 +26,7 @@ ok('shipped registry validates clean', () => {
   const doc = loadRegistry();
   const { errors, count } = validateRegistry(doc);
   assert.deepEqual(errors, [], 'shipped registry must validate with no errors');
-  assert.ok(count >= 1, 'registry must declare at least one socket');
+  assert.equal(count, 3, 'registry must declare Recall plus K-005 and K-006');
 });
 
 ok('validator resolves K-001 to its recall contract', () => {
@@ -149,6 +150,48 @@ ok('recall response conformance enforces provenance + freshness', () => {
 
   const badFreshness = validateRecallResponse(doc, { value: 'x', source: 'y', freshness: 'sortof' });
   assert.ok(badFreshness.errors.some((e) => e.includes('freshness')));
+});
+
+ok('K-005 and K-006 resolve to stage-agnostic public contracts', () => {
+  const doc = loadRegistry();
+  const lifecycle = resolveSocket(doc, 'K-005');
+  const journal = resolveSocket(doc, 'K-006');
+  assert.equal(lifecycle.socket, 'lifecycle-transition');
+  assert.equal(lifecycle.contractSurface.entrypoint, 'lifecycle.transition');
+  assert.equal(journal.socket, 'grounding-journal');
+  assert.equal(journal.contractSurface.entrypoint, 'groundingJournal.validateEvent');
+  assert.match(lifecycle.capability, /claim.*handoff.*terminal/i);
+  assert.match(journal.capability, /recover/i);
+  assert.ok(lifecycle.contract.invariants.some((value) => /denial.*repair.*parent\/child.*Projection/i.test(value)));
+  assert.ok(lifecycle.contract.response.optional.includes('receipt'));
+  assert.ok(lifecycle.contract.response.optional.includes('recovery'));
+  assert.equal(JSON.stringify({ lifecycle, journal }).includes('S-037'), false);
+});
+
+ok('generic message validation enforces K-005 and K-006 required fields', () => {
+  const doc = loadRegistry();
+  const journal = validateContractMessage(doc, 'K-006', 'request', {
+    event: {}, predecessor: null, pairedState: {},
+  });
+  assert.deepEqual(journal.errors, []);
+  assert.ok(validateContractMessage(doc, 'K-006', 'request', { event: {} }).errors.some((e) => e.includes('pairedState')));
+
+  const lifecycleRequest = {
+    schemaVersion: '1.0', currentState: {}, nextState: {}, event: {}, predecessor: null,
+    expectedTip: 'synthetic', actualTip: 'synthetic', jobOrder: { id: 'JO-SYNTHETIC-001', revision: 'R1' },
+    action: 'lifecycle.migrate.v1-to-v2', requestedScope: [], clearance: {},
+  };
+  assert.deepEqual(validateContractMessage(doc, 'K-005', 'request', lifecycleRequest).errors, []);
+  const { action: omitted, ...withoutAction } = lifecycleRequest;
+  assert.ok(validateContractMessage(doc, 'K-005', 'request', withoutAction).errors.some((e) => e.includes("missing required field 'action'")));
+  const { jobOrder: omittedJobOrder, ...withoutJobOrder } = lifecycleRequest;
+  assert.ok(validateContractMessage(doc, 'K-005', 'request', withoutJobOrder).errors.some((e) => e.includes("missing required field 'jobOrder'")));
+
+  const lifecycle = validateContractMessage(doc, 'K-005', 'response', {
+    outcome: 'ready', expectedTip: 'synthetic', treePlan: {}, receiptDisposition: 'pending', findings: [],
+  });
+  assert.deepEqual(lifecycle.errors, []);
+  assert.ok(validateContractMessage(doc, 'K-005', 'response', { outcome: 'ready' }).errors.some((e) => e.includes('receiptDisposition')));
 });
 
 console.log(`\nsocket-contract: ${passed} checks passed`);

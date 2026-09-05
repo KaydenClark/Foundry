@@ -1,0 +1,475 @@
+<title>The Foundry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --ground:#EEF0F4;
+  --surface:#FBFCFD;
+  --surface-2:#E5E8ED;
+  --ink:#141A21;
+  --ink-mid:#3D4652;
+  --ink-mute:#59636F;
+  --rule:#D3D8DF;
+  --rule-soft:#E2E6EB;
+  --accent:#0E6B65;
+  --accent-soft:#0E6B6518;
+  --molten:#9E5C0E;
+  --molten-soft:#9E5C0E18;
+  --critical:#963634;
+  --critical-soft:#96363418;
+
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Newsreader","Iowan Old Style",Georgia,serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+
+  --measure:66ch;
+  --wide:1120px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#11151B;
+    --surface:#181D25;
+    --surface-2:#1F252E;
+    --ink:#E3E8EE;
+    --ink-mid:#B4BDC8;
+    --ink-mute:#8C96A3;
+    --rule:#2A313B;
+    --rule-soft:#222932;
+    --accent:#4CBBAF;
+    --accent-soft:#4CBBAF1F;
+    --molten:#DDA05B;
+    --molten-soft:#DDA05B1F;
+    --critical:#E0817D;
+    --critical-soft:#E0817D1F;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#11151B;
+  --surface:#181D25;
+  --surface-2:#1F252E;
+  --ink:#E3E8EE;
+  --ink-mid:#B4BDC8;
+  --ink-mute:#8C96A3;
+  --rule:#2A313B;
+  --rule-soft:#222932;
+  --accent:#4CBBAF;
+  --accent-soft:#4CBBAF1F;
+  --molten:#DDA05B;
+  --molten-soft:#DDA05B1F;
+  --critical:#E0817D;
+  --critical-soft:#E0817D1F;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:17.5px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 6rem;
+}
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 clamp(1.1rem,4vw,2.4rem)}
+.col{max-width:var(--measure)}
+
+p{margin:0 0 1.05em}
+p:last-child{margin-bottom:0}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+a:hover{border-bottom-color:currentColor}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+strong{font-weight:500;color:var(--ink)}
+em{font-style:italic;color:var(--ink-mid)}
+code{font-family:var(--f-mono);font-size:.83em;background:var(--surface-2);padding:.12em .38em;border-radius:3px;color:var(--ink-mid);white-space:nowrap}
+
+/* ---------- masthead ---------- */
+.mast{border-bottom:1px solid var(--rule);padding:clamp(3rem,9vw,5.5rem) 0 0}
+.eyebrow{
+  font-family:var(--f-mono);font-size:.68rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);
+}
+h1{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(3.1rem,10vw,6rem);line-height:.94;letter-spacing:-.035em;
+  margin:.5rem 0 0;text-wrap:balance;
+}
+h1 .of{display:block;font-size:.32em;letter-spacing:.02em;font-weight:500;color:var(--ink-mute);margin-bottom:.5rem}
+.lede{font-size:clamp(1.14rem,2.4vw,1.35rem);line-height:1.5;color:var(--ink-mid);margin:1.6rem 0 0;max-width:56ch;font-weight:300}
+.facts{
+  display:grid;gap:1px;background:var(--rule);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  margin:clamp(2.4rem,6vw,3.6rem) 0 0;border-top:1px solid var(--rule);
+}
+.fact{background:var(--ground);padding:1.05rem 1.1rem 1.15rem}
+.fact dt{font-family:var(--f-mono);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute)}
+.fact dd{margin:.4rem 0 0;font-family:var(--f-display);font-weight:600;font-size:1.06rem;letter-spacing:-.01em;line-height:1.25}
+.fact dd small{display:block;font-family:var(--f-mono);font-weight:400;font-size:.7rem;color:var(--ink-mute);letter-spacing:0;margin-top:.25rem}
+
+/* ---------- sections ---------- */
+section{padding:clamp(3rem,7vw,4.6rem) 0 0;position:relative}
+.shead{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.snum{
+  font-family:var(--f-mono);font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  color:var(--accent);border:1px solid var(--accent);border-radius:2px;
+  padding:.16rem .42rem;line-height:1;flex:none;
+}
+h2{
+  font-family:var(--f-display);font-weight:600;
+  font-size:clamp(1.55rem,3.6vw,2.15rem);letter-spacing:-.025em;line-height:1.1;
+  margin:0;text-wrap:balance;
+}
+.sub{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-left:auto;padding-bottom:.2rem}
+h3{
+  font-family:var(--f-display);font-weight:600;font-size:1.02rem;letter-spacing:-.005em;
+  margin:2rem 0 .55rem;
+}
+h3:first-child{margin-top:0}
+
+/* ---------- data table ---------- */
+.tablewrap{overflow-x:auto;margin:1.8rem 0 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-family:var(--f-mono);font-size:.79rem;font-variant-numeric:tabular-nums}
+th{
+  text-align:left;font-weight:500;font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-mute);padding:.75rem .7rem;border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+td{padding:.62rem .7rem;border-bottom:1px solid var(--rule-soft);vertical-align:top;color:var(--ink-mid)}
+tbody tr:last-child td{border-bottom:0}
+td.name{font-family:var(--f-display);font-weight:600;font-size:.9rem;color:var(--ink);white-space:nowrap;letter-spacing:-.01em}
+td.fuid{color:var(--ink-mute);letter-spacing:.05em}
+td.note{font-family:var(--f-body);font-size:.94rem;line-height:1.45;min-width:24ch}
+td.stripe{padding-left:0;padding-right:0;width:4px}
+td.stripe span{display:block;width:3px;height:1.5em;border-radius:2px;background:var(--rule)}
+tr[data-s="operating"] td.stripe span{background:var(--molten)}
+tr[data-s="primitive"] td.stripe span{background:var(--accent)}
+tr[data-s="contract"] td.stripe span{background:var(--accent);opacity:.45}
+
+.chip{
+  display:inline-block;font-family:var(--f-mono);font-size:.62rem;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;padding:.16rem .42rem;border-radius:2px;
+  border:1px solid var(--rule);color:var(--ink-mute);white-space:nowrap;line-height:1.3;
+}
+.chip.op{color:var(--molten);border-color:var(--molten);background:var(--molten-soft)}
+.chip.pr{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+.chip.ct{color:var(--accent);border-color:var(--rule);background:transparent}
+.chip.bad{color:var(--critical);border-color:var(--critical);background:var(--critical-soft)}
+
+.legend{display:flex;flex-wrap:wrap;gap:.5rem 1.4rem;margin:1.1rem 0 0;font-family:var(--f-mono);font-size:.71rem;color:var(--ink-mute)}
+.legend div{display:flex;align-items:center;gap:.5rem}
+
+/* ---------- plane grid ---------- */
+.planes{display:grid;gap:1px;background:var(--rule);grid-template-columns:repeat(auto-fit,minmax(258px,1fr));margin-top:1.8rem;border:1px solid var(--rule)}
+.plane{background:var(--surface);padding:1.25rem 1.25rem 1.4rem}
+.plane .pn{font-family:var(--f-mono);font-size:.63rem;letter-spacing:.14em;color:var(--ink-mute)}
+.plane h4{font-family:var(--f-display);font-weight:600;font-size:1.1rem;letter-spacing:-.015em;margin:.45rem 0 .5rem}
+.plane p{font-size:.95rem;line-height:1.5;color:var(--ink-mid);margin:0}
+.plane.p1 h4{color:var(--molten)}
+
+/* ---------- flight sequence ---------- */
+.flight{margin-top:1.8rem;border-top:1px solid var(--rule)}
+.stage{display:grid;grid-template-columns:2.6rem 1fr;gap:0 1.15rem;padding:1.05rem 0;border-bottom:1px solid var(--rule-soft);align-items:start}
+.stage .n{
+  font-family:var(--f-mono);font-size:.7rem;font-weight:700;color:var(--ink-mute);
+  padding-top:.3rem;letter-spacing:.04em;position:relative;
+}
+.stage .n::after{content:"";position:absolute;left:0;top:2.05rem;bottom:-1.4rem;width:1px;background:var(--rule)}
+.stage:last-child .n::after{display:none}
+.stage h4{font-family:var(--f-mono);font-weight:700;font-size:.86rem;letter-spacing:.02em;margin:0 0 .3rem;color:var(--ink)}
+.stage p{font-size:.98rem;line-height:1.5;color:var(--ink-mid);margin:0;max-width:62ch}
+.stage .tag{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-left:.6rem}
+
+/* ---------- check panel ---------- */
+.checks{margin-top:1.8rem;border:1px solid var(--rule);background:var(--surface);font-family:var(--f-mono);font-size:.78rem}
+.checks .row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem .95rem;border-bottom:1px solid var(--rule-soft);align-items:baseline}
+.checks .row:last-child{border-bottom:0}
+.checks .row span:first-child{color:var(--ink-mid);overflow-wrap:anywhere}
+.checks .ok{color:var(--accent);font-weight:500;white-space:nowrap}
+.checks .hd{background:var(--surface-2);color:var(--ink-mute);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase}
+
+/* ---------- misc blocks ---------- */
+.callout{border-left:2px solid var(--molten);background:var(--molten-soft);padding:1rem 1.2rem;margin:1.7rem 0 0;font-size:1rem;line-height:1.55}
+.callout .lbl{font-family:var(--f-mono);font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--molten);display:block;margin-bottom:.4rem}
+.callout p{color:var(--ink-mid);margin:0}
+
+.deflist{margin:1.5rem 0 0;border-top:1px solid var(--rule)}
+.deflist > div{display:grid;grid-template-columns:minmax(9.5rem,13rem) 1fr;gap:.2rem 1.4rem;padding:.85rem 0;border-bottom:1px solid var(--rule-soft)}
+.deflist dt{font-family:var(--f-mono);font-size:.78rem;font-weight:500;color:var(--ink);padding-top:.14rem;overflow-wrap:anywhere}
+.deflist dd{margin:0;font-size:.98rem;line-height:1.5;color:var(--ink-mid)}
+@media (max-width:620px){.deflist > div{grid-template-columns:1fr}.deflist dd{margin-top:.25rem}}
+
+.tree{
+  font-family:var(--f-mono);font-size:.76rem;line-height:1.85;color:var(--ink-mid);
+  background:var(--surface);border:1px solid var(--rule);padding:1.15rem 1.25rem;
+  margin:1.7rem 0 0;overflow-x:auto;white-space:pre;
+}
+.tree b{color:var(--ink);font-weight:500}
+.tree i{color:var(--ink-mute);font-style:normal}
+
+footer{margin-top:clamp(3.5rem,8vw,5rem);padding-top:1.4rem;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:.7rem;color:var(--ink-mute);line-height:1.7}
+footer .col{max-width:70ch}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <span class="eyebrow">Portable agent operating system &middot; producer checkout &middot; branch integration</span>
+  <h1><span class="of">GPT_OS /</span>The Foundry</h1>
+  <p class="lede">A factory for agent work. Thirteen Halls, one badge that authorizes every change to what's real, and a gate that scans the badge at every door.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Halls declared</dt><dd>13<small>3 operating · 4 partial · 6 stubs</small></dd></div>
+    <div class="fact"><dt>Governance planes</dt><dd>6<small>Actuality is plane 1</small></dd></div>
+    <div class="fact"><dt>Flight stages</dt><dd>7<small>sitrep → postflight</small></dd></div>
+    <div class="fact"><dt>Product repo</dt><dd>KaydenClark/Foundry<small>published, never authored</small></dd></div>
+    <div class="fact"><dt>Runbook suite</dt><dd>10 / 10 pass<small>verified 2026-08-31</small></dd></div>
+  </dl>
+</header>
+
+<section>
+  <div class="shead"><span class="snum">01</span><h2>What it actually is</h2></div>
+  <div class="col">
+    <p>The Foundry is a <strong>portable harness</strong> — Markdown control documents, JSON contracts, and zero-dependency Node tools — that gives AI agents enough structure to change real systems without anyone losing track of who authorized what.</p>
+    <p>The organizing metaphor is a factory, and it isn't decorative. Work arrives at <em>Intake</em>. It gets routed by <em>Orchestration</em>, built in <em>Forge</em> or <em>Production</em>, judged by <em>Assay</em>, merged by <em>Ward</em>, and watched by <em>Gauge</em>. Every protected doorway between those rooms is a <em>Gatehouse</em> scan that writes an append-only receipt. Nothing about that is a scheduler or a runtime — it is a set of contracts and fail-closed rules that agents and deterministic scripts both have to satisfy.</p>
+    <p>The single load-bearing idea: <strong>no actor changes anything real without a Canon-backed Job Order that names the write scope</strong>. Not a user request, not a plan, not a green test, not a passing review. A Job Order, issued by a spec, scanned at every passage.</p>
+  </div>
+  <div class="callout">
+    <span class="lbl">The distinction everything hangs on</span>
+    <p>A <strong>Job</strong> is the outcome you're asked to achieve. A <strong>Job Order</strong> is the authorization for what you may write. The Job says what to accomplish; the Job Order says what may change. Conflating them is the failure mode the whole apparatus exists to prevent.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">02</span><h2>Producer, product, and the four-tier hierarchy</h2></div>
+  <div class="col">
+    <p>You are standing in the <strong>producer</strong>. This checkout lives inside the private <code>KaydenClark/GPT_OS</code> repository at <code>Foundry/</code>. The thing called "the Foundry product" is a <em>generated output</em> — published to the public <code>KaydenClark/Foundry</code> repo by reading one immutable producer commit, building a clean temporary tree, enforcing an inclusion contract, scanning for secrets and host coupling, and comparing byte-for-byte before an explicit push.</p>
+    <p>The public repository is never an authoring input. <code>source-root.json</code> is the contract that decides what crosses: eleven categories included, <code>Modules/</code> and <code>Schematic/</code> explicitly excluded, and <code>Skills/</code>, <code>.worktrees/</code>, private Wiki paths, and project checkouts hard-prohibited. Any unclassified, secret, runtime, or generated path fails the inventory closed.</p>
+    <p>Above and below the Foundry sit three more tiers:</p>
+  </div>
+  <div class="deflist">
+    <div><dt>Foundry</dt><dd>The portable product itself — this repository's contents.</dd></div>
+    <div><dt>Factory</dt><dd>One host-scoped deployment. Exactly one Steward/Servitor per Factory. The Mac Mini is one; the Windows PC is another.</dd></div>
+    <div><dt>Workshop</dt><dd>One enrolled project inside a Factory.</dd></div>
+    <div><dt>Workbench</dt><dd>That project's own harness — its <code>AGENTS.md</code>, specs, taskboard, runbook.</dd></div>
+  </div>
+  <div class="tree"><b>Foundry/</b>
+├── <b>Halls/</b>              <i>13 native Halls — tracked product source</i>
+├── <b>Schematic/</b>          <i>separately owned React visual blueprint (excluded from product)</i>
+├── <b>Modules/</b>            <i>4 installed sibling products, cloned, never vendored</i>
+├── <b>Roles/</b>              <i>6 legacy authority contracts, migrating to skills</i>
+├── <b>Skills/</b>             <i>generated skill catalog — prohibited from publication</i>
+├── <b>Projects/ Wiki/</b>     <i>generic enrollment + memory capability (no instance data)</i>
+├── <b>Scheduled/Captain/</b>  <i>AFK policy and workflow mechanics</i>
+├── <b>manifest/</b>           <i>foundry.json (17 components) + identity-registry.json</i>
+├── <b>specs/</b>              <i>4 product specs — S-001..S-004</i>
+├── <b>tools/</b>              <i>~5,300 lines: foundry, captain, spec-workbench, registries</i>
+└── <b>templates/ reference/</b>
+</div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">03</span><h2>The thirteen Halls</h2><span class="sub">roster is amendable Canon, not an invariant</span></div>
+  <div class="col">
+    <p>A Hall is a complete vertical boundary — its own scope, its own lifecycle, its own control files. Every Hall carries the same six documents (<code>AGENTS.md</code>, <code>BLUEPRINT.md</code>, <code>CLAUDE.md</code>, <code>README.md</code>, <code>RUNBOOK.md</code>, <code>TASKBOARD.md</code>); some carry contracts, source, tests, and specs on top of that.</p>
+    <p>The <strong>status column is the most important thing on this page.</strong> Three Halls are operating systems folded in from existing products. Four have real primitives or contracts built. Six are documentation stubs — the room exists, nothing runs in it yet.</p>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>FUID</th><th>Hall</th><th>State</th><th>Files</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr data-s="operating"><td class="stripe"><span></span></td><td class="fuid">7M2Q</td><td class="name">Forge</td><td><span class="chip op">operating</span></td><td>173</td><td class="note">Builds and improves the Foundry producer itself. Folded from LLM_Workbench; carries the skill library, spec workbench, socket registry, evals, and the publisher.</td></tr>
+        <tr data-s="operating"><td class="stripe"><span></span></td><td class="fuid">4X8C</td><td class="name">Assay</td><td><span class="chip op">operating</span></td><td>21</td><td class="note">Read-only independent audit and judgment. Folded from Audit-Engine; has a CLI, artifact assayer, and tests.</td></tr>
+        <tr data-s="operating"><td class="stripe"><span></span></td><td class="fuid">9D3R</td><td class="name">Gauge</td><td><span class="chip op">operating</span></td><td>24</td><td class="note">Observe-and-notify only. Turns Gatehouse receipts into visibility and alerts. Folded from the Personal Intelligence Platform; owns the retrieval transport contract.</td></tr>
+        <tr data-s="primitive"><td class="stripe"><span></span></td><td class="fuid">3W9H</td><td class="name">Orchestration</td><td><span class="chip pr">primitive</span></td><td>14</td><td class="note">Decomposes, routes, delegates, places work. Owns the sole lifecycle mutator: one atomic state-plus-Journal commit under exact-tip compare-and-swap.</td></tr>
+        <tr data-s="primitive"><td class="stripe"><span></span></td><td class="fuid">6V1N</td><td class="name">Gatehouse</td><td><span class="chip pr">primitive</span></td><td>17</td><td class="note">Walls, doors, clearance bands, mandatory scans, append-only receipts. <strong>Authorizes nothing</strong> — it records that a passage happened.</td></tr>
+        <tr data-s="primitive"><td class="stripe"><span></span></td><td class="fuid">1R6F</td><td class="name">Knowledge</td><td><span class="chip pr">primitive</span></td><td>11</td><td class="note">Houses organizational-knowledge sockets including Recall, and owns the Grounding Journal — the hash-chained event log.</td></tr>
+        <tr data-s="contract"><td class="stripe"><span></span></td><td class="fuid">8L4T</td><td class="name">Validation</td><td><span class="chip ct">contract</span></td><td>7</td><td class="note">Read-only findings about a Job Order's entry to and exit from a plane. Passage-finding contract exists; no implementation.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">2K7P</td><td class="name">Intake</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Creates candidate Job Orders only. A candidate is trackable and confers no authority.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">5B2Y</td><td class="name">Design</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Develops complex solutions when Orchestration selects it.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">7C4J</td><td class="name">Scheduling</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Makes selected schedules run deterministically: queues, quotas, concurrency, wakeups.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">9P8A</td><td class="name">Production</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Bounded changes to the products the Foundry makes. Does not self-audit, self-merge, or package.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">6G3S</td><td class="name">Ward</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Triage, one bounded repair, merge to <code>integration</code>. Returns anything broader to Production.</td></tr>
+        <tr><td class="stripe"><span></span></td><td class="fuid">2N5E</td><td class="name">Shipping</td><td><span class="chip">declared</span></td><td>6</td><td class="note">Packages a producer into a reproducible deployable product. Name is provisional.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <div><span class="chip op">operating</span> real code, folded from a shipped product</div>
+    <div><span class="chip pr">primitive</span> contract + source + tests for one capability</div>
+    <div><span class="chip ct">contract</span> schema only</div>
+    <div><span class="chip">declared</span> six control documents, nothing executable</div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">04</span><h2>Sockets and Modules</h2><span class="sub">the plug boundary</span></div>
+  <div class="col">
+    <p>A <strong>socket</strong> is a capability connection contract and nothing else — stable, capability-named, housed inside a Hall, registered in an open registry. A <strong>Module</strong> is a separately owned product that implements one. The Module can be swapped without renaming the socket; the contract travels with the Foundry, while the <em>binding</em> (which Module is plugged in, with what credentials) is instance data that never ships.</p>
+    <p>The rule that makes this real: <strong>no reach-arounds.</strong> An agent reaches a Module only through its declared entrypoint — reading the Module's files or database directly is not a valid connection. This is stated and enforced by review, not yet by machinery.</p>
+  </div>
+  <div class="deflist">
+    <div><dt>5R1K &middot; recall</dt><dd>Provenance-bearing memory retrieval. Every answer must expose source and freshness. Bound to <strong>OpenBrain</strong>. "The Wiki remembers; recall recalls."</dd></div>
+    <div><dt>000K &middot; lifecycle-transition</dt><dd>Claim, handoff, repair, parent/child, and terminal transitions as one atomic commit. Housed in Orchestration.</dd></div>
+    <div><dt>000L &middot; grounding-journal</dt><dd>Hash-chained append-only event log with prior/state digests. Operational fields — repository, branch, actor, credentials, prompts — are <em>forbidden</em> in payloads. Housed in Knowledge.</dd></div>
+    <div><dt>3P7X &middot; passage-receipt</dt><dd>Who, when, from where to where, at what clearance, for what scope, with what result. Gatehouse.</dd></div>
+    <div><dt>8V2F &middot; passage-finding</dt><dd>Validation's read-only verdict surface.</dd></div>
+    <div><dt>6A9G &middot; activity-signal</dt><dd>Gauge's derived, redacted feed toward CIC.</dd></div>
+    <div><dt>4O7R &middot; workflow-handoff</dt><dd>Ordered context transfer between stages. Carries evidence; grants no authority.</dd></div>
+  </div>
+  <h3>Installed Modules</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>FUID</th><th>Module</th><th>Status</th><th>Implements</th><th>Destination</th></tr></thead>
+      <tbody>
+        <tr><td class="fuid">4Q7B</td><td class="name">OpenBrain</td><td><span class="chip op">active</span></td><td>recall</td><td><code>Modules/OpenBrain</code></td></tr>
+        <tr><td class="fuid">8F2L</td><td class="name">Command Information Center</td><td><span class="chip op">active</span></td><td>K-003</td><td><code>Modules/Command Information Center</code></td></tr>
+        <tr><td class="fuid">3D6V</td><td class="name">Servitor Slack</td><td><span class="chip op">active</span></td><td>messaging</td><td><code>Modules/Slack</code></td></tr>
+        <tr><td class="fuid">1T9C</td><td class="name">Servitor Discord</td><td><span class="chip">paused</span></td><td>messaging</td><td><code>Modules/Discord</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">05</span><h2>Six governance planes</h2><span class="sub">where any fact lives</span></div>
+  <div class="col">
+    <p>Every artifact in the system is classified by the <em>role it plays</em>, not by its file type. A spec is Canon. An audit report of that same spec is Grounding. A beautiful unadopted mockup is Grounding too. The classification determines what the artifact can and cannot authorize.</p>
+  </div>
+  <div class="planes">
+    <div class="plane p1"><span class="pn">PLANE 1</span><h4>Actuality</h4><p>What is real — live filesystem, source, runtime, verified state. The most protected plane. Nothing changes it without a Canon-backed Job Order naming the write scope, and every change checks back in as Grounding.</p></div>
+    <div class="plane"><span class="pn">PLANE 2</span><h4>Canon</h4><p>Approved durable operating truth: BLUEPRINT, stable specs, LEXICON, RUNBOOK, README, TASKBOARD. <code>AGENTS.md</code> is its narrower imperative layer. Only Canon issues a Job Order.</p></div>
+    <div class="plane"><span class="pn">PLANE 3</span><h4>Grounding</h4><p>Verified observations, audit findings, test receipts, research, non-binding references. It supports, tests, and justifies Canon without becoming Canon — and never authorizes work.</p></div>
+    <div class="plane"><span class="pn">PLANE 4</span><h4>Enduring Context</h4><p>Durable structure that informs and constrains: project structure, vocabulary, operating rules, ADRs. Constrains work; cannot authorize it.</p></div>
+    <div class="plane"><span class="pn">PLANE 5</span><h4>Intent</h4><p>Pending actionable work — requests, locked decisions, deterministic actions. Triaged <em>into</em> a Job Order; not itself a command surface.</p></div>
+    <div class="plane"><span class="pn">PLANE 6</span><h4>Projection</h4><p>The one-way interpretive lens onto Actuality. Written only by Pawns via <code>render</code>, <code>project</code>, <code>mirror</code>. Always an approximation — it records what state <em>was</em> when captured. Staleness fails closed.</p></div>
+  </div>
+  <div class="callout">
+    <span class="lbl">A boundary that was corrected in Canon</span>
+    <p>The Wiki document store is <em>not</em> a governance plane. Individual notes may be classified as Enduring Context, but the store itself is a map and a highway — it routes agents to the owning planes without becoming one.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">06</span><h2>The Job Order and its seven-stage flight</h2></div>
+  <div class="col">
+    <p>The Job Order is <strong>the badge</strong>. Its owning spec issues the FUID and revision, intended result, responsible party, exact write scope, repositories, proof requirements, recovery path, exclusions, and landing destination. That issuance is the <em>only</em> grant. The Spec-local folder that holds the packet, context, claim, and append-only handoffs is Intent — it is not authority by virtue of existing.</p>
+    <p>Every Job Order runs the same ordered sequence. Each stage consumes the prior receipt, rechecks its own race-sensitive facts, and appends a new one. A handoff preserves context; it never grants authority.</p>
+  </div>
+
+  <div class="flight">
+    <div class="stage"><div class="n">01</div><div><h4>/sitrep</h4><p>Route one current Canon-backed Job Order and append the first bounded handoff. Opens no claim, grants no authority.</p></div></div>
+    <div class="stage"><div class="n">02</div><div><h4>/preflight</h4><p>Reconcile all six planes against live Actuality; prove the recovery, verification, landing, and closure paths exist. Emits <code>pass</code>, <code>reconcile</code>, <code>blocked</code>, or <code>usage-error</code>.</p></div></div>
+    <div class="stage"><div class="n">03</div><div><h4>/launch-flight</h4><p>A Steward-authenticated request presents one fact-bound Preflight receipt. Every bound fact and the exact lifecycle tip are reread immediately before the transition; any mismatch fails closed.</p></div></div>
+    <div class="stage"><div class="n">04</div><div><h4>/in-flight</h4><p>Work strictly inside accepted scope. Test, checkpoint, push an exact recoverable candidate. Scope growth returns to Canon issuance and a fresh Preflight — it is never absorbed.</p></div></div>
+    <div class="stage"><div class="n">05</div><div><h4>/landing-check</h4><p>An independent read-only reviewer judges the exact remote candidate SHA against the checked target. Any movement in either invalidates the verdict.</p></div></div>
+    <div class="stage"><div class="n">06</div><div><h4>/land <span class="tag">delivery, not completion</span></h4><p>Declare <code>stabilize</code>, <code>deliver</code>, <code>repair</code>, or <code>abort</code>. Revalidate refs, retest the exact merge candidate, push with an explicit non-force refspec to <code>integration</code> only. <strong>Never advances main.</strong></p></div></div>
+    <div class="stage"><div class="n">07</div><div><h4>/postflight-check <span class="tag">the only closure stage</span></h4><p>Start from verified post-Land Actuality. Prove every plane represents it. Closes <code>complete</code>, <code>blocked</code>, <code>aborted</code>, <code>delivered-unclosed</code>, or <code>recovery-required</code>.</p></div></div>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">The fail-closed rule</span>
+    <p>Tooling is partial today. <code>/launch-flight</code> and <code>/in-flight</code> are installed but bootstrap-unverified; no mechanism yet performs deterministic close mutation. So an execution needing a missing stage <strong>fails closed and records the exact dependency</strong> rather than substituting an adjacent skill or describing the stage as done. A green check, a successful merge, or a satisfied reviewer never rounds up to a completed Job Order.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">07</span><h2>Clearance</h2><span class="sub">a cap, never a grant</span></div>
+  <div class="col">
+    <p>Clearance is a machine-enforced ceiling on what a Job Order <em>may</em> grant. It never replaces the Job Order and never widens one. The Gatehouse compiler intersects three things at every protected transition: the actor class cap, the exact Job Order scope, and the required owner gates. Denial produces an append-only redacted receipt.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Class</th><th>Actions</th><th>Path prefixes</th><th>Required gates</th></tr></thead>
+      <tbody>
+        <tr><td class="name">observer</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="name">auditor</td><td>—</td><td>—</td><td>audit</td></tr>
+        <tr><td class="name">pawn</td><td>journal.validate</td><td>journal/</td><td>authority</td></tr>
+        <tr><td class="name">steward</td><td>passage.record</td><td>journal/</td><td>authority, single-writer</td></tr>
+        <tr><td class="name">engineer</td><td>lifecycle.claim, handoff, terminal, repair, migrate, parent.ingest-child</td><td>state/, journal/events/</td><td>authority, freshness, single-writer</td></tr>
+        <tr><td class="name">owner</td><td>*</td><td>*</td><td>owner-command</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col"><p style="margin-top:1.3rem">Kayden's override is not ambient. It runs through a bounded Canon-issued Job Order carrying an explicit Owner Command with a command ID, action list, path list, expiry, reason, and proof gates.</p></div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">08</span><h2>FUID — permanent identity</h2></div>
+  <div class="col">
+    <p>Every entity carries an uppercase base36 identifier that is globally unique and <strong>never reused</strong>. Four characters for architecture — Halls, Modules, Sockets, Workshops. Six for work and runtime — Specs, Tickets, Intent requests, Job Orders, passage receipts. All-zero is reserved.</p>
+    <p>The identifier deliberately encodes nothing: no type, no parentage, no Hall affiliation. Those are registry fields. Typed IDs like <code>P-005</code>, <code>S-027</code>, <code>TK-002</code> survive as unique lookup aliases — nothing was bulk-renamed, and history stays readable.</p>
+    <p>Allocation advances fixed-width (<code>0009 → 000A</code>, <code>000Z → 0010</code>), persists one high-water mark per width, skips every active or retired value, and never happens in Recall or a projection. The portable registry owns product entities; a private instance registry owns Project and work-item allocations, and validation composes the two without publishing the private half.</p>
+    <p>Specs and Tickets also carry immutable <code>Created</code> and substantive <code>Last worked</code> dates. Claiming, closing, completing, and explicit content edits advance <code>Last worked</code>. Rendering, projecting, and polling deliberately do not — so a dashboard refresh can never make stale work look fresh.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">09</span><h2>Verified state of this checkout</h2><span class="sub">2026-08-31</span></div>
+  <div class="col">
+    <p>Every command in the Runbook's verification block was run against this working tree. All ten passed.</p>
+  </div>
+  <div class="checks">
+    <div class="row hd"><span>Command</span><span>Result</span></div>
+    <div class="row"><span>foundry.mjs validate-manifest</span><span class="ok">ok — 17 components</span></div>
+    <div class="row"><span>foundry.mjs doctor --harness-only</span><span class="ok">ok</span></div>
+    <div class="row"><span>identity-registry.mjs</span><span class="ok">ok</span></div>
+    <div class="row"><span>test-foundry.mjs</span><span class="ok">manifest, adoption, boundary, doctor</span></div>
+    <div class="row"><span>test-identity-registry.mjs</span><span class="ok">ok</span></div>
+    <div class="row"><span>test-passage-contracts.mjs</span><span class="ok">Gatehouse, Validation, Gauge</span></div>
+    <div class="row"><span>test-workflow-handoff.mjs</span><span class="ok">ok</span></div>
+    <div class="row"><span>test-captain.mjs</span><span class="ok">workflow + level-zero</span></div>
+    <div class="row"><span>test-spec-workbench.mjs</span><span class="ok">lifecycle, render, doctor</span></div>
+    <div class="row"><span>Projects + Wiki capability tests</span><span class="ok">ok</span></div>
+    <div class="row"><span>Forge source-root + publisher tests</span><span class="ok">8 checks + publish plan</span></div>
+    <div class="row"><span>spec-workbench.mjs doctor</span><span class="ok">ok</span></div>
+  </div>
+  <div class="deflist">
+    <div><dt>branch</dt><dd><code>integration</code>, clean tree, exactly in sync with <code>origin/integration</code></dd></div>
+    <div><dt>divergence</dt><dd>406 commits ahead of <code>main</code>, 2 behind. Automated delivery stops at <code>integration</code>; only Kayden promotes to <code>main</code>.</dd></div>
+    <div><dt>foundry specs</dt><dd>S-001 and S-002 complete. S-003 (Heartbeat Socket) and S-004 (Flight Observation Feed) are planned and blocked on adopting-instance work. <code>spec-workbench next</code> returns <code>null</code> — no active product slice.</dd></div>
+    <div><dt>where the live work is</dt><dd>The hot lane is root <strong>S-037 — Foundry Flight Workflow</strong>, currently on TK-021 (replace bootstrap <code>/land</code>), ready and unclaimed behind separate Canon-backed headroom authority.</dd></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">10</span><h2>The Schematic</h2><span class="sub">a model of Canon, not of Actuality</span></div>
+  <div class="col">
+    <p>Under <code>Schematic/</code> sits a separately owned React + Vite application — 27 specs, 25 test files — that renders the Foundry <em>as it will be once fully built</em>. It opens on a rotatable factory campus: a six-storey Factory, its Halls, surrounding Module buildings, visible socket conduits, and a second Factory showing the same Foundry deployed on another host.</p>
+    <p>Its Workflow view plays the seven-stage flight as a deterministic simulation with a synchronized trace, receipts, clearance bands, and injectable trips. Scenarios can be duplicated, edited, exported, and reimported as validated JSON.</p>
+    <p>What it is careful <em>not</em> to be: the native product interface, CIC, a live Actuality mirror, or evidence that anything is implemented. Its runs are explanatory only, its state is browser-local, and it is excluded from the published product until named Proof and independent Assay gates pass.</p>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">11</span><h2>Everything else in the tree</h2></div>
+  <div class="deflist">
+    <div><dt>Roles/</dt><dd>Six legacy one-task authority contracts — Auditor, Captain, Chain Engineer, Designer, Planner, Scout. Loading a role means the current agent adopts that stance; it never spawns a sub-agent by itself. Engineer already migrated to the shared <code>role-engineer</code> skill.</dd></div>
+    <div><dt>Skills/</dt><dd>The generated skill catalog — the front doors (<code>genesis</code>, <code>adoption</code>, <code>grilling</code>, <code>make-it-so</code>, <code>sitrep</code>, <code>implement</code>) plus supporting disciplines. Availability is fail-closed: an unfinished rewrite is preserved in <code>skills-pending/</code> but not invocable. Agent discovery points at the published catalog, not the live Forge checkout, so branch switches can't silently change what's available.</dd></div>
+    <div><dt>Projects/ Wiki/</dt><dd>Generic capability only — schema, templates, and tools. Enrollment is explicit; neither tool discovers arbitrary directories, and existing memory notes are never overwritten. Populated rooms and private notes are instance data.</dd></div>
+    <div><dt>Scheduled/Captain/</dt><dd>AFK policy and workflow mechanics. Level Zero has a hard property: no change must spawn zero models. Active schedule installation is always an instance operation, never implied by adoption.</dd></div>
+    <div><dt>templates/</dt><dd><code>ADOPTION.md</code>, <code>GENESIS.md</code>, and instance binding/workflow scaffolds. Adoption validates the entire manifest before mutation, verifies native Halls in place, clones only declared Modules into ignored destinations, preserves existing files, and writes receipts outside product Git. A failed preflight leaves no partial clone.</dd></div>
+    <div><dt>reference/</dt><dd>Rendered schematic studies (HTML + PDF), atlas data, and the runtime verifier — design evidence, explicitly Grounding rather than Canon.</dd></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="snum">12</span><h2>The honest read</h2></div>
+  <div class="col">
+    <p>The Foundry is, right now, <strong>a rigorously specified governance system with three working subsystems and a mostly unbuilt factory floor.</strong> That is not a criticism — it's the shape of the project, and the controls are unusually careful about saying so out loud.</p>
+    <p>What is genuinely real: the identity registry, the manifest and adoption machinery, the publication boundary, the spec workbench, the Captain scheduling primitives, and three folded-in products (Forge, Assay, Gauge) that predate the Hall architecture and do actual work. Three more Halls have one real primitive each — clearance policy, grounding journal, lifecycle transition. Ten of the thirteen Halls have no runtime.</p>
+    <p>What is declared but not implemented: the seven-stage flight as an executing pipeline, machine-enforced clearance at protected passages, the passage receipt trail, and the observation feeds. The Runbook is explicit that until the lifecycle engine exists, a normal Job Order that needs a missing stage must fail closed rather than pretend.</p>
+    <p>The risk worth naming: the control surface is very large relative to the running system, and Canon is amended often — the current branch carries 406 commits past <code>main</code>, and the recent history is dominated by revisions of Job Orders about Job Orders. The discipline that keeps this honest is also the discipline that makes it slow. The bet is that the discipline pays off once the Halls have something running in them.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    Compiled from the Foundry producer checkout (GPT_OS instance root, <code>Foundry/</code>), branch <code>integration</code>, HEAD <code>1b67a02</code>, on 2026-08-31.<br>
+    Sources: AGENTS.md · BLUEPRINT.md · LEXICON.md · RUNBOOK.md · TASKBOARD.md · manifest/ · specs/ · Halls/*/BLUEPRINT.md · GPT_OS root LEXICON.md and RUNBOOK.md · live verification suite.<br>
+    Verification results are from commands run against this working tree, not quoted from documentation.
+  </div>
+</footer>
+
+</div>

@@ -4,7 +4,7 @@
 > specs.
 
 <!-- hot-specs:start -->
-| Spec | Current slice | Owner | Blocker | Latest meaningful event | Next gate |
-|---|---|---|---|---|---|
-| none | No active slice | unassigned | none | All completed specs are cold. | Activate a planned spec explicitly. |
+| Spec FUID | Spec alias | Current ticket | Owner | Blocker | Last worked | Latest meaningful event | Next gate |
+|---|---|---|---|---|---|---|---|
+| none | none | No active slice | unassigned | none | n/a | All completed specs are cold. | Activate a planned spec explicitly. |
 <!-- hot-specs:end -->

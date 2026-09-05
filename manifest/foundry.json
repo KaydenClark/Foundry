@@ -6,6 +6,10 @@
     "relativePath": "tools/socket-registry/registry.json",
     "validator": ["node", "tools/socket-contract.mjs", "validate"]
   },
+  "identityRegistry": {
+    "relativePath": "manifest/identity-registry.json",
+    "validator": ["node", "tools/identity-registry.mjs"]
+  },
   "components": [
     {
       "id": "F-001",
@@ -29,12 +33,12 @@
     },
     {
       "id": "P-012",
-      "name": "Ward",
+      "name": "Gauge",
       "tier": "native-hall",
       "family": "Halls",
-      "path": "Halls/Ward",
+      "path": "Halls/Gauge",
       "status": "active",
-      "provides": ["module-integration-health"],
+      "provides": ["integration-transport-health", "activity-notification"],
       "foldedFrom": "https://github.com/KaydenClark/personal-intelligence-platform.git"
     },
     {
@@ -44,7 +48,88 @@
       "family": "Halls",
       "path": "Halls/Gatehouse",
       "status": "planned",
-      "provides": ["containment-boundary", "job-order-assignment"]
+      "provides": ["containment-boundary", "passage-scan-infrastructure"]
+    },
+    {
+      "id": "F-003",
+      "name": "Intake",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Intake",
+      "status": "planned",
+      "provides": ["candidate-job-order"]
+    },
+    {
+      "id": "F-004",
+      "name": "Validation",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Validation",
+      "status": "planned",
+      "provides": ["passage-findings"]
+    },
+    {
+      "id": "F-005",
+      "name": "Orchestration",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Orchestration",
+      "status": "planned",
+      "provides": ["work-routing", "delegation"]
+    },
+    {
+      "id": "F-006",
+      "name": "Design",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Design",
+      "status": "planned",
+      "provides": ["solution-design"]
+    },
+    {
+      "id": "F-007",
+      "name": "Knowledge",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Knowledge",
+      "status": "planned",
+      "provides": ["organizational-knowledge-sockets"]
+    },
+    {
+      "id": "F-008",
+      "name": "Scheduling",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Scheduling",
+      "status": "planned",
+      "provides": ["schedule-execution"]
+    },
+    {
+      "id": "F-009",
+      "name": "Production",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Production",
+      "status": "planned",
+      "provides": ["product-project-actuality"]
+    },
+    {
+      "id": "F-010",
+      "name": "Ward",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Ward",
+      "status": "planned",
+      "provides": ["triage", "bounded-repair", "integration"]
+    },
+    {
+      "id": "F-011",
+      "name": "Shipping",
+      "tier": "native-hall",
+      "family": "Halls",
+      "path": "Halls/Shipping",
+      "status": "planned",
+      "provides": ["producer-product-packaging"]
     },
     {
       "id": "P-010",

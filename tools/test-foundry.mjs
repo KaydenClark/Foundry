@@ -20,6 +20,7 @@ import {
   adoptFoundry,
   doctorFoundry,
   loadManifest,
+  readPortableText,
   validateManifest,
 } from "./foundry.mjs";
 
@@ -150,11 +151,30 @@ async function main() {
     rmSync(nestedScratch, { recursive: true, force: true });
   }
 
-  assert.equal(manifest.components.length, 8, "four native Halls plus four installed Modules are declared");
-
   const nativeComponents = manifest.components.filter((component) => component.tier === "native-hall");
   const installedComponents = manifest.components.filter((component) => component.tier === "installed-module");
-  assert.equal(nativeComponents.length, 4, "the Forge, the Assay, the Ward, and the Gatehouse are native Halls");
+  const currentHallNames = [
+    "Assay",
+    "Design",
+    "Forge",
+    "Gatehouse",
+    "Gauge",
+    "Intake",
+    "Knowledge",
+    "Orchestration",
+    "Production",
+    "Scheduling",
+    "Shipping",
+    "Validation",
+    "Ward",
+  ];
+  assert.equal(manifest.components.length, nativeComponents.length + installedComponents.length, "every manifest component has one declared tier");
+  assert.equal(nativeComponents.length, currentHallNames.length, "native Hall count derives from the current Canon roster");
+  assert.deepEqual(
+    nativeComponents.map((component) => component.name).sort(),
+    currentHallNames,
+    "the manifest declares every approved native Hall exactly once",
+  );
   assert.equal(installedComponents.length, 4, "OpenBrain, CIC, Slack, and Discord remain installed Modules");
 
   // TK-003 red/green: a native Hall validates with no remote; an installed
@@ -329,10 +349,10 @@ async function main() {
       sourceOverrides,
     });
 
-    assert.equal(receipt.components.length, 8, "receipt records all four native Halls and four installed Modules");
+    assert.equal(receipt.components.length, manifest.components.length, "receipt records every manifest-declared component");
     const receiptNative = receipt.components.filter((component) => component.tier === "native-hall");
     const receiptInstalled = receipt.components.filter((component) => component.tier === "installed-module");
-    assert.equal(receiptNative.length, 4);
+    assert.equal(receiptNative.length, nativeComponents.length);
     assert.ok(receiptNative.every((component) => component.action === "native" && component.path));
     assert.equal(receiptInstalled.length, 4);
     assert.ok(receiptInstalled.every((component) => /^[0-9a-f]{40}$/.test(component.commit)));
@@ -482,7 +502,8 @@ async function main() {
       `\\b${["s", "k", "-"].join("")}[A-Za-z0-9]|hooks\\.slack\\.com/services/[^\\s\"'])`,
   );
   for (const file of walkFiles(repositoryRoot)) {
-    const content = readFileSync(file, "utf8");
+    const content = readPortableText(file);
+    if (content === null) continue;
     assert.equal(content.includes(forbiddenPath), false, `${relative(repositoryRoot, file)} is portable`);
     assert.equal(secretPattern.test(content), false, `${relative(repositoryRoot, file)} contains no secret-shaped value`);
   }

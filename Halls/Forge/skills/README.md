@@ -1,12 +1,12 @@
 # Workbench Agent Skills
 
-This folder is the canonical, owner-editable skill library for the Workbench.
-It contains the conversational front doors and supporting disciplines Kayden
-selected for his workflow. The catalog below owns the selected names and their
-plain-language definitions. Only entries marked `Active` live in `skills/` and
-are exposed to agent discovery; preserved upstream baselines marked
-`Pending rewrite` live in `skills-pending/` until their Workbench rewrite is
-reviewed.
+This folder is the legacy Workbench skill catalog and release-reference
+material. It records the conversational front doors and supporting disciplines
+selected for the Workbench, but it is not a canonical authoring location or an
+agent-discovery directory. Host agents use one separately installed,
+user-scoped shared skills catalog; this product path must never shadow it.
+`Active` and `Pending rewrite` describe the historical Workbench release lane,
+not host discovery availability.
 
 ## Selected Skill Catalog
 
@@ -76,14 +76,13 @@ license. The upstream copyright and permission text is retained verbatim in the
 `genesis` and `adoption` are callable entrypoints for the existing one-time
 bootstrap protocols; routine migrations between harness versions remain owned
 by `update-harness`. `to-docs` replaces the retired `grill-with-docs` wrapper so
-interviewing and persistence remain separate. The untouched local snapshot
-is retained outside the live discovery path at
-`GPT_OS/.agents/upstream-matt-skills-2026-07-14/` for comparison.
+interviewing and persistence remain separate. A non-discoverable upstream
+baseline is retained in the private authoring environment for comparison.
 
 ## Discovery And Editing
 
-Edit active skills here and promote preserved source from `skills-pending/`
-only after its Workbench rewrite passes the catalog contract. GPT_OS exposes this same directory to Claude through
-`.claude/skills` and to Codex-compatible discovery through `.agents/skills`.
-Downstream projects receive selected skills through the normal harness upgrade
-path after their rewrite lane is complete.
+Do not edit host skills or configure engine discovery from this folder.
+Workbench release work may use this catalog as reference material, but a host
+edits and validates skills only in its separately installed shared catalog.
+Downstream projects consume the user-scoped shared source rather than a copied
+or project-local skill directory.

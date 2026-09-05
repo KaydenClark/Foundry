@@ -17,6 +17,7 @@ import {
   SCHEMA_VERSION,
   SOCKET_ID_PATTERN,
   FRESHNESS_STATES,
+  MESSAGE_SCHEMAS,
   validateRecordShape
 } from './socket-registry/schema.mjs';
 
@@ -141,6 +142,24 @@ export function validateRecallResponse(doc, response) {
     if (!FRESHNESS_STATES.includes(state)) {
       errors.push(`recall response freshness '${state}' must be one of ${FRESHNESS_STATES.join(' | ')}`);
     }
+  }
+  return { errors };
+}
+
+export function validateContractMessage(doc, socketId, direction, payload) {
+  const errors = [];
+  const record = resolveSocket(doc, socketId);
+  if (!['request', 'response'].includes(direction)) {
+    return { errors: [`${socketId}: direction must be request or response`] };
+  }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return { errors: [`${socketId} ${direction} must be an object`] };
+  }
+  const schemaName = String(record.contractSurface?.schemaPointer ?? '').split('#')[1];
+  const schema = MESSAGE_SCHEMAS[schemaName]?.[direction];
+  if (!schema) return { errors: [`${socketId}: unresolved ${direction} schema '${schemaName}'`] };
+  for (const field of schema.required) {
+    if (!(field in payload)) errors.push(`${socketId} ${direction} missing required field '${field}'`);
   }
   return { errors };
 }

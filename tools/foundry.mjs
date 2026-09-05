@@ -27,6 +27,7 @@ import {
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { validateWorkflowConfig } from "./captain.mjs";
+import { validateIdentityRegistry } from "./identity-registry.mjs";
 import { initializeProjects } from "../Projects/tools/projects.mjs";
 import { initializeWiki } from "../Wiki/tools/wiki.mjs";
 
@@ -45,6 +46,7 @@ const REQUIRED_HARNESS_PATHS = [
   "TASKBOARD.md",
   "audit-engine.json",
   "manifest/foundry.json",
+  "manifest/identity-registry.json",
   "reference/README.md",
   "reference/foundry-schematic-FND-01.html",
   "Scheduled/Captain/AFK_POLICY.md",
@@ -56,7 +58,6 @@ const REQUIRED_HARNESS_PATHS = [
   "Roles/Captain.md",
   "Roles/Chain Engineer.md",
   "Roles/Designer.md",
-  "Roles/Engineer.md",
   "Roles/Planner.md",
   "Roles/Scout.md",
   "templates/ADOPTION.md",
@@ -70,6 +71,7 @@ const REQUIRED_HARNESS_PATHS = [
   "templates/instance/workflows.json",
   "tools/captain.mjs",
   "tools/markdown-table.mjs",
+  "tools/identity-registry.mjs",
   "tools/spec-workbench.mjs",
   "tools/test-captain.mjs",
   "tools/test-foundry.mjs",
@@ -310,6 +312,23 @@ export function validateManifest(manifest) {
       errors.push("socketRegistry.validator must not invoke a shell");
     }
   }
+  const identityRegistry = manifest.identityRegistry;
+  if (!identityRegistry || typeof identityRegistry !== "object" || Array.isArray(identityRegistry)) {
+    errors.push("identityRegistry must be an object");
+  } else {
+    if (!isSafeRelativePath(identityRegistry.relativePath)) {
+      errors.push("identityRegistry.relativePath must be a safe relative path");
+    }
+    if (
+      !Array.isArray(identityRegistry.validator) ||
+      identityRegistry.validator.length < 2 ||
+      identityRegistry.validator.some((argument) => typeof argument !== "string" || !argument)
+    ) {
+      errors.push("identityRegistry.validator must be a non-empty argv array");
+    } else if (["sh", "bash", "zsh", "cmd", "powershell", "pwsh"].includes(identityRegistry.validator[0])) {
+      errors.push("identityRegistry.validator must not invoke a shell");
+    }
+  }
   errors.push(...findInstanceOnlyKeys(manifest));
   return errors;
 }
@@ -406,12 +425,9 @@ function inspectComponentDestination({ component, harnessRoot, source }) {
   return { action: "reuse", destination };
 }
 
-// The common baseline every native Hall in this repo actually carries today.
-// LEXICON.md is deliberately excluded: `Halls/Ward/` (the Ward) predates this check
-// and has no LEXICON.md of its own (WORKBENCH_FEEDBACK.md records the gap).
-// New Halls should still ship one — see `Halls/Gatehouse/LEXICON.md` — but the
-// doctor gate only enforces what every existing Hall actually has, so it
-// never fails on a pre-existing, honestly-recorded gap it did not create.
+// The common baseline every native Hall must carry. Shared vocabulary is owned
+// by the root Lexicon; a Hall may add a local Lexicon when it has terms beyond
+// that shared map, so it is not an adoption gate.
 const NATIVE_HALL_CONTROL_DOCS = [
   "AGENTS.md",
   "BLUEPRINT.md",
@@ -690,12 +706,23 @@ export async function adoptFoundry({
   return receipt;
 }
 
+function isNestedProducerCheckout(harnessRoot) {
+  const topLevel = git(harnessRoot, ["rev-parse", "--show-toplevel"], { allowFailure: true });
+  if (topLevel.status !== 0 || !topLevel.stdout.trim()) return false;
+  const repositoryRoot = resolve(topLevel.stdout.trim());
+  return repositoryRoot !== resolve(harnessRoot)
+    && resolve(repositoryRoot, "Foundry") === resolve(harnessRoot)
+    && existsSync(join(harnessRoot, "source-root.json"));
+}
+
 function listRepositoryFiles(harnessRoot) {
   const listed = git(harnessRoot, ["ls-files", "-z"], { allowFailure: true });
   if (listed.status === 0 && listed.stdout) {
+    const producerCheckout = isNestedProducerCheckout(harnessRoot);
     return listed.stdout
       .split("\0")
       .filter(Boolean)
+      .filter((entry) => !producerCheckout || !entry.startsWith("Modules/"))
       .map((entry) => join(harnessRoot, entry));
   }
   const ignored = new Set([".git", "Skills", "Modules", ".worktrees", ".local", ".foundry"]);
@@ -713,6 +740,13 @@ function listRepositoryFiles(harnessRoot) {
   return files;
 }
 
+export function readPortableText(file) {
+  const content = readFileSync(file);
+  const sample = content.subarray(0, Math.min(content.length, 8192));
+  if (sample.includes(0)) return null;
+  return content.toString("utf8");
+}
+
 function portabilityErrors(harnessRoot) {
   const errors = [];
   const forbiddenAbsolute = `${sep}Users${sep}${["kay", "den"].join("")}`;
@@ -725,10 +759,11 @@ function portabilityErrors(harnessRoot) {
   for (const file of listRepositoryFiles(harnessRoot)) {
     let content;
     try {
-      content = readFileSync(file, "utf8");
+      content = readPortableText(file);
     } catch {
       continue;
     }
+    if (content === null) continue;
     const rel = relative(harnessRoot, file).split(sep).join("/");
     if (content.includes(forbiddenAbsolute)) errors.push(`${rel}: host-specific absolute path`);
     if (secretPattern.test(content)) errors.push(`${rel}: secret-shaped value`);
@@ -747,12 +782,13 @@ function boundaryErrors(harnessRoot, manifest) {
     .filter((component) => component.tier === "installed-module")
     .map((component) => component.destination);
   const staged = git(harnessRoot, ["ls-files", "--stage"], { allowFailure: true });
+  const producerCheckout = isNestedProducerCheckout(harnessRoot);
   if (staged.status === 0) {
     for (const line of staged.stdout.split(/\r?\n/).filter(Boolean)) {
       const [metadata, trackedPath = ""] = line.split("\t", 2);
       const mode = metadata.split(" ")[0];
       if (mode === "160000") errors.push(`${trackedPath}: gitlink is forbidden`);
-      if (installedDestinations.some((destination) => trackedPath.startsWith(`${destination}/`))) {
+      if (!producerCheckout && installedDestinations.some((destination) => trackedPath.startsWith(`${destination}/`))) {
         errors.push(`${trackedPath}: installed component content is tracked`);
       }
       if (trackedPath.startsWith(".worktrees/")) errors.push(`${trackedPath}: worktree content is tracked`);
@@ -789,6 +825,16 @@ export async function doctorFoundry({
     if (!existsSync(join(harnessRoot, required))) errors.push(`missing harness path: ${required}`);
   }
   errors.push(...validateManifest(manifest));
+  const identityRegistryPath = join(harnessRoot, manifest.identityRegistry?.relativePath ?? "manifest/identity-registry.json");
+  if (!existsSync(identityRegistryPath)) {
+    errors.push("missing identity registry");
+  } else {
+    try {
+      errors.push(...validateIdentityRegistry(readJson(identityRegistryPath)).map((error) => `identity registry: ${error}`));
+    } catch (error) {
+      errors.push(error.message);
+    }
+  }
   if (existsSync(join(harnessRoot, ".gitignore"))) {
     errors.push(...boundaryErrors(harnessRoot, manifest));
   }

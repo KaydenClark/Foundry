@@ -10,7 +10,6 @@ const roleNames = [
   "Captain.md",
   "Chain Engineer.md",
   "Designer.md",
-  "Engineer.md",
   "Planner.md",
   "Scout.md",
 ];
@@ -33,7 +32,7 @@ export function verifyCaptainCore(instanceRoot) {
   const rolesRoot = join(foundryRoot, "Roles");
   const actualRoles = readdirSync(rolesRoot).sort();
   if (actualRoles.join("\n") !== roleNames.join("\n")) {
-    throw new Error("Foundry role catalog is incomplete or contains undeclared entries");
+    throw new Error("Foundry legacy role catalog is incomplete or contains undeclared entries");
   }
   const schedulingPolicy = join(foundryRoot, "Scheduled", "Captain", "AFK_POLICY.md");
   assertFile(schedulingPolicy, "reusable Captain scheduling policy");
@@ -50,8 +49,9 @@ export function verifyCaptainCore(instanceRoot) {
 
   let rootAdapterCount = 0;
   if (embedded) {
+    const toolsLane = instanceToolsLane(root);
     for (const name of coreToolNames) {
-      assertFile(join(root, "tools", name), `root adapter ${name}`);
+      assertFile(join(root, toolsLane, name), `root adapter ${name}`);
       rootAdapterCount += 1;
     }
   }
@@ -82,4 +82,20 @@ if (invokedPath === import.meta.url) {
     process.stderr.write(`${error.message}\n`);
     process.exitCode = 1;
   }
+}
+
+// An instance that declares a Workbench manifest owns where its tools lane
+// sits; a pre-V3 instance keeps `tools/`. Read the declaration rather than
+// importing from the instance, so the product stays free of instance modules.
+function instanceToolsLane(root) {
+  const manifestPath = join(root, "workbench", "manifest.json");
+  if (!existsSync(manifestPath)) return "tools";
+  try {
+    const declared = JSON.parse(readFileSync(manifestPath, "utf8"))?.lanes?.tools;
+    if (typeof declared === "string" && declared.trim()) return declared.trim().replace(/\/+$/, "");
+  } catch {
+    // A malformed manifest is reported by the instance's own checks; the
+    // pre-V3 layout is the safe assumption here.
+  }
+  return "tools";
 }

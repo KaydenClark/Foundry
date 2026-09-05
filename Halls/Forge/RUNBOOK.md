@@ -36,8 +36,9 @@ Expected result: all `tools/` scripts run directly on Node >= 18 with zero
 npm dependencies.
 
 `Foundry/Halls/Forge` is the canonical producer path. Root S-027/TK-003 moved
-all four Halls and their active callers together; no `Sockets/` compatibility
-alias remains.
+the original four Hall paths and their active callers together; no `Sockets/`
+compatibility alias remains. The current integration checkout now contains all
+thirteen declared Hall paths. This runbook describes Forge only.
 
 ## Run Locally
 
@@ -113,7 +114,7 @@ recorded, and evidence present; render then removes the spec from the hot board.
 ### Socket Contract Registry
 
 The Foundry socket contract registry (GPT_OS root spec S-014, C-003 extraction)
-travels with the Sockets family. `tools/socket-registry/registry.json` is the
+travels with Foundry core and is owned by the Forge Hall. `tools/socket-registry/registry.json` is the
 machine-readable contract artifact (one record per `K-###`),
 `tools/socket-registry/schema.mjs` is its schema, and `tools/socket-contract.mjs`
 is the validator — the successor to the instance-side `id-registry.mjs` (which

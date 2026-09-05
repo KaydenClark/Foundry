@@ -1,7 +1,9 @@
 # Gatehouse - Agent Operating Contract
 
-The Gatehouse is GPT_OS's producer-side Hall for deterministic containment,
-Job Order validation, clearance checks, and shipping gates.
+The Gatehouse is the producer-side Hall for deterministic containment and
+passage infrastructure: walls, floors, doors, gates, clearance bands, required
+Job Order scans, and append-only passage receipts. It does not validate, route,
+authorize, or package work.
 
 ## Authority
 

@@ -42,6 +42,27 @@ export const recall = {
   response: { required: ['value', 'source', 'freshness'] }
 };
 
+export const lifecycleTransition = {
+  request: {
+    required: [
+      'schemaVersion', 'currentState', 'nextState', 'event', 'predecessor',
+      'expectedTip', 'jobOrder', 'action', 'requestedScope', 'clearance'
+    ],
+    optional: ['actualTip']
+  },
+  response: {
+    required: ['outcome', 'receiptDisposition', 'findings'],
+    optional: ['expectedTip', 'treePlan', 'receipt', 'recovery', 'projections', 'candidateSha', 'authoritativeTip', 'closureBlocked']
+  }
+};
+
+export const groundingJournal = {
+  request: { required: ['event', 'predecessor', 'pairedState'] },
+  response: { required: ['valid', 'eventDigest', 'findings'] }
+};
+
+export const MESSAGE_SCHEMAS = { recall, lifecycleTransition, groundingJournal };
+
 // Structural check of one contract record. Returns a list of error strings.
 export function validateRecordShape(id, record) {
   const errors = [];
@@ -67,6 +88,10 @@ export function validateRecordShape(id, record) {
   if (surface && typeof surface === 'object' && !Array.isArray(surface)) {
     for (const key of CONTRACT_SURFACE_REQUIRED_KEYS) {
       if (!surface[key]) errors.push(`${id}: contractSurface missing '${key}'`);
+    }
+    const schemaName = String(surface.schemaPointer ?? '').split('#')[1];
+    if (schemaName && !(schemaName in MESSAGE_SCHEMAS)) {
+      errors.push(`${id}: contractSurface schemaPointer names unknown schema '${schemaName}'`);
     }
   } else if ('contractSurface' in record) {
     errors.push(`${id}: contractSurface must be an object`);

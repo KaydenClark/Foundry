@@ -16,4 +16,4 @@ task state.
 
 - [Memory schema](SCHEMA.md)
 - [Enrolled project routing](../Projects/INDEX.md)
-- [Project memory index](Projects/INDEX.md)
+- [Project memory index](../Projects/INDEX.md)

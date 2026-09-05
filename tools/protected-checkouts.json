@@ -1,0 +1,4 @@
+{
+  "note": "Portable Foundry product-room launch preflight. GPT_OS owns shared-checkout pins; generated packages are never launch prerequisites or agent-discovery roots.",
+  "checkouts": []
+}

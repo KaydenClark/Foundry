@@ -7,34 +7,36 @@ Run commands from the Foundry product root.
 ```bash
 node tools/foundry.mjs validate-manifest
 node tools/foundry.mjs doctor --harness-only
+node tools/identity-registry.mjs
 node tools/test-foundry.mjs
+node tools/test-identity-registry.mjs
+node tools/test-passage-contracts.mjs
+node tools/test-workflow-handoff.mjs
 node tools/test-captain.mjs
 node tools/test-spec-workbench.mjs
 node Projects/tools/test-projects.mjs
 node Wiki/tools/test-wiki.mjs
 node Halls/Forge/tools/test-foundry-source-root.mjs
 node Halls/Forge/tools/test-foundry-publisher.mjs
-npm test --prefix Schematic
-npm run test:safety --prefix Schematic
-npm run build --prefix Schematic
 node tools/spec-workbench.mjs render
 node tools/spec-workbench.mjs doctor
 git diff --check
 ```
 
-Hall-specific verification remains in each `Halls/*/RUNBOOK.md`. The Assay is
-read-only; the Ward may report expected degraded Module freshness on an instance
-without configured Module state.
+Workbench Specs and Tickets carry a six-character FUID plus `Created` and
+`Last worked`. Claim, close, complete, and explicit content/lifecycle changes
+advance `Last worked`; doctor, next, show, and render do not. `Updated` remains
+a compatibility field and must equal Spec `Last worked` during migration.
 
-Install the Schematic's pinned dependencies once before the full product suite:
+Instance migration is planned and applied by that instance's private
+`tools/migrate-work-items.mjs`; the portable Foundry registry and product
+artifact must not receive private Project, Spec, or Ticket allocations.
 
-```bash
-npm ci --prefix Schematic
-```
-
-The Schematic build writes ignored `Schematic/dist/` and has no server-side or
-production-execution dependency. Its complete local demo and recovery procedure
-live in `Schematic/RUNBOOK.md`.
+Hall-specific verification remains in each `Halls/*/RUNBOOK.md`. The Assay and
+Validation are read-only; Gauge may report expected degraded Module freshness
+on an instance without configured Module state. The separately owned Schematic
+Projection product has its own verification and is not part of the Foundry
+product suite.
 
 The immutable source inventory deliberately excludes the declared
 producer-only Module class. It still fails on every unclassified, private,

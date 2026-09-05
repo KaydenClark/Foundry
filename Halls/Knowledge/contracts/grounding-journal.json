@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "artifact": "grounding-journal-event",
+  "eventSchemaVersions": ["1.0", "2.0"],
+  "required": ["schemaVersion", "eventId", "sequence", "type", "priorDigest", "stateDigest", "payload"],
+  "firstEventType": "migration.steward-serialization-imported",
+  "typeSyntax": "dot-separated-lowercase-segments-with-internal-hyphens",
+  "lifecycleEventTypes": ["claim.accepted", "handoff.accepted", "terminal.accepted", "repair.accepted", "child.terminal-ingested", "passage.denied"],
+  "recovery": { "expectedLastDigestRequired": true, "outcomes": ["exact", "mismatch", "invalid"] },
+  "projection": { "owner": "Knowledge", "surface": "journal-health", "freshRequiresExactRecovery": true },
+  "forbiddenOperationalFields": ["repository", "branch", "ref", "actor", "runId", "receiptId", "runtime", "credential", "secret", "prompt"]
+}

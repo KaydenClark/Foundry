@@ -16,6 +16,7 @@
         "Foundry/BLUEPRINT.md",
         "Foundry/CLAUDE.md",
         "Foundry/LEXICON.md",
+        "Foundry/LICENSE",
         "Foundry/README.md",
         "Foundry/RUNBOOK.md",
         "Foundry/TASKBOARD.md",
@@ -28,8 +29,16 @@
       "prefixes": ["Foundry/manifest/"]
     },
     {
+      "category": "foundry-specs",
+      "prefixes": ["Foundry/specs/"]
+    },
+    {
       "category": "foundry-reference",
       "prefixes": ["Foundry/reference/"]
+    },
+    {
+      "category": "foundry-guidebooks",
+      "prefixes": ["Foundry/guidebooks/"]
     },
     {
       "category": "foundry-templates",
@@ -46,10 +55,6 @@
     {
       "category": "scheduling-core",
       "prefixes": ["Foundry/Scheduled/"]
-    },
-    {
-      "category": "schematic-source",
-      "prefixes": ["Foundry/Schematic/"]
     },
     {
       "category": "foundry-tools",
@@ -79,7 +84,9 @@
     }
   ],
   "excludedPrefixes": [
-    { "path": "Foundry/Modules/", "reason": "producer-only-modules" }
+    { "path": "Foundry/Modules/", "reason": "producer-only-modules" },
+    { "path": "Foundry/Schematic/", "reason": "separately-owned-schematic-projection" },
+    { "path": "Foundry/reactivation-topology.json", "reason": "instance-reactivation-map" }
   ],
   "prohibitedPrefixes": [
     { "path": "Foundry/Skills/", "reason": "generated-skills" },

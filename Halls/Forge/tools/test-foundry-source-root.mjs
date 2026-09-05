@@ -61,23 +61,40 @@ ok('Hall source maps to its product-relative path', () => {
   assert.equal(hall.category, 'hall-source');
 });
 
-ok('Schematic app source maps to the public product without generated output', () => {
+ok('stable Foundry specs map to the public product', () => {
+  const spec = classifyPath(
+    contract,
+    'Foundry/specs/S-001-hall-architecture-and-identity-registry/SPEC.md'
+  );
+  assert.equal(spec.included, true);
+  assert.equal(spec.productPath, 'specs/S-001-hall-architecture-and-identity-registry/SPEC.md');
+  assert.equal(spec.category, 'foundry-specs');
+});
+
+ok('colocated Schematic source remains separately owned and unpublished', () => {
   const source = classifyPath(contract, 'Foundry/Schematic/src/App.jsx');
-  assert.equal(source.included, true);
-  assert.equal(source.productPath, 'Schematic/src/App.jsx');
-  assert.equal(source.category, 'schematic-source');
+  assert.equal(source.included, false);
+  assert.equal(source.prohibited, false);
+  assert.equal(source.reason, 'separately-owned-schematic-projection');
 
   const provider = classifyPath(contract, 'Foundry/Schematic/src/store/RunContext.jsx');
-  assert.equal(provider.included, true);
-  assert.equal(provider.productPath, 'Schematic/src/store/RunContext.jsx');
+  assert.equal(provider.included, false);
+  assert.equal(provider.reason, 'separately-owned-schematic-projection');
 
   const dependency = classifyPath(contract, 'Foundry/Schematic/node_modules/react/index.js');
   assert.equal(dependency.included, false);
-  assert.equal(dependency.reason, 'runtime-segment');
+  assert.equal(dependency.reason, 'separately-owned-schematic-projection');
 
   const build = classifyPath(contract, 'Foundry/Schematic/dist/index.html');
   assert.equal(build.included, false);
-  assert.equal(build.reason, 'runtime-segment');
+  assert.equal(build.reason, 'separately-owned-schematic-projection');
+});
+
+ok('instance reactivation topology remains unpublished', () => {
+  const topology = classifyPath(contract, 'Foundry/reactivation-topology.json');
+  assert.equal(topology.included, false);
+  assert.equal(topology.prohibited, false);
+  assert.equal(topology.reason, 'instance-reactivation-map');
 });
 
 ok('generated, private, runtime, and secret paths fail closed', () => {
