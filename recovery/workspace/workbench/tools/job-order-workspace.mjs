@@ -46,7 +46,7 @@ const CLAIM_FIELDS = [
   "Accepted handoff receipt",
   "Accepted handoff digest",
   "Decision mode",
-  "Waiting on Kayden",
+  "Waiting on the owner",
 ];
 const RECEIPT_FIELDS = [
   "Job Order",

@@ -6,7 +6,8 @@ end-to-end flight implementation. Publishing source does not enable services,
 schedules, adoption, deployment, or agent dispatch.
 
 The original core package remains unchanged apart from this status notice.
-The supplement preserves the Schematic application source and tests, seven
+The supplement preserves all 24 shared ADRs, expanded design concepts and
+lexicon, the legacy skill snapshot, the Schematic application source and tests, seven
 flight-stage skill snapshots, and workspace preflight, launch-snapshot,
 Job Order validation, landing-proof code and their tests. The flight skills
 are archived text, not instructions to activate or install them.
@@ -46,3 +47,21 @@ failures, and repair one observable flight before considering deployment.
   are packaging limitations, not evidence of a repaired flight workflow.
 - Supplemental inventory hashes, syntax and targeted identity/secret checks
   passed. Archived workspace flight tools were not run against a live instance.
+
+## Package and clone contract
+
+Clone the default branch of this repository to get the portable Foundry box.
+The original core, Schematic source, ADRs/design records and archived workspace
+implementation are present together. Private instance state is supplied by a
+future adopter; no specific wiki or live workspace data is included.
+
+Use `git archive HEAD` to reproduce this complete source package. The historical
+source-root.json describes the earlier core export boundary; re-running that old
+producer exporter would omit the supplement. It is retained as historical code,
+not the manifest of this complete Git snapshot. source-inventory.json inventories
+the supplement. No source rewrite makes the archived flight machinery functional.
+
+The copied ADRs retain decisions and rationale. Instance-specific session links
+and individual closure examples are omitted from public copies; original design
+and decision records remain with their source owner. No design record was removed
+from the source workspace to make these copies.

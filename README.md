@@ -2,7 +2,8 @@
 
 This is an unfinished, non-deployed Foundry template. The broken flight workflow
 is preserved for future development; no working flight or deployment is claimed.
-See [recovery supplement](recovery/README.md) for the additional source,
+All 24 shared [ADRs](docs/adr/) and the expanded [design concepts](docs/design/)
+are included. See [recovery supplement](recovery/README.md) for the additional source,
 inventory, and known gaps. Do not adopt or deploy it as part of ordinary work.
 
 # Foundry

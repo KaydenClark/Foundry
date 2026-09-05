@@ -22,7 +22,7 @@
 //   * TWO BANDS (TK-008). A failure is either `blocking` — a real owner gate,
 //     an unresolvable tree, a moved pin — or `reconcilable`: the record is
 //     contradicted by verifiable source, so the answer is to go look and
-//     update the record, not to stop and wait for Kayden. Before TK-008 both
+//     update the record, not to stop and wait for the owner. Before TK-008 both
 //     produced the same halt, so a stale projection was indistinguishable
 //     from an owner gate and stalled S-024 TK-005 for eight hours.
 //   * Exit 0 when every check passes; exit 3 when only reconcilable failures
@@ -44,7 +44,7 @@ const PROTECTED_BRANCHES = new Set(['main', 'master']);
 // "you may not launch". Everything not listed here is blocking. Membership is
 // deliberately small and explicit: a check earns the reconcilable band only
 // when an agent, acting alone and read-only, can settle it by looking at
-// Actuality. Anything needing Kayden's judgement stays blocking.
+// Actuality. Anything needing the owner's judgement stays blocking.
 const RECONCILABLE_CHECKS = new Set([
   'spec-branch-activity-fresher',
   'stale-blocker',
@@ -998,7 +998,7 @@ export function auditSpecs({ root = DEFAULT_ROOT, repos = [], spec = null } = {}
         because = staleBlockers.get(ticket.id);
       } else if (ownerGated && ticket.status !== 'done') {
         verdict = 'owner-gated';
-        because = 'the slice or blocker text reserves this to Kayden; only an Owner Command clears it';
+        because = 'the slice or blocker text reserves this to the owner; only an Owner Command clears it';
       } else if (['ready', 'in-progress'].includes(ticket.status) && unmet.length === 0 && !opaqueBlocker) {
         verdict = gateNames.length === 0 || gateNames.includes(ticket.id) ? 'launchable' : 'gate-elsewhere';
         because = verdict === 'launchable'
@@ -1063,7 +1063,7 @@ function usage() {
     '',
     '  exit 0  every check passed; the launch is authorized',
     '  exit 3  only reconcilable failures remain — the record disagrees with',
-    '          source. Go verify and update the record; do not wait on Kayden.',
+    '          source. Go verify and update the record; do not wait on the owner.',
     '  exit 1  something blocking failed; this is an owner report, never a',
     '          warning to scroll past',
     '  exit 2  usage error',
